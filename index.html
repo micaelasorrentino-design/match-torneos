@@ -2,13 +2,190 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
   <title>MATCH Bragado</title>
+
   <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
-  <h1>MATCH</h1>
-  <p>Más que un toneo. Una comunidad.</p>
+
+  <main>
+
+    <!-- PORTADA -->
+    <section class="hero">
+
+      <div class="logo">
+        <span class="logo-pelota">🎾</span>
+        <h1>MATCH</h1>
+        <p>BRAGADO</p>
+      </div>
+
+      <h2>
+        Más que un partido.
+        <span>Una comunidad.</span>
+      </h2>
+
+      <p class="descripcion">
+        Conectamos mujeres a través del pádel en Bragado.
+      </p>
+
+      <div class="valores">
+        <span>♡ Jugar</span>
+        <span>•</span>
+        <span>♧ Conectar</span>
+        <span>•</span>
+        <span>☆ Disfrutar</span>
+      </div>
+
+    </section>
+
+
+    <!-- TARJETA DEL TORNEO -->
+    <section class="torneo">
+
+      <p class="etiqueta">🎾 PRÓXIMO TORNEO</p>
+
+      <h3>Torneo Americano Femenino</h3>
+
+      <div class="contenido-torneo">
+
+        <div class="datos">
+
+          <div class="dato">
+            <span class="icono">📅</span>
+            <div>
+              <small>Fecha</small>
+              <strong>Domingo 16 de agosto</strong>
+            </div>
+          </div>
+
+          <div class="dato">
+            <span class="icono">📍</span>
+            <div>
+              <small>Lugar</small>
+              <strong>Bragado Club</strong>
+            </div>
+          </div>
+
+          <div class="dato">
+            <span class="icono">👭</span>
+            <div>
+              <small>Categoría</small>
+              <strong>7ª Libre</strong>
+            </div>
+          </div>
+
+          <div class="dato">
+            <span class="icono">💰</span>
+            <div>
+              <small>Valor</small>
+              <strong>$8.000</strong>
+            </div>
+          </div>
+
+        </div>
+
+
+        <!-- CUPOS -->
+        <div class="cupos">
+
+          <p>Cupos disponibles</p>
+
+          <div class="numero-cupos">
+            <span id="inscriptas">18</span>
+            <span class="separador">/</span>
+            <span id="total-cupos">32</span>
+          </div>
+
+          <div class="barra">
+            <div id="progreso" class="progreso"></div>
+          </div>
+
+          <p id="texto-cupos" class="texto-cupos">
+            18 de 32 jugadoras
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <button id="boton-inscripcion" type="button">
+        ✎ QUIERO INSCRIBIRME
+      </button>
+
+      <p class="aclaracion">
+        🔒 Tu lugar se confirma una vez realizado el pago.
+      </p>
+
+    </section>
+
+
+    <!-- CÓMO FUNCIONA -->
+    <section class="como-funciona">
+
+      <h3>¿Cómo funciona?</h3>
+
+      <div class="pasos">
+
+        <article class="paso">
+          <span class="numero">1</span>
+          <span class="icono-paso">📋</span>
+          <h4>Completás el formulario</h4>
+          <p>Ingresás tus datos y los de tu pareja.</p>
+        </article>
+
+        <article class="paso">
+          <span class="numero">2</span>
+          <span class="icono-paso">✅</span>
+          <h4>Confirmamos tu lugar</h4>
+          <p>Te contactamos por WhatsApp.</p>
+        </article>
+
+        <article class="paso">
+          <span class="numero">3</span>
+          <span class="icono-paso">💳</span>
+          <h4>Realizás el pago</h4>
+          <p>Tu inscripción queda confirmada.</p>
+        </article>
+
+        <article class="paso">
+          <span class="numero">4</span>
+          <span class="icono-paso">🎾</span>
+          <h4>¡Nos vemos en la cancha!</h4>
+          <p>Jugamos, nos divertimos y creamos comunidad.</p>
+        </article>
+
+      </div>
+
+    </section>
+
+
+    <!-- PIE -->
+    <footer>
+
+      <p>Seguinos y enterate de todo 💜</p>
+
+      <div class="redes">
+        <a href="#" target="_blank">Instagram</a>
+        <a href="#" target="_blank">WhatsApp</a>
+      </div>
+
+      <small>
+        © 2026 MATCH Bragado. Todos los derechos reservados.
+      </small>
+
+    </footer>
+
+  </main>
+
+  <script src="script.js"></script>
+
 </body>
 </html>
