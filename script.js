@@ -10,6 +10,9 @@ const textoCupos = document.getElementById("texto-cupos");
 const botonInscripcion = document.getElementById("boton-inscripcion");
 
 function actualizarCupos() {
+  const lugaresDisponibles =
+    torneo.cuposTotales - torneo.inscriptas;
+
   const porcentaje =
     (torneo.inscriptas / torneo.cuposTotales) * 100;
 
@@ -19,18 +22,20 @@ function actualizarCupos() {
   barraProgreso.style.width =
     `${Math.min(porcentaje, 100)}%`;
 
-  textoCupos.textContent =
-    `${torneo.inscriptas} de ${torneo.cuposTotales} jugadoras`;
-
-  if (torneo.inscriptas >= torneo.cuposTotales) {
-    botonInscripcion.textContent = "TORNEO COMPLETO";
+  if (lugaresDisponibles > 1) {
+    textoCupos.textContent =
+      `Quedan ${lugaresDisponibles} lugares`;
+  } else if (lugaresDisponibles === 1) {
+    textoCupos.textContent = "Queda 1 solo lugar";
+  } else {
+    textoCupos.textContent = "Torneo completo";
+    botonInscripcion.textContent = "Torneo completo";
     botonInscripcion.disabled = true;
-    textoCupos.textContent = "No quedan cupos disponibles";
   }
 }
 
 botonInscripcion.addEventListener("click", () => {
-  alert("En el próximo paso conectaremos acá el formulario de inscripción 💜");
+  alert("Ahora vamos a conectar el formulario de inscripción 💜");
 });
 
 actualizarCupos();
