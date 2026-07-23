@@ -328,7 +328,7 @@ a {
 }
 
 .tarjeta-informacion {
-  padding: 52px;
+  padding: 40px;
 }
 
 .presentacion-torneo {
@@ -343,15 +343,16 @@ a {
 .datos {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 0 36px;
+    gap:18px 28px;
+    margin-top:28px;
 }
 
 .dato {
-  padding: 21px 0;
+  padding: 18px 0;
 
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 18px;
 
   border-bottom: 1px solid #eee8f1;
 }
