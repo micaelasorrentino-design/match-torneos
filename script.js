@@ -1,13 +1,24 @@
+/* ==========================
+   CONEXIÓN CON GOOGLE SHEETS
+========================== */
+
 const URL_APPS_SCRIPT =
   "https://script.google.com/macros/s/AKfycbxhW-6_RVdPilf9btmW3E_xPodvRbAH-F7CRf7CyT5Vp0sYS3eb2Ge8_bAnchIFZaRktw/exec";
 
+
+/* ==========================
+   DATOS INICIALES
+========================== */
+
 const torneo = {
-  inscriptas: 18,
+  inscriptas: 0,
   cuposTotales: 32
 };
 
 
-/* ELEMENTOS DEL TORNEO */
+/* ==========================
+   ELEMENTOS DEL TORNEO
+========================== */
 
 const inscriptas =
   document.getElementById("inscriptas");
@@ -25,7 +36,9 @@ const botonInscripcion =
   document.getElementById("boton-inscripcion");
 
 
-/* ELEMENTOS DEL FORMULARIO */
+/* ==========================
+   ELEMENTOS DEL FORMULARIO
+========================== */
 
 const modal =
   document.getElementById("modal-inscripcion");
@@ -70,15 +83,24 @@ const apellidoPareja =
 const whatsappPareja =
   document.getElementById("whatsapp-pareja");
 
+const botonEnviar =
+  document.querySelector(".boton-enviar");
 
-/* ACTUALIZAR CUPOS */
+
+/* ==========================
+   MOSTRAR CUPOS
+========================== */
 
 function actualizarTorneo() {
-  const disponibles =
-    torneo.cuposTotales - torneo.inscriptas;
+  const disponibles = Math.max(
+    torneo.cuposTotales - torneo.inscriptas,
+    0
+  );
 
   const porcentaje =
-    (torneo.inscriptas / torneo.cuposTotales) * 100;
+    torneo.cuposTotales > 0
+      ? (torneo.inscriptas / torneo.cuposTotales) * 100
+      : 0;
 
   inscriptas.textContent =
     torneo.inscriptas;
@@ -107,13 +129,93 @@ function actualizarTorneo() {
       "Torneo completo";
 
     botonInscripcion.disabled = true;
+  } else {
+    botonInscripcion.textContent =
+      "Inscribirme";
+
+    botonInscripcion.disabled = false;
   }
 }
 
 
-/* ABRIR Y CERRAR FORMULARIO */
+/* ==========================
+   CONSULTAR GOOGLE SHEETS
+========================== */
+
+async function consultarCupos() {
+  lugaresRestantes.textContent =
+    "Cargando cupos...";
+
+  botonInscripcion.disabled = true;
+
+  try {
+    const respuesta = await fetch(
+      `${URL_APPS_SCRIPT}?t=${Date.now()}`,
+      {
+        method: "GET",
+        cache: "no-store"
+      }
+    );
+
+    if (!respuesta.ok) {
+      throw new Error(
+        "No se pudo consultar la disponibilidad."
+      );
+    }
+
+    const resultado =
+      await respuesta.json();
+
+    if (!resultado.correcto) {
+      throw new Error(
+        resultado.mensaje ||
+        "Google Sheets no devolvió los cupos."
+      );
+    }
+
+    torneo.inscriptas =
+      Number(resultado.ocupados) || 0;
+
+    torneo.cuposTotales =
+      Number(resultado.cuposTotales) || 32;
+
+    actualizarTorneo();
+
+  } catch (error) {
+    console.error(
+      "Error al consultar los cupos:",
+      error
+    );
+
+    lugaresRestantes.textContent =
+      "No pudimos consultar los cupos";
+
+    botonInscripcion.textContent =
+      "Reintentar";
+
+    botonInscripcion.disabled = false;
+  }
+}
+
+
+/* ==========================
+   ABRIR Y CERRAR FORMULARIO
+========================== */
 
 function abrirModal() {
+  /*
+    Si falló la consulta inicial, el botón sirve
+    para volver a intentar cargar los cupos.
+  */
+
+  if (
+    lugaresRestantes.textContent ===
+    "No pudimos consultar los cupos"
+  ) {
+    consultarCupos();
+    return;
+  }
+
   formulario.classList.remove("oculto");
   mensajeConfirmacion.classList.add("oculto");
 
@@ -123,6 +225,7 @@ function abrirModal() {
   document.body.classList.add("modal-abierto");
 }
 
+
 function cerrarFormulario() {
   modal.classList.remove("abierto");
   modal.setAttribute("aria-hidden", "true");
@@ -131,7 +234,9 @@ function cerrarFormulario() {
 }
 
 
-/* CAMPOS SEGÚN MODALIDAD */
+/* ==========================
+   CAMPOS SEGÚN MODALIDAD
+========================== */
 
 function actualizarModalidad() {
   const modalidadSeleccionada =
@@ -182,9 +287,25 @@ function actualizarModalidad() {
 }
 
 
-/* ENVÍO DEL FORMULARIO */
+/* ==========================
+   BLOQUEAR BOTÓN DE ENVÍO
+========================== */
 
-function enviarFormulario(evento) {
+function cambiarEstadoEnvio(enviando) {
+  botonEnviar.disabled = enviando;
+
+  botonEnviar.textContent =
+    enviando
+      ? "Registrando inscripción..."
+      : "Reservar mi lugar";
+}
+
+
+/* ==========================
+   ENVIAR A GOOGLE SHEETS
+========================== */
+
+async function enviarFormulario(evento) {
   evento.preventDefault();
 
   if (!formulario.checkValidity()) {
@@ -196,46 +317,151 @@ function enviarFormulario(evento) {
     new FormData(formulario);
 
   const inscripcion = {
-    modalidad: datos.get("modalidad"),
-    posicion: datos.get("posicion") || "",
-    nombre: datos.get("nombre"),
-    apellido: datos.get("apellido"),
-    whatsapp: datos.get("whatsapp"),
-    email: datos.get("email"),
-    categoria: datos.get("categoria"),
-    nombrePareja: datos.get("nombrePareja") || "",
-    apellidoPareja: datos.get("apellidoPareja") || "",
-    whatsappPareja: datos.get("whatsappPareja") || "",
-    observaciones: datos.get("observaciones")
+    modalidad:
+      datos.get("modalidad"),
+
+    posicion:
+      datos.get("posicion") || "",
+
+    nombre:
+      datos.get("nombre"),
+
+    apellido:
+      datos.get("apellido"),
+
+    whatsapp:
+      datos.get("whatsapp"),
+
+    email:
+      datos.get("email") || "",
+
+    categoria:
+      datos.get("categoria"),
+
+    nombrePareja:
+      datos.get("nombrePareja") || "",
+
+    apellidoPareja:
+      datos.get("apellidoPareja") || "",
+
+    whatsappPareja:
+      datos.get("whatsappPareja") || "",
+
+    observaciones:
+      datos.get("observaciones") || "",
+
+    reglamentoAceptado:
+      datos.get("reglamento") === "on"
   };
 
-  console.log(
-    "Nueva inscripción:",
-    inscripcion
-  );
+  cambiarEstadoEnvio(true);
 
-  formulario.classList.add("oculto");
-  mensajeConfirmacion.classList.remove("oculto");
+  try {
+    /*
+      No agregamos Content-Type application/json
+      para evitar problemas de permisos entre
+      GitHub Pages y Google Apps Script.
+    */
 
-  modal.scrollTo({
-    top: 0,
-    behavior: "smooth"
-  });
-
-  formulario.reset();
-
-  const modalidadConPareja =
-    document.querySelector(
-      'input[name="modalidad"][value="Con pareja"]'
+    const respuesta = await fetch(
+      URL_APPS_SCRIPT,
+      {
+        method: "POST",
+        body: JSON.stringify(inscripcion)
+      }
     );
 
-  modalidadConPareja.checked = true;
+    if (!respuesta.ok) {
+      throw new Error(
+        "Google no pudo registrar la inscripción."
+      );
+    }
 
-  actualizarModalidad();
+    const resultado =
+      await respuesta.json();
+
+    if (!resultado.correcto) {
+      if (resultado.sinCupos) {
+        await consultarCupos();
+      }
+
+      throw new Error(
+        resultado.mensaje ||
+        "No se pudo completar la inscripción."
+      );
+    }
+
+    /*
+      Actualizamos el contador con los datos
+      confirmados por Google Sheets.
+    */
+
+    torneo.inscriptas =
+      Number(resultado.ocupados) || 0;
+
+    torneo.cuposTotales =
+      Number(resultado.cuposTotales) || 32;
+
+    actualizarTorneo();
+
+
+    /*
+      Mostramos el mensaje de confirmación.
+    */
+
+    formulario.classList.add("oculto");
+    mensajeConfirmacion.classList.remove("oculto");
+
+    modal.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+
+
+    /*
+      Limpiamos el formulario.
+    */
+
+    formulario.reset();
+
+    const modalidadConPareja =
+      document.querySelector(
+        'input[name="modalidad"][value="Con pareja"]'
+      );
+
+    if (modalidadConPareja) {
+      modalidadConPareja.checked = true;
+    }
+
+    const reglamento =
+      document.querySelector(".reglamento");
+
+    if (reglamento) {
+      reglamento.open = false;
+    }
+
+    actualizarModalidad();
+
+  } catch (error) {
+    console.error(
+      "Error al registrar la inscripción:",
+      error
+    );
+
+    alert(
+      error.message ||
+      "No pudimos registrar la inscripción. Probá nuevamente."
+    );
+
+  } finally {
+    cambiarEstadoEnvio(false);
+  }
 }
 
 
-/* EVENTOS */
+/* ==========================
+   EVENTOS
+========================== */
 
 botonInscripcion.addEventListener(
   "click",
@@ -286,7 +512,9 @@ document.addEventListener(
 );
 
 
-/* INICIO */
+/* ==========================
+   INICIO
+========================== */
 
-actualizarTorneo();
 actualizarModalidad();
+consultarCupos();

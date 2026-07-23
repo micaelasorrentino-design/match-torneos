@@ -195,7 +195,7 @@ a {
 
 .hero h1 {
   margin: 0;
-  font-size: clamp(46px, 6vw, 78px);
+  font-size: clamp(46px, 6vw, 72px);
   line-height: 0.98;
   letter-spacing: -5px;
 }
@@ -297,7 +297,7 @@ a {
 .titulo-seccion h2,
 .pasos-seccion h2 {
   margin: 0;
-  font-size: clamp(38px, 5vw, 60px);
+  font-size: clamp(32px, 5vw, 55px);
   line-height: 1;
   letter-spacing: -3px;
 }
