@@ -291,13 +291,13 @@ a {
 }
 
 .titulo-seccion .sobrelinea {
-  margin-bottom: 13px;
+  margin-bottom: 19px;
 }
 
 .titulo-seccion h2,
 .pasos-seccion h2 {
   margin: 0;
-  font-size: clamp(32px, 5vw, 55px);
+  font-size: clamp(28px, 5vw, 50px);
   line-height: 1;
   letter-spacing: -3px;
 }
@@ -592,7 +592,7 @@ a {
 
 .modal-encabezado h2 {
   margin: 0;
-  font-size: clamp(38px, 5vw, 56px);
+  font-size: clamp(32px, 5vw, 50px);
   letter-spacing: -3px;
 }
 
