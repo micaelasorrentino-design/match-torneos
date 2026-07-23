@@ -3,65 +3,56 @@ const torneo = {
   cuposTotales: 32
 };
 
-const numeroInscriptas =
+const inscriptas =
   document.getElementById("inscriptas");
 
-const numeroTotal =
-  document.getElementById("total-cupos");
+const cuposTotales =
+  document.getElementById("cupos-totales");
 
-const barraProgreso =
+const lugaresRestantes =
+  document.getElementById("lugares-restantes");
+
+const progreso =
   document.getElementById("progreso");
-
-const textoCupos =
-  document.getElementById("texto-cupos");
 
 const botonInscripcion =
   document.getElementById("boton-inscripcion");
 
 
-function actualizarCupos() {
-  const lugaresDisponibles =
+function actualizarTorneo() {
+  const disponibles =
     torneo.cuposTotales - torneo.inscriptas;
 
   const porcentaje =
     (torneo.inscriptas / torneo.cuposTotales) * 100;
 
-  numeroInscriptas.textContent =
+  inscriptas.textContent =
     torneo.inscriptas;
 
-  numeroTotal.textContent =
+  cuposTotales.textContent =
     torneo.cuposTotales;
 
-  barraProgreso.style.width =
+  progreso.style.width =
     `${Math.min(porcentaje, 100)}%`;
 
-  if (lugaresDisponibles > 1) {
-    textoCupos.textContent =
-      `Quedan ${lugaresDisponibles} lugares`;
-  }
-
-  if (lugaresDisponibles === 1) {
-    textoCupos.textContent =
+  if (disponibles > 1) {
+    lugaresRestantes.textContent =
+      `Quedan ${disponibles} lugares`;
+  } else if (disponibles === 1) {
+    lugaresRestantes.textContent =
       "Queda un solo lugar";
-  }
-
-  if (lugaresDisponibles <= 0) {
-    textoCupos.textContent =
+  } else {
+    lugaresRestantes.textContent =
       "Torneo completo";
 
     botonInscripcion.textContent =
       "Torneo completo";
 
-    botonInscripcion.disabled = true;
+    botonInscripcion.removeAttribute("href");
+    botonInscripcion.style.pointerEvents = "none";
+    botonInscripcion.style.opacity = "0.55";
   }
 }
 
 
-botonInscripcion.addEventListener("click", () => {
-  alert(
-    "En el próximo paso conectamos el formulario de inscripción 💜"
-  );
-});
-
-
-actualizarCupos();
+actualizarTorneo();

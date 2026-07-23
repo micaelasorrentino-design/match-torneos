@@ -18,27 +18,27 @@
     rel="stylesheet"
   >
 
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="./styles.css?v=4">
 </head>
 
 <body>
 
-  <!-- ENCABEZADO -->
-  <header class="encabezado">
+  <!-- BARRA SUPERIOR -->
+  <header class="header">
 
-    <div class="encabezado-contenido">
+    <div class="header-contenido">
 
-      <a href="#" class="marca">
+      <a href="#inicio" class="marca">
 
         <img
-          src="logo-match.png"
-          alt="Logo de MATCH Bragado"
-          class="logo-header"
+          src="./logo-match.png"
+          alt="Logo MATCH Bragado"
+          class="marca-logo"
         >
 
-        <div class="titulo-marca">
+        <div class="marca-texto">
           <strong>MATCH</strong>
-          <span>|</span>
+          <span></span>
           <small>Bragado</small>
         </div>
 
@@ -52,54 +52,33 @@
           href="https://www.instagram.com/match.bragado/"
           target="_blank"
           rel="noopener noreferrer"
+          class="red-social"
           aria-label="Instagram de MATCH Bragado"
-          class="icono-red"
         >
           <svg viewBox="0 0 24 24" aria-hidden="true">
-
-            <rect
-              x="3"
-              y="3"
-              width="18"
-              height="18"
-              rx="5"
-            ></rect>
-
-            <circle
-              cx="12"
-              cy="12"
-              r="4"
-            ></circle>
-
-            <circle
-              cx="17.5"
-              cy="6.5"
-              r="1"
-              class="relleno"
-            ></circle>
-
+            <rect x="3" y="3" width="18" height="18" rx="5"></rect>
+            <circle cx="12" cy="12" r="4"></circle>
+            <circle cx="17.5" cy="6.5" r="1" class="relleno"></circle>
           </svg>
         </a>
 
 
         <!-- WHATSAPP -->
         <a
-          href="https://wa.me/5491130091615"
+          href="https://wa.me/5491130091615?text=Hola%20MATCH!%20Quiero%20recibir%20informaci%C3%B3n%20sobre%20los%20pr%C3%B3ximos%20torneos."
           target="_blank"
           rel="noopener noreferrer"
+          class="red-social"
           aria-label="WhatsApp de MATCH Bragado"
-          class="icono-red"
         >
           <svg viewBox="0 0 24 24" aria-hidden="true">
-
             <path
               d="M20.5 11.8a8.5 8.5 0 0 1-12.6 7.4L4 20.5l1.3-3.8a8.5 8.5 0 1 1 15.2-4.9Z"
             ></path>
 
             <path
-              d="M9.1 8.1c.2-.4.4-.4.7-.4h.5c.2 0 .4.1.5.4l.7 1.7c.1.3.1.5-.1.7l-.5.6c-.1.1-.2.3-.1.5.4.8 1.4 1.8 2.4 2.3.2.1.4 0 .5-.1l.6-.7c.2-.2.4-.2.7-.1l1.7.8c.3.1.4.3.4.6v.5c0 .4-.2.7-.5.9-.5.3-1.2.4-1.9.2-3.2-.8-6.1-3.7-6.9-6.9-.2-.7-.1-1.4.2-1.9Z"
+              d="M9 8.2c.2-.4.4-.5.7-.5h.5c.2 0 .4.1.5.4l.8 1.8c.1.3.1.5-.1.7l-.5.6c-.1.2-.2.3-.1.5.4.8 1.3 1.8 2.4 2.3.2.1.4 0 .5-.1l.6-.7c.2-.2.5-.2.7-.1l1.7.8c.3.1.4.4.4.6v.5c0 .4-.2.7-.5.9-.5.3-1.2.4-1.9.2-3.2-.8-6.1-3.7-6.9-6.9-.2-.7-.1-1.4.2-2Z"
             ></path>
-
           </svg>
         </a>
 
@@ -113,36 +92,37 @@
   <main>
 
     <!-- PORTADA -->
-    <section class="hero">
+    <section id="inicio" class="hero">
 
-      <div class="decoracion decoracion-uno"></div>
-      <div class="decoracion decoracion-dos"></div>
+      <div class="hero-contenido">
 
-      <div class="contenido-hero">
-
-        <p class="eyebrow">
+        <p class="sobrelinea">
           COMUNIDAD DE PÁDEL FEMENINO
         </p>
 
         <h1>
           Más que un partido.
-          <span>Una comunidad.</span>
+          <em>Una comunidad.</em>
         </h1>
 
-        <p class="descripcion">
+        <p class="hero-descripcion">
           Creamos encuentros para jugar, conectar y disfrutar
           del pádel entre mujeres en Bragado.
         </p>
 
-        <div class="acciones">
+        <div class="hero-botones">
 
-          <a href="#torneo" class="boton-principal">
+          <a href="#torneo" class="boton boton-principal">
             Ver próximo torneo
           </a>
 
-          <a href="#como-funciona" class="boton-texto">
-            Cómo funciona
-            <span>↓</span>
+          <a
+            href="https://wa.me/5491130091615?text=Hola%20MATCH!%20Quiero%20sumarme%20a%20la%20comunidad."
+            target="_blank"
+            rel="noopener noreferrer"
+            class="boton boton-secundario"
+          >
+            Sumate a la comunidad
           </a>
 
         </div>
@@ -160,14 +140,19 @@
     </section>
 
 
-    <!-- PRÓXIMO TORNEO -->
-    <section id="torneo" class="seccion-torneo">
+    <!-- TORNEO -->
+    <section id="torneo" class="torneo">
 
-      <div class="encabezado-seccion">
+      <div class="titulo-seccion">
 
         <div>
-          <p class="eyebrow">PRÓXIMO ENCUENTRO</p>
-          <h2>Americano femenino</h2>
+          <p class="sobrelinea">
+            PRÓXIMO ENCUENTRO
+          </p>
+
+          <h2>
+            Americano femenino
+          </h2>
         </div>
 
         <span class="estado">
@@ -177,11 +162,11 @@
       </div>
 
 
-      <div class="tarjeta-torneo">
+      <div class="tarjeta">
 
-        <div class="informacion-torneo">
+        <div class="tarjeta-informacion">
 
-          <p class="introduccion">
+          <p class="presentacion-torneo">
             Una jornada para jugar, conocer nuevas compañeras
             y compartir una tarde diferente.
           </p>
@@ -202,7 +187,7 @@
 
               <div>
                 <small>Lugar</small>
-                <strong>Bragado Club</strong>
+                <strong>Bragado</strong>
               </div>
             </article>
 
@@ -229,28 +214,18 @@
         </div>
 
 
-        <aside class="panel-inscripcion">
+        <aside class="panel-cupos">
 
-          <p class="titulo-panel">
+          <p class="panel-titulo">
             Cupos disponibles
           </p>
 
           <div class="contador">
-
-            <strong id="inscriptas">
-              18
-            </strong>
-
-            <span>
-              /
-              <span id="total-cupos">
-                32
-              </span>
-            </span>
-
+            <strong id="inscriptas">18</strong>
+            <span>/ <span id="cupos-totales">32</span></span>
           </div>
 
-          <p id="texto-cupos" class="texto-cupos">
+          <p id="lugares-restantes">
             Quedan 14 lugares
           </p>
 
@@ -258,12 +233,17 @@
             <div id="progreso" class="progreso"></div>
           </div>
 
-          <button id="boton-inscripcion" type="button">
+          <a
+            href="https://wa.me/5491130091615?text=Hola%20MATCH!%20Quiero%20inscribirme%20al%20pr%C3%B3ximo%20torneo."
+            target="_blank"
+            rel="noopener noreferrer"
+            id="boton-inscripcion"
+          >
             Inscribirme
-          </button>
+          </a>
 
-          <small class="aclaracion">
-            La inscripción se confirma una vez validado el pago.
+          <small>
+            Tu lugar se confirma una vez validado el pago.
           </small>
 
         </aside>
@@ -273,69 +253,41 @@
     </section>
 
 
-    <!-- CÓMO FUNCIONA -->
-    <section id="como-funciona" class="como-funciona">
+    <!-- PASOS -->
+    <section class="pasos-seccion">
 
-      <div class="titulo-pasos">
-
-        <p class="eyebrow">
-          PASO A PASO
-        </p>
-
-        <h2>
-          Así de simple
-        </h2>
-
+      <div class="pasos-titulo">
+        <p class="sobrelinea">PASO A PASO</p>
+        <h2>Así de simple</h2>
       </div>
-
 
       <div class="pasos">
 
-        <article class="paso">
-
+        <article>
           <span>01</span>
-
-          <h3>
-            Completás tus datos
-          </h3>
-
+          <h3>Completás tus datos</h3>
           <p>
-            Ingresás tu información y, cuando corresponda,
-            los datos de tu pareja.
+            Nos enviás tu información y la de tu pareja,
+            cuando corresponda.
           </p>
-
         </article>
 
-
-        <article class="paso">
-
+        <article>
           <span>02</span>
-
-          <h3>
-            Te contactamos
-          </h3>
-
+          <h3>Te contactamos</h3>
           <p>
             Confirmamos la disponibilidad y te enviamos
             la información de pago.
           </p>
-
         </article>
 
-
-        <article class="paso">
-
+        <article>
           <span>03</span>
-
-          <h3>
-            Reservás tu lugar
-          </h3>
-
+          <h3>Reservás tu lugar</h3>
           <p>
-            Una vez realizado el pago, tu inscripción
-            queda confirmada.
+            Realizás el pago y tu inscripción queda
+            oficialmente confirmada.
           </p>
-
         </article>
 
       </div>
@@ -348,27 +300,19 @@
   <footer>
 
     <div class="footer-marca">
-
-      <img
-        src="logo-match.png"
-        alt="MATCH Bragado"
-        class="logo-footer"
-      >
-
-      <p>
-        Jugá. Conectá. Disfrutá.
-      </p>
-
+      <strong>MATCH</strong>
+      <span>|</span>
+      <small>Bragado</small>
     </div>
 
-    <small>
-      © 2026 MATCH Bragado
-    </small>
+    <p>Jugá. Conectá. Disfrutá.</p>
+
+    <small>© 2026 MATCH Bragado</small>
 
   </footer>
 
 
-  <script src="script.js"></script>
+  <script src="./script.js?v=4"></script>
 
 </body>
 </html>
