@@ -164,7 +164,7 @@ a {
 
 .hero h1 {
   margin: 0;
-  font-size: clamp(55px, 8vw, 100px);
+  font-size:clamp(46px,6vw,78px);
   line-height: 0.98;
   letter-spacing: -5px;
 }
@@ -500,8 +500,7 @@ footer p {
   color: var(--lila);
   font-family: "Playfair Display", serif;
   font-size: 20px;
-  font-style: italic;
-}
+ }
 
 footer > small {
   color: var(--gris);
