@@ -426,7 +426,7 @@ if (
   inscripcion.modalidad === "Con pareja"
 ) {
   instruccionComprobante.textContent =
-    "Para confirmar la inscripción, realicen dos transferencias separadas y envíennos ambos comprobantes por WhatsApp.";
+    "Para confirmar la inscripción, deben enviarnos ambos comprobantes por WhatsApp.";
 
   mensajeWhatsapp =
     `Hola MATCH 👋
@@ -439,7 +439,7 @@ Te envío los dos comprobantes de transferencia para confirmar nuestra inscripci
 
 } else {
   instruccionComprobante.textContent =
-    "Para confirmar tu inscripción, realizá la transferencia y envianos el comprobante por WhatsApp.";
+    "Para confirmar tu inscripción, envianos el comprobante por WhatsApp.";
 
   mensajeWhatsapp =
     `Hola MATCH 👋
