@@ -18,7 +18,7 @@
     rel="stylesheet"
   >
 
-  <link rel="stylesheet" href="./styles.css?v=5">
+  <link rel="stylesheet" href="./styles.css?v=6">
 </head>
 
 <body>
@@ -329,7 +329,7 @@
   </main>
 
 
-  <!-- MODAL DEL FORMULARIO -->
+  <!-- FORMULARIO -->
   <div
     id="modal-inscripcion"
     class="modal"
@@ -414,8 +414,11 @@
         </fieldset>
 
 
-        <!-- POSICIÓN -->
-        <fieldset class="grupo-opciones">
+        <!-- POSICIÓN: SOLO SI BUSCA PAREJA -->
+        <fieldset
+          id="bloque-posicion"
+          class="grupo-opciones oculto"
+        >
 
           <legend>Posición preferida</legend>
 
@@ -431,7 +434,6 @@
                 type="radio"
                 name="posicion"
                 value="Drive"
-                required
               >
 
               <span>Drive</span>
@@ -542,18 +544,18 @@
 
           <legend>Categoría / nivel</legend>
 
-          <div class="opciones opciones-cuatro">
+          <div class="opciones opciones-categorias">
 
             <label class="opcion-seleccionable">
 
               <input
                 type="radio"
                 name="categoria"
-                value="Principiante"
+                value="8va principiante"
                 required
               >
 
-              <span>Principiante</span>
+              <span>8va principiante</span>
 
             </label>
 
@@ -586,10 +588,34 @@
               <input
                 type="radio"
                 name="categoria"
-                value="No estoy segura"
+                value="6ta"
               >
 
-              <span>No estoy segura</span>
+              <span>6ta</span>
+
+            </label>
+
+            <label class="opcion-seleccionable">
+
+              <input
+                type="radio"
+                name="categoria"
+                value="5ta"
+              >
+
+              <span>5ta</span>
+
+            </label>
+
+            <label class="opcion-seleccionable">
+
+              <input
+                type="radio"
+                name="categoria"
+                value="4ta"
+              >
+
+              <span>4ta</span>
 
             </label>
 
@@ -603,11 +629,15 @@
           id="mensaje-busco-pareja"
           class="mensaje-informativo oculto"
         >
-          <strong>Vamos a ayudarte a encontrar compañera.</strong>
+
+          <strong>
+            Vamos a ayudarte a encontrar compañera.
+          </strong>
 
           <p>
-            Buscaremos una jugadora con nivel y posición compatibles.
+            Buscaremos una jugadora con categoría y posición compatibles.
           </p>
+
         </div>
 
 
@@ -666,6 +696,10 @@
               inputmode="numeric"
               required
             >
+
+            <small>
+              Ingresá el número con código de área, sin 0 y sin 15.
+            </small>
 
           </label>
 
@@ -765,7 +799,7 @@
   </footer>
 
 
-  <script src="./script.js?v=5"></script>
+  <script src="./script.js?v=6"></script>
 
 </body>
 </html>

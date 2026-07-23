@@ -22,7 +22,7 @@ const botonInscripcion =
   document.getElementById("boton-inscripcion");
 
 
-/* ELEMENTOS DEL MODAL */
+/* ELEMENTOS DEL FORMULARIO */
 
 const modal =
   document.getElementById("modal-inscripcion");
@@ -45,8 +45,18 @@ const datosPareja =
 const mensajeBuscoPareja =
   document.getElementById("mensaje-busco-pareja");
 
+const bloquePosicion =
+  document.getElementById("bloque-posicion");
+
 const modalidades =
-  document.querySelectorAll('input[name="modalidad"]');
+  document.querySelectorAll(
+    'input[name="modalidad"]'
+  );
+
+const opcionesPosicion =
+  document.querySelectorAll(
+    'input[name="posicion"]'
+  );
 
 const nombrePareja =
   document.getElementById("nombre-pareja");
@@ -98,7 +108,7 @@ function actualizarTorneo() {
 }
 
 
-/* ABRIR Y CERRAR MODAL */
+/* ABRIR Y CERRAR FORMULARIO */
 
 function abrirModal() {
   formulario.classList.remove("oculto");
@@ -118,7 +128,7 @@ function cerrarFormulario() {
 }
 
 
-/* MOSTRAR CAMPOS SEGÚN MODALIDAD */
+/* CAMPOS SEGÚN MODALIDAD */
 
 function actualizarModalidad() {
   const modalidadSeleccionada =
@@ -139,6 +149,11 @@ function actualizarModalidad() {
     tienePareja
   );
 
+  bloquePosicion.classList.toggle(
+    "oculto",
+    tienePareja
+  );
+
   nombrePareja.required =
     tienePareja;
 
@@ -147,6 +162,14 @@ function actualizarModalidad() {
 
   whatsappPareja.required =
     tienePareja;
+
+  opcionesPosicion.forEach((opcion) => {
+    opcion.required = !tienePareja;
+
+    if (tienePareja) {
+      opcion.checked = false;
+    }
+  });
 
   if (!tienePareja) {
     nombrePareja.value = "";
@@ -171,26 +194,22 @@ function enviarFormulario(evento) {
 
   const inscripcion = {
     modalidad: datos.get("modalidad"),
-    posicion: datos.get("posicion"),
+    posicion: datos.get("posicion") || "",
     nombre: datos.get("nombre"),
     apellido: datos.get("apellido"),
     whatsapp: datos.get("whatsapp"),
     email: datos.get("email"),
     categoria: datos.get("categoria"),
-    nombrePareja: datos.get("nombrePareja"),
-    apellidoPareja: datos.get("apellidoPareja"),
-    whatsappPareja: datos.get("whatsappPareja"),
+    nombrePareja: datos.get("nombrePareja") || "",
+    apellidoPareja: datos.get("apellidoPareja") || "",
+    whatsappPareja: datos.get("whatsappPareja") || "",
     observaciones: datos.get("observaciones")
   };
 
-  /*
-    Por ahora mostramos los datos en la consola.
-
-    Después reemplazaremos esta parte para guardar
-    automáticamente la inscripción en Google Sheets.
-  */
-
-  console.log("Nueva inscripción:", inscripcion);
+  console.log(
+    "Nueva inscripción:",
+    inscripcion
+  );
 
   formulario.classList.add("oculto");
   mensajeConfirmacion.classList.remove("oculto");

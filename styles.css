@@ -56,8 +56,10 @@ a {
   width: 100%;
   background: rgba(238, 226, 247, 0.94);
   border-bottom: 1px solid rgba(67, 34, 95, 0.08);
+
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+
   box-shadow: 0 5px 20px rgba(67, 34, 95, 0.06);
 }
 
@@ -193,7 +195,7 @@ a {
 
 .hero h1 {
   margin: 0;
-  font-size:clamp(55px,8vw,100px);
+  font-size: clamp(46px, 6vw, 78px);
   line-height: 0.98;
   letter-spacing: -5px;
 }
@@ -303,8 +305,10 @@ a {
 .estado {
   padding: 10px 16px;
   border-radius: 999px;
+
   color: var(--lila-oscuro);
   background: var(--lila-suave);
+
   font-size: 13px;
   font-weight: 700;
   white-space: nowrap;
@@ -318,6 +322,7 @@ a {
 
   border: 1px solid var(--borde);
   border-radius: 32px;
+
   background: var(--blanco);
   box-shadow: 0 28px 70px rgba(67, 34, 95, 0.1);
 }
@@ -329,6 +334,7 @@ a {
 .presentacion-torneo {
   max-width: 620px;
   margin: 0 0 30px;
+
   color: var(--gris);
   font-size: 18px;
   line-height: 1.65;
@@ -360,6 +366,7 @@ a {
 
   color: var(--lila-oscuro);
   background: var(--lila-suave);
+
   font-size: 12px;
   font-weight: 700;
 }
@@ -441,6 +448,7 @@ a {
   width: 100%;
   margin-top: 28px;
   padding: 16px;
+
   border: 0;
   border-radius: 14px;
 
@@ -499,8 +507,10 @@ a {
 .pasos article {
   min-height: 235px;
   padding: 32px;
+
   border: 1px solid var(--borde);
   border-radius: 23px;
+
   background: var(--blanco);
 }
 
@@ -544,7 +554,9 @@ a {
 .modal-fondo {
   position: fixed;
   inset: 0;
+
   background: rgba(32, 20, 44, 0.56);
+
   backdrop-filter: blur(7px);
   -webkit-backdrop-filter: blur(7px);
 }
@@ -618,13 +630,16 @@ a {
 .grupo-opciones {
   margin: 0;
   padding: 20px;
+
   border: 1px solid var(--borde);
   border-radius: 22px;
 }
 
 .grupo-opciones legend {
   padding: 0 8px;
+
   color: var(--lila-oscuro);
+
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 2px;
@@ -650,8 +665,8 @@ a {
   grid-template-columns: repeat(3, 1fr);
 }
 
-.opciones-cuatro {
-  grid-template-columns: repeat(4, 1fr);
+.opciones-categorias {
+  grid-template-columns: repeat(3, 1fr);
 }
 
 .opcion-seleccionable {
@@ -691,8 +706,10 @@ a {
 
 .opcion-seleccionable input:checked + span {
   border-color: var(--lila);
+
   color: var(--lila-oscuro);
   background: var(--lila-suave);
+
   box-shadow: inset 0 0 0 1px var(--lila);
 }
 
@@ -703,6 +720,7 @@ a {
 
 .titulo-bloque-formulario {
   color: var(--lila-oscuro);
+
   font-size: 14px;
   font-weight: 700;
   letter-spacing: 2px;
@@ -729,6 +747,7 @@ a {
 .campo input,
 .campo textarea {
   width: 100%;
+
   border: 1px solid rgba(67, 34, 95, 0.16);
   border-radius: 16px;
   outline: none;
@@ -782,8 +801,10 @@ a {
 
 .mensaje-informativo {
   padding: 20px;
+
   border: 1px solid rgba(149, 91, 216, 0.2);
   border-radius: 18px;
+
   color: var(--lila-oscuro);
   background: var(--lila-suave);
 }
@@ -806,20 +827,24 @@ a {
 
 .aceptacion input {
   flex: 0 0 auto;
+
   width: 19px;
   height: 19px;
   margin-top: 2px;
+
   accent-color: var(--lila-oscuro);
 }
 
 .boton-enviar {
   width: 100%;
   padding: 18px 25px;
+
   border: 0;
   border-radius: 999px;
 
   color: var(--blanco);
   background: var(--lila-oscuro);
+
   box-shadow: 0 15px 35px rgba(67, 34, 95, 0.21);
 
   font-weight: 700;
@@ -835,7 +860,9 @@ a {
 
 .aclaracion-formulario {
   margin: -10px 0 0;
+
   color: var(--gris);
+
   text-align: center;
   font-size: 13px;
 }
@@ -870,7 +897,9 @@ a {
 
 .mensaje-confirmacion h3 {
   margin: 0;
+
   color: var(--lila-oscuro);
+
   font-size: 32px;
   letter-spacing: -1px;
 }
@@ -878,6 +907,7 @@ a {
 .mensaje-confirmacion p {
   max-width: 540px;
   margin: 15px auto 27px;
+
   color: var(--gris);
   line-height: 1.7;
 }
@@ -1081,9 +1111,12 @@ footer > small {
 
   .opciones-dos,
   .opciones-tres,
-  .opciones-cuatro,
   .campos-dos-columnas {
     grid-template-columns: 1fr;
+  }
+
+  .opciones-categorias {
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .grupo-opciones {
