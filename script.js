@@ -1,47 +1,45 @@
-const estadoInscripciones =
-  document.getElementById("estado-inscripciones");
+/* ==========================================
+   MATCH BRAGADO
+   SCRIPT PRINCIPAL
+========================================== */
 
-/* ==========================
+
+/* ==========================================
    CONEXIÓN CON GOOGLE SHEETS
-========================== */
+========================================== */
 
 const URL_APPS_SCRIPT =
-  "https://script.google.com/macros/s/AKfycbxhW-6_RVdPilf9btmW3E_xPodvRbAH-F7CRf7CyT5Vp0sYS3eb2Ge8_bAnchIFZaRktw/exec";
+  "https://script.google.com/macros/s/AKfycbyrujCB2TBLurC71BlpPTAm6OiWIVMexOiJvkmJTzCpetq7W4hyWAShBxaw255absjfmQ/exec";
 
 
-/* ==========================
-   DATOS INICIALES
-========================== */
+/* ==========================================
+   TORNEO SELECCIONADO
+========================================== */
 
-const torneo = {
-  inscriptas: 0,
-  cuposTotales: 32
-};
+let torneoSeleccionado = "";
 
 
-/* ==========================
-   ELEMENTOS DEL TORNEO
-========================== */
+/* ==========================================
+   ELEMENTOS DE LOS TORNEOS
+========================================== */
 
-const inscriptas =
-  document.getElementById("inscriptas");
+const tarjetasTorneos =
+  document.querySelectorAll(".tarjeta-torneo");
 
-const cuposTotales =
-  document.getElementById("cupos-totales");
+const tarjetasTorneosActivos =
+  document.querySelectorAll(
+    '.tarjeta-torneo[data-activo="true"]'
+  );
 
-const lugaresRestantes =
-  document.getElementById("lugares-restantes");
-
-const progreso =
-  document.getElementById("progreso");
-
-const botonInscripcion =
-  document.getElementById("boton-inscripcion");
+const botonesInscripcion =
+  document.querySelectorAll(
+    '.tarjeta-torneo[data-activo="true"] .boton-inscripcion-torneo'
+  );
 
 
-/* ==========================
+/* ==========================================
    ELEMENTOS DEL FORMULARIO
-========================== */
+========================================== */
 
 const modal =
   document.getElementById("modal-inscripcion");
@@ -67,6 +65,20 @@ const mensajeBuscoPareja =
 const bloquePosicion =
   document.getElementById("bloque-posicion");
 
+const torneoSeleccionadoInput =
+  document.getElementById("torneo-seleccionado");
+
+const tituloFormulario =
+  document.getElementById("titulo-formulario");
+
+const torneoSeleccionadoTexto =
+  document.getElementById(
+    "torneo-seleccionado-texto"
+  );
+
+const botonEnviar =
+  document.querySelector(".boton-enviar");
+
 const modalidades =
   document.querySelectorAll(
     'input[name="modalidad"]'
@@ -86,86 +98,165 @@ const apellidoPareja =
 const whatsappPareja =
   document.getElementById("whatsapp-pareja");
 
-const botonEnviar =
-  document.querySelector(".boton-enviar");
-  
-  const instruccionComprobante =
-  document.getElementById(
-    "instruccion-comprobante"
-  );
 
-const botonComprobanteWhatsapp =
-  document.getElementById(
-    "boton-comprobante-whatsapp"
-  );
+/* ==========================================
+   MOSTRAR CUPOS DE UN TORNEO
+========================================== */
 
+function actualizarTarjetaTorneo(
+  codigo,
+  ocupados,
+  cuposTotales
+) {
+  const elementoInscriptas =
+    document.getElementById(
+      `inscriptas-${codigo}`
+    );
 
-/* ==========================
-   MOSTRAR CUPOS
-========================== */
+  const elementoCupos =
+    document.getElementById(
+      `cupos-${codigo}`
+    );
 
-function actualizarTorneo() {
-  const disponibles = Math.max(
-    torneo.cuposTotales - torneo.inscriptas,
-    0
-  );
+  const elementoLugares =
+    document.getElementById(
+      `lugares-${codigo}`
+    );
+
+  const elementoProgreso =
+    document.getElementById(
+      `progreso-${codigo}`
+    );
+
+  const elementoEstado =
+    document.getElementById(
+      `estado-${codigo}`
+    );
+
+  const boton =
+    document.querySelector(
+      `.boton-inscripcion-torneo[data-torneo="${codigo}"]`
+    );
+
+  if (
+    !elementoInscriptas ||
+    !elementoCupos ||
+    !elementoLugares ||
+    !elementoProgreso ||
+    !elementoEstado ||
+    !boton
+  ) {
+    return;
+  }
+
+  ocupados =
+    Number(ocupados) || 0;
+
+  cuposTotales =
+    Number(cuposTotales) || 32;
+
+  const disponibles =
+    Math.max(
+      cuposTotales - ocupados,
+      0
+    );
 
   const porcentaje =
-    torneo.cuposTotales > 0
-      ? (torneo.inscriptas / torneo.cuposTotales) * 100
+    cuposTotales > 0
+      ? (ocupados / cuposTotales) * 100
       : 0;
 
-  inscriptas.textContent =
-    torneo.inscriptas;
+  elementoInscriptas.textContent =
+    ocupados;
 
-  cuposTotales.textContent =
-    torneo.cuposTotales;
+  elementoCupos.textContent =
+    cuposTotales;
 
-  progreso.style.width =
+  elementoProgreso.style.width =
     `${Math.min(porcentaje, 100)}%`;
-if (disponibles <= 0) {
 
-  lugaresRestantes.textContent =
-    "Torneo completo";
+  if (disponibles > 1) {
+    elementoLugares.textContent =
+      `Quedan ${disponibles} lugares`;
+  } else if (disponibles === 1) {
+    elementoLugares.textContent =
+      "Queda un solo lugar";
+  } else {
+    elementoLugares.textContent =
+      "Torneo completo";
+  }
 
-  botonInscripcion.textContent =
-    "Torneo completo";
+  if (disponibles <= 0) {
+    elementoEstado.textContent =
+      "Inscripciones cerradas";
 
-  botonInscripcion.disabled = true;
+    boton.textContent =
+      "Torneo completo";
 
-  estadoInscripciones.textContent =
-    "Inscripciones cerradas";
+    boton.disabled = true;
+  } else {
+    elementoEstado.textContent =
+      "Inscripciones abiertas";
 
-} else {
+    boton.textContent =
+      "Inscribirme";
 
-  botonInscripcion.textContent =
-    "Inscribirme";
-
-  botonInscripcion.disabled = false;
-
-  estadoInscripciones.textContent =
-    "Inscripciones abiertas";
+    boton.disabled = false;
+  }
 }
 
 
-/* ==========================
-   CONSULTAR GOOGLE SHEETS
-========================== */
+/* ==========================================
+   ESTADO DE CARGA
+========================================== */
+
+function mostrarCargandoTorneos() {
+  tarjetasTorneosActivos.forEach(
+    (tarjeta) => {
+
+      const codigo =
+        tarjeta.dataset.torneo;
+
+      const lugares =
+        document.getElementById(
+          `lugares-${codigo}`
+        );
+
+      const boton =
+        tarjeta.querySelector(
+          ".boton-inscripcion-torneo"
+        );
+
+      if (lugares) {
+        lugares.textContent =
+          "Cargando disponibilidad...";
+      }
+
+      if (boton) {
+        boton.disabled = true;
+      }
+
+    }
+  );
+}
+
+
+/* ==========================================
+   CONSULTAR CUPOS EN GOOGLE SHEETS
+========================================== */
 
 async function consultarCupos() {
-  lugaresRestantes.textContent =
-    "Cargando cupos...";
-
-  botonInscripcion.disabled = true;
+  mostrarCargandoTorneos();
 
   try {
-    const respuesta = await fetch(
-      `${URL_APPS_SCRIPT}?t=${Date.now()}`,
-      {
-        method: "GET",
-        cache: "no-store"
-      }
-    );
+    const respuesta =
+      await fetch(
+        `${URL_APPS_SCRIPT}?t=${Date.now()}`,
+        {
+          method: "GET",
+          cache: "no-store"
+        }
+      );
 
     if (!respuesta.ok) {
       throw new Error(
@@ -183,13 +274,47 @@ async function consultarCupos() {
       );
     }
 
-    torneo.inscriptas =
-      Number(resultado.ocupados) || 0;
+    if (resultado.torneos) {
+      tarjetasTorneosActivos.forEach(
+        (tarjeta) => {
 
-    torneo.cuposTotales =
-      Number(resultado.cuposTotales) || 32;
+          const codigo =
+            tarjeta.dataset.torneo;
 
-    actualizarTorneo();
+          const datosTorneo =
+            resultado.torneos[codigo];
+
+          if (datosTorneo) {
+            actualizarTarjetaTorneo(
+              codigo,
+              datosTorneo.ocupados,
+              datosTorneo.cuposTotales
+            );
+          } else {
+            actualizarTarjetaTorneo(
+              codigo,
+              0,
+              32
+            );
+          }
+
+        }
+      );
+    } else {
+      const primeraTarjetaActiva =
+        tarjetasTorneosActivos[0];
+
+      if (primeraTarjetaActiva) {
+        const codigo =
+          primeraTarjetaActiva.dataset.torneo;
+
+        actualizarTarjetaTorneo(
+          codigo,
+          resultado.ocupados || 0,
+          resultado.cuposTotales || 32
+        );
+      }
+    }
 
   } catch (error) {
     console.error(
@@ -197,56 +322,108 @@ async function consultarCupos() {
       error
     );
 
-    lugaresRestantes.textContent =
-      "No pudimos consultar los cupos";
+    tarjetasTorneosActivos.forEach(
+      (tarjeta) => {
 
-    botonInscripcion.textContent =
-      "Reintentar";
+        const codigo =
+          tarjeta.dataset.torneo;
 
-    botonInscripcion.disabled = false;
+        const lugares =
+          document.getElementById(
+            `lugares-${codigo}`
+          );
+
+        const boton =
+          tarjeta.querySelector(
+            ".boton-inscripcion-torneo"
+          );
+
+        if (lugares) {
+          lugares.textContent =
+            "No pudimos consultar los cupos";
+        }
+
+        if (boton) {
+          boton.textContent =
+            "Reintentar";
+
+          boton.disabled = false;
+        }
+
+      }
+    );
   }
 }
 
 
-/* ==========================
-   ABRIR Y CERRAR FORMULARIO
-========================== */
+/* ==========================================
+   ABRIR FORMULARIO
+========================================== */
 
-function abrirModal() {
-  /*
-    Si falló la consulta inicial, el botón sirve
-    para volver a intentar cargar los cupos.
-  */
+function abrirModal(codigo) {
+  torneoSeleccionado =
+    codigo;
 
-  if (
-    lugaresRestantes.textContent ===
-    "No pudimos consultar los cupos"
-  ) {
-    consultarCupos();
-    return;
-  }
+  torneoSeleccionadoInput.value =
+    codigo;
 
-  formulario.classList.remove("oculto");
-  mensajeConfirmacion.classList.add("oculto");
+  const categoriaVisible =
+    codigo
+      .replace("VA", "va")
+      .replace("MA", "ma");
 
-  modal.classList.add("abierto");
-  modal.setAttribute("aria-hidden", "false");
+  tituloFormulario.textContent =
+    `Torneo Femenino ${categoriaVisible}`;
 
-  document.body.classList.add("modal-abierto");
+  torneoSeleccionadoTexto.textContent =
+    "MATCH | Bragado";
+
+  formulario.classList.remove(
+    "oculto"
+  );
+
+  mensajeConfirmacion.classList.add(
+    "oculto"
+  );
+
+  modal.classList.add(
+    "abierto"
+  );
+
+  modal.setAttribute(
+    "aria-hidden",
+    "false"
+  );
+
+  document.body.classList.add(
+    "modal-abierto"
+  );
 }
 
+
+/* ==========================================
+   CERRAR FORMULARIO
+========================================== */
 
 function cerrarFormulario() {
-  modal.classList.remove("abierto");
-  modal.setAttribute("aria-hidden", "true");
+  modal.classList.remove(
+    "abierto"
+  );
 
-  document.body.classList.remove("modal-abierto");
+  modal.setAttribute(
+    "aria-hidden",
+    "true"
+  );
+
+  document.body.classList.remove(
+    "modal-abierto"
+  );
 }
 
 
-/* ==========================
+/* ==========================================
    CAMPOS SEGÚN MODALIDAD
-========================== */
+========================================== */
 
 function actualizarModalidad() {
   const modalidadSeleccionada =
@@ -255,7 +432,8 @@ function actualizarModalidad() {
     )?.value;
 
   const tienePareja =
-    modalidadSeleccionada === "Con pareja";
+    modalidadSeleccionada ===
+    "Con pareja";
 
   datosPareja.classList.toggle(
     "oculto",
@@ -281,13 +459,18 @@ function actualizarModalidad() {
   whatsappPareja.required =
     tienePareja;
 
-  opcionesPosicion.forEach((opcion) => {
-    opcion.required = !tienePareja;
+  opcionesPosicion.forEach(
+    (opcion) => {
 
-    if (tienePareja) {
-      opcion.checked = false;
+      opcion.required =
+        !tienePareja;
+
+      if (tienePareja) {
+        opcion.checked = false;
+      }
+
     }
-  });
+  );
 
   if (!tienePareja) {
     nombrePareja.value = "";
@@ -297,12 +480,13 @@ function actualizarModalidad() {
 }
 
 
-/* ==========================
+/* ==========================================
    BLOQUEAR BOTÓN DE ENVÍO
-========================== */
+========================================== */
 
 function cambiarEstadoEnvio(enviando) {
-  botonEnviar.disabled = enviando;
+  botonEnviar.disabled =
+    enviando;
 
   botonEnviar.textContent =
     enviando
@@ -311,9 +495,9 @@ function cambiarEstadoEnvio(enviando) {
 }
 
 
-/* ==========================
-   ENVIAR A GOOGLE SHEETS
-========================== */
+/* ==========================================
+   ENVIAR INSCRIPCIÓN
+========================================== */
 
 async function enviarFormulario(evento) {
   evento.preventDefault();
@@ -323,10 +507,21 @@ async function enviarFormulario(evento) {
     return;
   }
 
+  if (!torneoSeleccionado) {
+    alert(
+      "No pudimos identificar el torneo seleccionado."
+    );
+
+    return;
+  }
+
   const datos =
     new FormData(formulario);
 
   const inscripcion = {
+    torneo:
+      torneoSeleccionado,
+
     modalidad:
       datos.get("modalidad"),
 
@@ -367,19 +562,16 @@ async function enviarFormulario(evento) {
   cambiarEstadoEnvio(true);
 
   try {
-    /*
-      No agregamos Content-Type application/json
-      para evitar problemas de permisos entre
-      GitHub Pages y Google Apps Script.
-    */
-
-    const respuesta = await fetch(
-      URL_APPS_SCRIPT,
-      {
-        method: "POST",
-        body: JSON.stringify(inscripcion)
-      }
-    );
+    const respuesta =
+      await fetch(
+        URL_APPS_SCRIPT,
+        {
+          method: "POST",
+          body: JSON.stringify(
+            inscripcion
+          )
+        }
+      );
 
     if (!respuesta.ok) {
       throw new Error(
@@ -391,9 +583,7 @@ async function enviarFormulario(evento) {
       await respuesta.json();
 
     if (!resultado.correcto) {
-      if (resultado.sinCupos) {
-        await consultarCupos();
-      }
+      await consultarCupos();
 
       throw new Error(
         resultado.mensaje ||
@@ -401,79 +591,86 @@ async function enviarFormulario(evento) {
       );
     }
 
-    /*
-      Actualizamos el contador con los datos
-      confirmados por Google Sheets.
-    */
+    if (
+      resultado.ocupados !== undefined
+    ) {
+      actualizarTarjetaTorneo(
+        torneoSeleccionado,
+        resultado.ocupados,
+        resultado.cuposTotales || 32
+      );
+    } else {
+      await consultarCupos();
+    }
 
-    torneo.inscriptas =
-      Number(resultado.ocupados) || 0;
 
-    torneo.cuposTotales =
-      Number(resultado.cuposTotales) || 32;
+    /* ======================================
+       MENSAJE DE WHATSAPP
+    ====================================== */
 
-    actualizarTorneo();
+    let mensajeWhatsapp = "";
 
-
-/*
-  Preparamos el mensaje de pago
-  y el enlace de WhatsApp.
-*/
-
-let mensajeWhatsapp = "";
-
-if (
-  inscripcion.modalidad === "Con pareja"
-) {
-  instruccionComprobante.textContent =
-    "Para confirmar la inscripción, deben enviarnos ambos comprobantes por WhatsApp.";
-
-  mensajeWhatsapp =
-    `Hola MATCH 👋
+    if (
+      inscripcion.modalidad ===
+      "Con pareja"
+    ) {
+      mensajeWhatsapp =
+`Hola MATCH 👋
 
 Soy ${inscripcion.nombre} ${inscripcion.apellido}.
 
-Me inscribí junto a ${inscripcion.nombrePareja} ${inscripcion.apellidoPareja}.
+Me inscribí al torneo ${torneoSeleccionado} junto a ${inscripcion.nombrePareja} ${inscripcion.apellidoPareja}.
 
 Te envío los dos comprobantes de transferencia para confirmar nuestra inscripción.`;
-
-} else {
-  instruccionComprobante.textContent =
-    "Para confirmar tu inscripción, envianos el comprobante por WhatsApp.";
-
-  mensajeWhatsapp =
-    `Hola MATCH 👋
+    } else {
+      mensajeWhatsapp =
+`Hola MATCH 👋
 
 Soy ${inscripcion.nombre} ${inscripcion.apellido}.
 
-Me inscribí en la modalidad Busco pareja.
+Me inscribí al torneo ${torneoSeleccionado} en la modalidad "Busco pareja".
 
 Te envío el comprobante de transferencia para confirmar mi inscripción.`;
-}
+    }
 
-botonComprobanteWhatsapp.href =
-  "https://wa.me/5491130091615?text=" +
-  encodeURIComponent(mensajeWhatsapp);
+    const botonWhatsapp =
+      mensajeConfirmacion.querySelector(
+        'a[href*="wa.me"]'
+      );
 
-
-/*
-  Mostramos el mensaje de confirmación.
-*/
-
-formulario.classList.add("oculto");
-mensajeConfirmacion.classList.remove("oculto");
-
-modal.scrollTo({
-  top: 0,
-  behavior: "smooth"
-});
+    if (botonWhatsapp) {
+      botonWhatsapp.href =
+        "https://wa.me/5491130091615?text=" +
+        encodeURIComponent(
+          mensajeWhatsapp
+        );
+    }
 
 
-    /*
-      Limpiamos el formulario.
-    */
+    /* ======================================
+       MOSTRAR CONFIRMACIÓN
+    ====================================== */
+
+    formulario.classList.add(
+      "oculto"
+    );
+
+    mensajeConfirmacion.classList.remove(
+      "oculto"
+    );
+
+    modal.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+
+    const codigoActual =
+      torneoSeleccionado;
 
     formulario.reset();
+
+    torneoSeleccionadoInput.value =
+      codigoActual;
 
     const modalidadConPareja =
       document.querySelector(
@@ -481,14 +678,18 @@ modal.scrollTo({
       );
 
     if (modalidadConPareja) {
-      modalidadConPareja.checked = true;
+      modalidadConPareja.checked =
+        true;
     }
 
     const reglamento =
-      document.querySelector(".reglamento");
+      document.querySelector(
+        ".reglamento"
+      );
 
     if (reglamento) {
-      reglamento.open = false;
+      reglamento.open =
+        false;
     }
 
     actualizarModalidad();
@@ -510,14 +711,39 @@ modal.scrollTo({
 }
 
 
-/* ==========================
-   EVENTOS
-========================== */
+/* ==========================================
+   BOTONES DE INSCRIPCIÓN
+========================================== */
 
-botonInscripcion.addEventListener(
-  "click",
-  abrirModal
+botonesInscripcion.forEach(
+  (boton) => {
+
+    boton.addEventListener(
+      "click",
+      () => {
+
+        if (
+          boton.textContent.trim() ===
+          "Reintentar"
+        ) {
+          consultarCupos();
+          return;
+        }
+
+        const codigo =
+          boton.dataset.torneo;
+
+        abrirModal(codigo);
+      }
+    );
+
+  }
 );
+
+
+/* ==========================================
+   EVENTOS DEL FORMULARIO
+========================================== */
 
 cerrarModal.addEventListener(
   "click",
@@ -534,38 +760,52 @@ formulario.addEventListener(
   enviarFormulario
 );
 
-modalidades.forEach((opcion) => {
-  opcion.addEventListener(
-    "change",
-    actualizarModalidad
-  );
-});
+modalidades.forEach(
+  (opcion) => {
+
+    opcion.addEventListener(
+      "change",
+      actualizarModalidad
+    );
+
+  }
+);
 
 document
-  .querySelectorAll("[data-cerrar-modal]")
-  .forEach((elemento) => {
-    elemento.addEventListener(
-      "click",
-      cerrarFormulario
-    );
-  });
+  .querySelectorAll(
+    "[data-cerrar-modal]"
+  )
+  .forEach(
+    (elemento) => {
+
+      elemento.addEventListener(
+        "click",
+        cerrarFormulario
+      );
+
+    }
+  );
 
 document.addEventListener(
   "keydown",
   (evento) => {
+
     if (
       evento.key === "Escape" &&
-      modal.classList.contains("abierto")
+      modal.classList.contains(
+        "abierto"
+      )
     ) {
       cerrarFormulario();
     }
+
   }
 );
 
 
-/* ==========================
+/* ==========================================
    INICIO
-========================== */
+========================================== */
 
 actualizarModalidad();
 consultarCupos();

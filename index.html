@@ -140,131 +140,244 @@
     </section>
 
 
-    <!-- TORNEO -->
-    <section id="torneo" class="torneo">
+<!-- TORNEOS -->
+<section id="torneo" class="torneos-seccion">
 
-      <div class="titulo-seccion">
+  <div class="encabezado-torneos">
+
+    <div>
+      <p class="sobrelinea">
+        PRÓXIMOS ENCUENTROS
+      </p>
+
+      <h2>Nuestros torneos</h2>
+
+      <p class="descripcion-torneos">
+        Elegí el torneo que quieras jugar e inscribite.
+      </p>
+    </div>
+
+  </div>
+
+
+  <div class="lista-torneos">
+
+    <!-- =========================
+         TORNEO 1
+    ========================== -->
+
+    <article
+      class="tarjeta-torneo"
+      data-torneo="8VA"
+      data-activo="true"
+    >
+
+      <div class="tarjeta-torneo-superior">
 
         <div>
+          <span class="etiqueta-categoria">
+            CATEGORÍA
+          </span>
 
-          <p class="sobrelinea">
-            PRÓXIMO ENCUENTRO
-          </p>
-
-          <h2>
-            Torneo Femenino Categoría 8va
-          </h2>
-
+          <h3>8va</h3>
         </div>
 
-        <span class="estado" id="estado-inscripciones">
-         Inscripciones abiertas
+        <span
+          class="estado-torneo"
+          id="estado-8VA"
+        >
+          Inscripciones abiertas
         </span>
 
       </div>
 
 
-      <div class="tarjeta">
+      <div class="info-torneo">
 
-        <div class="tarjeta-informacion">
+        <div class="info-item">
+          <span class="info-icono">◷</span>
 
-          <p class="presentacion-torneo">
-            Una jornada para jugar, conocer nuevas compañeras
-            y compartir una tarde diferente.
-          </p>
-
-          <div class="datos">
-
-            <article class="dato">
-
-              <span>01</span>
-
-              <div>
-                <small>Fecha</small>
-                <strong>29/08/26 · 15:00 hs</strong>
-              </div>
-
-            </article>
-
-            <article class="dato">
-
-              <span>02</span>
-
-              <div>
-                <small>Lugar</small>
-                <strong>Dinos</strong>
-              </div>
-
-            </article>
-
-            <article class="dato">
-
-              <span>03</span>
-
-              <div>
-                <small>Categoría</small>
-                <strong>8va</strong>
-              </div>
-
-            </article>
-
-            <article class="dato">
-
-              <span>04</span>
-
-              <div>
-                <small>Valor</small>
-                <strong>$35.000 por jugadora</strong>
-              </div>
-
-            </article>
-
+          <div>
+            <small>Fecha</small>
+            <strong>Sábado 29/08</strong>
+            <span>15:00 hs</span>
           </div>
+        </div>
+
+
+        <div class="info-item">
+          <span class="info-icono">⌖</span>
+
+          <div>
+            <small>Lugar</small>
+            <strong>Sede Dinos</strong>
+          </div>
+        </div>
+
+
+        <div class="info-item">
+          <span class="info-icono">♧</span>
+
+          <div>
+            <small>Formato</small>
+            <strong>Americano</strong>
+          </div>
+        </div>
+
+
+        <div class="info-item">
+          <span class="info-icono">$</span>
+
+          <div>
+            <small>Valor</small>
+            <strong>$30.000 por pareja</strong>
+          </div>
+        </div>
+
+      </div>
+
+
+      <div class="cupos-torneo">
+
+        <p>Cupos</p>
+
+        <div class="cupos-linea">
+
+          <div class="numero-cupos">
+            <strong id="inscriptas-8VA">
+              0
+            </strong>
+
+            <span>
+              /
+              <span id="cupos-8VA">
+                32
+              </span>
+            </span>
+          </div>
+
+          <strong
+            class="lugares"
+            id="lugares-8VA"
+          >
+            Cargando...
+          </strong>
 
         </div>
 
 
-        <aside class="panel-cupos">
-
-          <p class="panel-titulo">
-            Cupos disponibles
-          </p>
-
-          <div class="contador">
-
-            <strong id="inscriptas">0</strong>
-
-            <span>
-              / <span id="cupos-totales">32</span>
-            </span>
-
-          </div>
-
-          <p id="lugares-restantes">
-          Cargando cupos...
-          </p>
-
-          <div class="barra">
-            <div id="progreso" class="progreso"></div>
-          </div>
-
-          <button
-            type="button"
-            id="boton-inscripcion"
-          >
-            Inscribirme
-          </button>
-
-          <small>
-            Tu lugar se confirma una vez validado el pago.
-          </small>
-
-        </aside>
+        <div class="barra">
+          <div
+            id="progreso-8VA"
+            class="progreso"
+          ></div>
+        </div>
 
       </div>
 
-    </section>
 
+      <button
+        type="button"
+        class="boton-inscripcion-torneo"
+        data-torneo="8VA"
+      >
+        Inscribirme
+      </button>
+
+    </article>
+
+
+<!-- =====================================
+     TORNEO 7MA - PRÓXIMAMENTE
+====================================== -->
+
+<article
+  class="tarjeta-torneo torneo-proximamente"
+  data-torneo="7MA"
+  data-activo="false"
+>
+
+  <div class="torneo-superior">
+
+    <div>
+
+      <span class="etiqueta-categoria">
+        7MA
+      </span>
+
+      <h3>
+        Torneo Femenino
+      </h3>
+
+    </div>
+
+    <span
+      class="estado-torneo estado-proximamente"
+      id="estado-7MA"
+    >
+      Próximamente
+    </span>
+
+  </div>
+
+
+  <p class="descripcion-tarjeta-torneo">
+    Estamos preparando nuestro próximo encuentro.
+    Muy pronto vas a poder conocer todos los detalles.
+  </p>
+
+
+  <div class="datos-torneo-compactos">
+
+    <div class="dato-compacto">
+      <small>FECHA</small>
+      <strong>A confirmar</strong>
+    </div>
+
+    <div class="dato-compacto">
+      <small>HORA</small>
+      <strong>A confirmar</strong>
+    </div>
+
+    <div class="dato-compacto">
+      <small>LUGAR</small>
+      <strong>Bragado</strong>
+    </div>
+
+    <div class="dato-compacto">
+      <small>VALOR</small>
+      <strong>A confirmar</strong>
+    </div>
+
+  </div>
+
+
+  <div class="proximamente-mensaje">
+
+    <strong>
+      Próximo torneo MATCH 💜
+    </strong>
+
+    <p>
+      Estamos terminando de definir los detalles.
+    </p>
+
+  </div>
+
+
+  <button
+    type="button"
+    class="boton-inscripcion-torneo"
+    disabled
+  >
+    Próximamente
+  </button>
+
+</article>
+
+  </div>
+
+</section>
 
     <!-- PASOS -->
     <section class="pasos-seccion">
