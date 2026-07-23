@@ -18,12 +18,12 @@
     rel="stylesheet"
   >
 
-  <link rel="stylesheet" href="./styles.css?v=4">
+  <link rel="stylesheet" href="./styles.css?v=5">
 </head>
 
 <body>
 
-  <!-- BARRA SUPERIOR -->
+  <!-- HEADER -->
   <header class="header">
 
     <div class="header-contenido">
@@ -44,7 +44,6 @@
 
       </a>
 
-
       <div class="redes">
 
         <!-- INSTAGRAM -->
@@ -62,16 +61,16 @@
           </svg>
         </a>
 
-
         <!-- WHATSAPP -->
         <a
-          href="https://wa.me/5491130091615?text=Hola%20MATCH!%20Quiero%20recibir%20informaci%C3%B3n%20sobre%20los%20pr%C3%B3ximos%20torneos."
+          href="https://wa.me/5491130091615"
           target="_blank"
           rel="noopener noreferrer"
           class="red-social"
           aria-label="WhatsApp de MATCH Bragado"
         >
           <svg viewBox="0 0 24 24" aria-hidden="true">
+
             <path
               d="M20.5 11.8a8.5 8.5 0 0 1-12.6 7.4L4 20.5l1.3-3.8a8.5 8.5 0 1 1 15.2-4.9Z"
             ></path>
@@ -79,6 +78,7 @@
             <path
               d="M9 8.2c.2-.4.4-.5.7-.5h.5c.2 0 .4.1.5.4l.8 1.8c.1.3.1.5-.1.7l-.5.6c-.1.2-.2.3-.1.5.4.8 1.3 1.8 2.4 2.3.2.1.4 0 .5-.1l.6-.7c.2-.2.5-.2.7-.1l1.7.8c.3.1.4.4.4.6v.5c0 .4-.2.7-.5.9-.5.3-1.2.4-1.9.2-3.2-.8-6.1-3.7-6.9-6.9-.2-.7-.1-1.4.2-2Z"
             ></path>
+
           </svg>
         </a>
 
@@ -146,6 +146,7 @@
       <div class="titulo-seccion">
 
         <div>
+
           <p class="sobrelinea">
             PRÓXIMO ENCUENTRO
           </p>
@@ -153,6 +154,7 @@
           <h2>
             Torneo Femenino Categoría 8va
           </h2>
+
         </div>
 
         <span class="estado">
@@ -174,39 +176,47 @@
           <div class="datos">
 
             <article class="dato">
+
               <span>01</span>
 
               <div>
                 <small>Fecha</small>
-                <strong>Sábado 29 de agosto 15hs</strong>
+                <strong>Sábado 29 de agosto · 15:00 hs</strong>
               </div>
+
             </article>
 
             <article class="dato">
+
               <span>02</span>
 
               <div>
                 <small>Lugar</small>
                 <strong>Bragado</strong>
               </div>
+
             </article>
 
             <article class="dato">
+
               <span>03</span>
 
               <div>
                 <small>Categoría</small>
                 <strong>8va</strong>
               </div>
+
             </article>
 
             <article class="dato">
+
               <span>04</span>
 
               <div>
                 <small>Valor</small>
                 <strong>$35.000 por jugadora</strong>
               </div>
+
             </article>
 
           </div>
@@ -221,8 +231,13 @@
           </p>
 
           <div class="contador">
+
             <strong id="inscriptas">0</strong>
-            <span>/ <span id="cupos-totales">32</span></span>
+
+            <span>
+              / <span id="cupos-totales">32</span>
+            </span>
+
           </div>
 
           <p id="lugares-restantes">
@@ -233,14 +248,12 @@
             <div id="progreso" class="progreso"></div>
           </div>
 
-          <a
-            href="https://wa.me/5491130091615?text=Hola%20MATCH!%20Quiero%20inscribirme%20al%20pr%C3%B3ximo%20torneo."
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            type="button"
             id="boton-inscripcion"
           >
             Inscribirme
-          </a>
+          </button>
 
           <small>
             Tu lugar se confirma una vez validado el pago.
@@ -257,37 +270,56 @@
     <section class="pasos-seccion">
 
       <div class="pasos-titulo">
-        <p class="sobrelinea">PASO A PASO</p>
-        <h2>Así de simple</h2>
+
+        <p class="sobrelinea">
+          PASO A PASO
+        </p>
+
+        <h2>
+          Así de simple
+        </h2>
+
       </div>
 
       <div class="pasos">
 
         <article>
+
           <span>01</span>
+
           <h3>Completás tus datos</h3>
+
           <p>
             Nos enviás tu información y la de tu pareja,
             cuando corresponda.
           </p>
+
         </article>
 
         <article>
+
           <span>02</span>
+
           <h3>Te contactamos</h3>
+
           <p>
             Confirmamos la disponibilidad y te enviamos
             la información de pago.
           </p>
+
         </article>
 
         <article>
+
           <span>03</span>
+
           <h3>Reservás tu lugar</h3>
+
           <p>
             Realizás el pago y tu inscripción queda
             oficialmente confirmada.
           </p>
+
         </article>
 
       </div>
@@ -295,6 +327,423 @@
     </section>
 
   </main>
+
+
+  <!-- MODAL DEL FORMULARIO -->
+  <div
+    id="modal-inscripcion"
+    class="modal"
+    aria-hidden="true"
+  >
+
+    <div class="modal-fondo" data-cerrar-modal></div>
+
+    <section
+      class="modal-contenido"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="titulo-formulario"
+    >
+
+      <div class="modal-encabezado">
+
+        <div>
+
+          <p class="sobrelinea">
+            TORNEO MATCH
+          </p>
+
+          <h2 id="titulo-formulario">
+            Inscribirme
+          </h2>
+
+          <p>
+            Torneo Femenino Categoría 8va
+          </p>
+
+        </div>
+
+        <button
+          type="button"
+          class="cerrar-modal"
+          id="cerrar-modal"
+          aria-label="Cerrar formulario"
+        >
+          ×
+        </button>
+
+      </div>
+
+
+      <form id="formulario-inscripcion">
+
+        <!-- MODALIDAD -->
+        <fieldset class="grupo-opciones">
+
+          <legend>Modalidad</legend>
+
+          <div class="opciones opciones-dos">
+
+            <label class="opcion-seleccionable">
+
+              <input
+                type="radio"
+                name="modalidad"
+                value="Con pareja"
+                checked
+              >
+
+              <span>Con pareja</span>
+
+            </label>
+
+            <label class="opcion-seleccionable">
+
+              <input
+                type="radio"
+                name="modalidad"
+                value="Busco pareja"
+              >
+
+              <span>Busco pareja</span>
+
+            </label>
+
+          </div>
+
+        </fieldset>
+
+
+        <!-- POSICIÓN -->
+        <fieldset class="grupo-opciones">
+
+          <legend>Posición preferida</legend>
+
+          <p class="ayuda-grupo">
+            ¿Dónde te sentís más cómoda jugando?
+          </p>
+
+          <div class="opciones opciones-tres">
+
+            <label class="opcion-seleccionable">
+
+              <input
+                type="radio"
+                name="posicion"
+                value="Drive"
+                required
+              >
+
+              <span>Drive</span>
+
+            </label>
+
+            <label class="opcion-seleccionable">
+
+              <input
+                type="radio"
+                name="posicion"
+                value="Revés"
+              >
+
+              <span>Revés</span>
+
+            </label>
+
+            <label class="opcion-seleccionable">
+
+              <input
+                type="radio"
+                name="posicion"
+                value="Indistinto"
+              >
+
+              <span>Indistinto</span>
+
+            </label>
+
+          </div>
+
+        </fieldset>
+
+
+        <!-- DATOS PERSONALES -->
+        <div class="titulo-bloque-formulario">
+          Tus datos
+        </div>
+
+        <div class="campos-dos-columnas">
+
+          <label class="campo">
+
+            <span>Nombre *</span>
+
+            <input
+              type="text"
+              name="nombre"
+              autocomplete="given-name"
+              required
+            >
+
+          </label>
+
+          <label class="campo">
+
+            <span>Apellido *</span>
+
+            <input
+              type="text"
+              name="apellido"
+              autocomplete="family-name"
+              required
+            >
+
+          </label>
+
+        </div>
+
+
+        <label class="campo">
+
+          <span>Celular / WhatsApp *</span>
+
+          <input
+            type="tel"
+            name="whatsapp"
+            placeholder="Código de área + número"
+            inputmode="numeric"
+            autocomplete="tel"
+            required
+          >
+
+          <small>
+            Ingresá el número con código de área, sin 0 y sin 15.
+            Ejemplo: 11 12345678
+          </small>
+
+        </label>
+
+
+        <label class="campo">
+
+          <span>Email (opcional)</span>
+
+          <input
+            type="email"
+            name="email"
+            autocomplete="email"
+          >
+
+        </label>
+
+
+        <!-- CATEGORÍA -->
+        <fieldset class="grupo-opciones">
+
+          <legend>Categoría / nivel</legend>
+
+          <div class="opciones opciones-cuatro">
+
+            <label class="opcion-seleccionable">
+
+              <input
+                type="radio"
+                name="categoria"
+                value="Principiante"
+                required
+              >
+
+              <span>Principiante</span>
+
+            </label>
+
+            <label class="opcion-seleccionable">
+
+              <input
+                type="radio"
+                name="categoria"
+                value="8va"
+              >
+
+              <span>8va</span>
+
+            </label>
+
+            <label class="opcion-seleccionable">
+
+              <input
+                type="radio"
+                name="categoria"
+                value="7ma"
+              >
+
+              <span>7ma</span>
+
+            </label>
+
+            <label class="opcion-seleccionable">
+
+              <input
+                type="radio"
+                name="categoria"
+                value="No estoy segura"
+              >
+
+              <span>No estoy segura</span>
+
+            </label>
+
+          </div>
+
+        </fieldset>
+
+
+        <!-- MENSAJE BUSCO PAREJA -->
+        <div
+          id="mensaje-busco-pareja"
+          class="mensaje-informativo oculto"
+        >
+          <strong>Vamos a ayudarte a encontrar compañera.</strong>
+
+          <p>
+            Buscaremos una jugadora con nivel y posición compatibles.
+          </p>
+        </div>
+
+
+        <!-- DATOS DE LA PAREJA -->
+        <section
+          id="datos-pareja"
+          class="datos-pareja"
+        >
+
+          <div class="titulo-bloque-formulario">
+            Datos de tu pareja
+          </div>
+
+          <div class="campos-dos-columnas">
+
+            <label class="campo">
+
+              <span>Nombre de tu pareja *</span>
+
+              <input
+                type="text"
+                name="nombrePareja"
+                id="nombre-pareja"
+                autocomplete="off"
+                required
+              >
+
+            </label>
+
+            <label class="campo">
+
+              <span>Apellido de tu pareja *</span>
+
+              <input
+                type="text"
+                name="apellidoPareja"
+                id="apellido-pareja"
+                autocomplete="off"
+                required
+              >
+
+            </label>
+
+          </div>
+
+
+          <label class="campo">
+
+            <span>WhatsApp de tu pareja *</span>
+
+            <input
+              type="tel"
+              name="whatsappPareja"
+              id="whatsapp-pareja"
+              placeholder="Código de área + número"
+              inputmode="numeric"
+              required
+            >
+
+          </label>
+
+        </section>
+
+
+        <!-- OBSERVACIONES -->
+        <label class="campo">
+
+          <span>Observaciones (opcional)</span>
+
+          <textarea
+            name="observaciones"
+            rows="4"
+            placeholder="Contanos si tenés alguna restricción horaria o algo que debamos saber."
+          ></textarea>
+
+        </label>
+
+
+        <!-- REGLAMENTO -->
+        <label class="aceptacion">
+
+          <input
+            type="checkbox"
+            name="reglamento"
+            required
+          >
+
+          <span>
+            Confirmo que leí y acepto las condiciones del torneo.
+          </span>
+
+        </label>
+
+
+        <button
+          type="submit"
+          class="boton-enviar"
+        >
+          Reservar mi lugar
+        </button>
+
+        <p class="aclaracion-formulario">
+          La reserva queda confirmada una vez validado el pago.
+        </p>
+
+      </form>
+
+
+      <!-- CONFIRMACIÓN -->
+      <div
+        id="mensaje-confirmacion"
+        class="mensaje-confirmacion oculto"
+      >
+
+        <span class="confirmacion-icono">✓</span>
+
+        <h3>¡Recibimos tu solicitud!</h3>
+
+        <p>
+          En breve nos vamos a comunicar con vos para confirmar
+          la disponibilidad y enviarte la información de pago.
+        </p>
+
+        <button
+          type="button"
+          id="cerrar-confirmacion"
+          class="boton boton-principal"
+        >
+          Volver a la página
+        </button>
+
+      </div>
+
+    </section>
+
+  </div>
 
 
   <footer>
@@ -305,14 +754,18 @@
       <small>Bragado</small>
     </div>
 
-    <p>Jugá. Conectá. Divertite.</p>
+    <p>
+      Jugá. Conectá. Divertite.
+    </p>
 
-    <small>© 2026 MATCH | Bragado</small>
+    <small>
+      © 2026 MATCH | Bragado
+    </small>
 
   </footer>
 
 
-  <script src="./script.js?v=4"></script>
+  <script src="./script.js?v=5"></script>
 
 </body>
 </html>

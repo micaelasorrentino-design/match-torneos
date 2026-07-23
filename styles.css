@@ -20,9 +20,24 @@ html {
 
 body {
   margin: 0;
+  padding-top: 88px;
   color: var(--texto);
   background: var(--fondo);
   font-family: "DM Sans", sans-serif;
+}
+
+body.modal-abierto {
+  overflow: hidden;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
 }
 
 a {
@@ -43,7 +58,6 @@ a {
   border-bottom: 1px solid rgba(67, 34, 95, 0.08);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-
   box-shadow: 0 5px 20px rgba(67, 34, 95, 0.06);
 }
 
@@ -51,6 +65,7 @@ a {
   width: min(1180px, calc(100% - 48px));
   height: 88px;
   margin: 0 auto;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -105,11 +120,14 @@ a {
   height: 44px;
   border: 1px solid var(--borde);
   border-radius: 50%;
+
   display: grid;
   place-items: center;
+
   color: var(--lila-oscuro);
   background: var(--blanco);
   box-shadow: 0 8px 20px rgba(67, 34, 95, 0.08);
+
   text-decoration: none;
   transition: 0.2s ease;
 }
@@ -141,9 +159,11 @@ a {
 .hero {
   min-height: 690px;
   padding: 95px 24px;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   background:
     radial-gradient(
       circle at 15% 20%,
@@ -197,6 +217,7 @@ a {
 
 .hero-botones {
   margin-top: 38px;
+
   display: flex;
   justify-content: center;
   gap: 14px;
@@ -204,9 +225,12 @@ a {
 
 .boton {
   padding: 16px 25px;
+  border: 0;
   border-radius: 999px;
+
   text-decoration: none;
   font-weight: 700;
+
   transition: 0.2s ease;
 }
 
@@ -228,10 +252,12 @@ a {
 
 .valores {
   margin-top: 55px;
+
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 16px;
+
   color: var(--lila-fuerte);
   font-size: 14px;
   font-weight: 700;
@@ -255,6 +281,7 @@ a {
 
 .titulo-seccion {
   margin-bottom: 38px;
+
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
@@ -280,12 +307,15 @@ a {
   background: var(--lila-suave);
   font-size: 13px;
   font-weight: 700;
+  white-space: nowrap;
 }
 
 .tarjeta {
   overflow: hidden;
+
   display: grid;
   grid-template-columns: 1.4fr 0.7fr;
+
   border: 1px solid var(--borde);
   border-radius: 32px;
   background: var(--blanco);
@@ -312,9 +342,11 @@ a {
 
 .dato {
   padding: 21px 0;
+
   display: flex;
   align-items: center;
   gap: 15px;
+
   border-bottom: 1px solid #eee8f1;
 }
 
@@ -322,8 +354,10 @@ a {
   min-width: 43px;
   height: 43px;
   border-radius: 50%;
+
   display: grid;
   place-items: center;
+
   color: var(--lila-oscuro);
   background: var(--lila-suave);
   font-size: 12px;
@@ -349,9 +383,11 @@ a {
 
 .panel-cupos {
   padding: 48px 40px;
+
   display: flex;
   flex-direction: column;
   justify-content: center;
+
   background: linear-gradient(145deg, #f1e8f9, #e5d5f3);
 }
 
@@ -405,18 +441,27 @@ a {
   width: 100%;
   margin-top: 28px;
   padding: 16px;
+  border: 0;
   border-radius: 14px;
+
   color: var(--blanco);
   background: var(--lila-oscuro);
+
   text-align: center;
-  text-decoration: none;
   font-weight: 700;
+
   transition: 0.2s ease;
 }
 
 #boton-inscripcion:hover {
   transform: translateY(-2px);
   background: #35194f;
+}
+
+#boton-inscripcion:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  transform: none;
 }
 
 .panel-cupos > small {
@@ -445,6 +490,7 @@ a {
 
 .pasos {
   margin-top: 50px;
+
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 22px;
@@ -473,6 +519,367 @@ a {
   margin: 0;
   color: var(--gris);
   line-height: 1.65;
+}
+
+
+/* MODAL */
+
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 20000;
+
+  display: none;
+  align-items: flex-start;
+  justify-content: center;
+
+  padding: 35px 20px;
+  overflow-y: auto;
+}
+
+.modal.abierto {
+  display: flex;
+}
+
+.modal-fondo {
+  position: fixed;
+  inset: 0;
+  background: rgba(32, 20, 44, 0.56);
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+}
+
+.modal-contenido {
+  position: relative;
+  z-index: 1;
+
+  width: min(900px, 100%);
+  margin: auto;
+  padding: 42px;
+
+  border: 1px solid rgba(149, 91, 216, 0.18);
+  border-radius: 30px;
+
+  background: var(--fondo);
+  box-shadow: 0 35px 100px rgba(32, 20, 44, 0.3);
+}
+
+.modal-encabezado {
+  margin-bottom: 32px;
+
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 30px;
+}
+
+.modal-encabezado .sobrelinea {
+  margin-bottom: 10px;
+}
+
+.modal-encabezado h2 {
+  margin: 0;
+  font-size: clamp(38px, 5vw, 56px);
+  letter-spacing: -3px;
+}
+
+.modal-encabezado p:last-child {
+  margin: 10px 0 0;
+  color: var(--gris);
+}
+
+.cerrar-modal {
+  flex: 0 0 auto;
+
+  width: 45px;
+  height: 45px;
+
+  border: 1px solid var(--borde);
+  border-radius: 50%;
+
+  color: var(--lila-oscuro);
+  background: var(--blanco);
+
+  font-size: 30px;
+  line-height: 1;
+}
+
+.cerrar-modal:hover {
+  color: var(--blanco);
+  background: var(--lila-oscuro);
+}
+
+#formulario-inscripcion {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.grupo-opciones {
+  margin: 0;
+  padding: 20px;
+  border: 1px solid var(--borde);
+  border-radius: 22px;
+}
+
+.grupo-opciones legend {
+  padding: 0 8px;
+  color: var(--lila-oscuro);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.ayuda-grupo {
+  margin: 0 0 15px;
+  color: var(--gris);
+  font-size: 14px;
+}
+
+.opciones {
+  display: grid;
+  gap: 12px;
+}
+
+.opciones-dos {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.opciones-tres {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.opciones-cuatro {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.opcion-seleccionable {
+  position: relative;
+  cursor: pointer;
+}
+
+.opcion-seleccionable input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.opcion-seleccionable span {
+  min-height: 52px;
+  padding: 13px 16px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid rgba(67, 34, 95, 0.17);
+  border-radius: 999px;
+
+  color: var(--gris);
+  background: rgba(255, 255, 255, 0.65);
+
+  text-align: center;
+  font-weight: 600;
+
+  transition: 0.2s ease;
+}
+
+.opcion-seleccionable span:hover {
+  border-color: var(--lila);
+}
+
+.opcion-seleccionable input:checked + span {
+  border-color: var(--lila);
+  color: var(--lila-oscuro);
+  background: var(--lila-suave);
+  box-shadow: inset 0 0 0 1px var(--lila);
+}
+
+.opcion-seleccionable input:focus-visible + span {
+  outline: 3px solid rgba(149, 91, 216, 0.22);
+  outline-offset: 3px;
+}
+
+.titulo-bloque-formulario {
+  color: var(--lila-oscuro);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.campos-dos-columnas {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.campo > span {
+  color: var(--texto);
+  font-weight: 600;
+}
+
+.campo input,
+.campo textarea {
+  width: 100%;
+  border: 1px solid rgba(67, 34, 95, 0.16);
+  border-radius: 16px;
+  outline: none;
+
+  color: var(--texto);
+  background: var(--blanco);
+
+  transition: 0.2s ease;
+}
+
+.campo input {
+  height: 56px;
+  padding: 0 17px;
+}
+
+.campo textarea {
+  min-height: 120px;
+  padding: 16px 17px;
+  resize: vertical;
+}
+
+.campo input:focus,
+.campo textarea:focus {
+  border-color: var(--lila);
+  box-shadow: 0 0 0 4px rgba(149, 91, 216, 0.1);
+}
+
+.campo input::placeholder,
+.campo textarea::placeholder {
+  color: #a69daa;
+}
+
+.campo small {
+  color: var(--gris);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.datos-pareja {
+  padding: 23px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+
+  border: 1px dashed rgba(149, 91, 216, 0.48);
+  border-radius: 22px;
+
+  background: rgba(238, 227, 248, 0.38);
+}
+
+.mensaje-informativo {
+  padding: 20px;
+  border: 1px solid rgba(149, 91, 216, 0.2);
+  border-radius: 18px;
+  color: var(--lila-oscuro);
+  background: var(--lila-suave);
+}
+
+.mensaje-informativo p {
+  margin: 7px 0 0;
+  color: var(--gris);
+  line-height: 1.5;
+}
+
+.aceptacion {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+
+  color: var(--gris);
+  cursor: pointer;
+  line-height: 1.5;
+}
+
+.aceptacion input {
+  flex: 0 0 auto;
+  width: 19px;
+  height: 19px;
+  margin-top: 2px;
+  accent-color: var(--lila-oscuro);
+}
+
+.boton-enviar {
+  width: 100%;
+  padding: 18px 25px;
+  border: 0;
+  border-radius: 999px;
+
+  color: var(--blanco);
+  background: var(--lila-oscuro);
+  box-shadow: 0 15px 35px rgba(67, 34, 95, 0.21);
+
+  font-weight: 700;
+  font-size: 17px;
+
+  transition: 0.2s ease;
+}
+
+.boton-enviar:hover {
+  transform: translateY(-2px);
+  background: #35194f;
+}
+
+.aclaracion-formulario {
+  margin: -10px 0 0;
+  color: var(--gris);
+  text-align: center;
+  font-size: 13px;
+}
+
+.oculto {
+  display: none !important;
+}
+
+
+/* CONFIRMACIÓN */
+
+.mensaje-confirmacion {
+  padding: 45px 20px;
+  text-align: center;
+}
+
+.confirmacion-icono {
+  width: 74px;
+  height: 74px;
+  margin: 0 auto 22px;
+  border-radius: 50%;
+
+  display: grid;
+  place-items: center;
+
+  color: var(--blanco);
+  background: var(--lila);
+
+  font-size: 36px;
+  font-weight: 700;
+}
+
+.mensaje-confirmacion h3 {
+  margin: 0;
+  color: var(--lila-oscuro);
+  font-size: 32px;
+  letter-spacing: -1px;
+}
+
+.mensaje-confirmacion p {
+  max-width: 540px;
+  margin: 15px auto 27px;
+  color: var(--gris);
+  line-height: 1.7;
 }
 
 
@@ -509,7 +916,7 @@ footer p {
   color: var(--lila);
   font-family: "Playfair Display", serif;
   font-size: 20px;
- }
+}
 
 footer > small {
   color: var(--gris);
@@ -520,14 +927,14 @@ footer > small {
 
 @media (max-width: 760px) {
 
+  body {
+    padding-top: 72px;
+  }
+
   .header-contenido {
     width: calc(100% - 24px);
     height: 72px;
   }
-
-  .body {
-  padding-top: 88px;
-}
 
   .marca {
     gap: 8px;
@@ -647,6 +1054,48 @@ footer > small {
 
   .pasos {
     grid-template-columns: 1fr;
+  }
+
+  .modal {
+    padding: 12px;
+  }
+
+  .modal-contenido {
+    padding: 27px 18px;
+    border-radius: 24px;
+  }
+
+  .modal-encabezado {
+    gap: 14px;
+  }
+
+  .modal-encabezado h2 {
+    font-size: 40px;
+    letter-spacing: -2px;
+  }
+
+  .cerrar-modal {
+    width: 40px;
+    height: 40px;
+  }
+
+  .opciones-dos,
+  .opciones-tres,
+  .opciones-cuatro,
+  .campos-dos-columnas {
+    grid-template-columns: 1fr;
+  }
+
+  .grupo-opciones {
+    padding: 17px;
+  }
+
+  .opcion-seleccionable span {
+    min-height: 50px;
+  }
+
+  .datos-pareja {
+    padding: 18px;
   }
 
 }
