@@ -33,12 +33,18 @@ a {
 /* HEADER */
 
 .header {
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 1000;
+  left: 0;
+  z-index: 9999;
+
   width: 100%;
-  background: #eee2f7;
+  background: rgba(238, 226, 247, 0.94);
   border-bottom: 1px solid rgba(67, 34, 95, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  box-shadow: 0 5px 20px rgba(67, 34, 95, 0.06);
 }
 
 .header-contenido {
@@ -518,6 +524,10 @@ footer > small {
     width: calc(100% - 24px);
     height: 72px;
   }
+
+  .body {
+  padding-top: 88px;
+}
 
   .marca {
     gap: 8px;
