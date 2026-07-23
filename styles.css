@@ -268,7 +268,7 @@ a {
 .titulo-seccion h2,
 .pasos-seccion h2 {
   margin: 0;
-  font-size: clamp(42px, 6vw, 66px);
+  font-size: clamp(38px, 5vw, 60px);
   line-height: 1;
   letter-spacing: -3px;
 }
