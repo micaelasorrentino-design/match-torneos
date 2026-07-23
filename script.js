@@ -85,6 +85,16 @@ const whatsappPareja =
 
 const botonEnviar =
   document.querySelector(".boton-enviar");
+  
+  const instruccionComprobante =
+  document.getElementById(
+    "instruccion-comprobante"
+  );
+
+const botonComprobanteWhatsapp =
+  document.getElementById(
+    "boton-comprobante-whatsapp"
+  );
 
 
 /* ==========================
@@ -405,17 +415,58 @@ async function enviarFormulario(evento) {
     actualizarTorneo();
 
 
-    /*
-      Mostramos el mensaje de confirmación.
-    */
+/*
+  Preparamos el mensaje de pago
+  y el enlace de WhatsApp.
+*/
 
-    formulario.classList.add("oculto");
-    mensajeConfirmacion.classList.remove("oculto");
+let mensajeWhatsapp = "";
 
-    modal.scrollTo({
-      top: 0,
-      behavior: "smooth"
-    });
+if (
+  inscripcion.modalidad === "Con pareja"
+) {
+  instruccionComprobante.textContent =
+    "Para confirmar la inscripción, realicen dos transferencias separadas y envíennos ambos comprobantes por WhatsApp.";
+
+  mensajeWhatsapp =
+    `Hola MATCH 👋
+
+Soy ${inscripcion.nombre} ${inscripcion.apellido}.
+
+Me inscribí junto a ${inscripcion.nombrePareja} ${inscripcion.apellidoPareja}.
+
+Te envío los dos comprobantes de transferencia para confirmar nuestra inscripción.`;
+
+} else {
+  instruccionComprobante.textContent =
+    "Para confirmar tu inscripción, realizá la transferencia y envianos el comprobante por WhatsApp.";
+
+  mensajeWhatsapp =
+    `Hola MATCH 👋
+
+Soy ${inscripcion.nombre} ${inscripcion.apellido}.
+
+Me inscribí en la modalidad Busco pareja.
+
+Te envío el comprobante de transferencia para confirmar mi inscripción.`;
+}
+
+botonComprobanteWhatsapp.href =
+  "https://wa.me/5491130091615?text=" +
+  encodeURIComponent(mensajeWhatsapp);
+
+
+/*
+  Mostramos el mensaje de confirmación.
+*/
+
+formulario.classList.add("oculto");
+mensajeConfirmacion.classList.remove("oculto");
+
+modal.scrollTo({
+  top: 0,
+  behavior: "smooth"
+});
 
 
     /*
