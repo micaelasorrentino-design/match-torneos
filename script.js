@@ -1,3 +1,6 @@
+const URL_APPS_SCRIPT =
+  "https://script.google.com/macros/s/AKfycbxhW-6_RVdPilf9btmW3E_xPodvRbAH-F7CRf7CyT5Vp0sYS3eb2Ge8_bAnchIFZaRktw/exec";
+
 const torneo = {
   inscriptas: 18,
   cuposTotales: 32
