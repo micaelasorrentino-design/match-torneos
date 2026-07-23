@@ -1,3 +1,6 @@
+const estadoInscripciones =
+  document.getElementById("estado-inscripciones");
+
 /* ==========================
    CONEXIÓN CON GOOGLE SHEETS
 ========================== */
@@ -120,31 +123,28 @@ function actualizarTorneo() {
 
   progreso.style.width =
     `${Math.min(porcentaje, 100)}%`;
+if (disponibles <= 0) {
 
-  if (disponibles > 1) {
-    lugaresRestantes.textContent =
-      `Quedan ${disponibles} lugares`;
-  }
+  lugaresRestantes.textContent =
+    "Torneo completo";
 
-  if (disponibles === 1) {
-    lugaresRestantes.textContent =
-      "Queda un solo lugar";
-  }
+  botonInscripcion.textContent =
+    "Torneo completo";
 
-  if (disponibles <= 0) {
-    lugaresRestantes.textContent =
-      "Torneo completo";
+  botonInscripcion.disabled = true;
 
-    botonInscripcion.textContent =
-      "Torneo completo";
+  estadoInscripciones.textContent =
+    "Inscripciones cerradas";
 
-    botonInscripcion.disabled = true;
-  } else {
-    botonInscripcion.textContent =
-      "Inscribirme";
+} else {
 
-    botonInscripcion.disabled = false;
-  }
+  botonInscripcion.textContent =
+    "Inscribirme";
+
+  botonInscripcion.disabled = false;
+
+  estadoInscripciones.textContent =
+    "Inscripciones abiertas";
 }
 
 
