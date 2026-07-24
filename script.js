@@ -376,7 +376,7 @@ function abrirModal(codigo) {
     `Torneo Femenino ${categoriaVisible}`;
 
   torneoSeleccionadoTexto.textContent =
-    "MATCH | Bragado";
+    "Sede Dinos";
 
   formulario.classList.remove(
     "oculto"
