@@ -1683,3 +1683,28 @@ footer > small {
   opacity: 0.55;
   cursor: default;
 }
+/* =====================================
+   CONFIRMACIÓN - CELULAR
+===================================== */
+
+@media (max-width: 760px) {
+
+  .mensaje-confirmacion {
+    padding-bottom: 28px;
+  }
+
+  .mensaje-confirmacion .boton {
+    width: 100%;
+    display: block;
+    margin: 14px 0 0;
+  }
+
+  #boton-comprobante-whatsapp {
+    margin-top: 24px;
+  }
+
+  #cerrar-confirmacion {
+    margin-top: 16px;
+  }
+
+}
