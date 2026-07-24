@@ -1547,9 +1547,11 @@ footer > small {
   /* UNA TARJETA DEBAJO DE LA OTRA */
 
   .lista-torneos {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 26px;
+  align-items: start;
+}
 
 
   .tarjeta-torneo {
