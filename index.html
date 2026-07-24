@@ -140,21 +140,28 @@
     </section>
 
 
-<!-- TORNEOS -->
+<!-- =========================================
+     TORNEOS
+========================================== -->
+
 <section id="torneo" class="torneos-seccion">
 
   <div class="encabezado-torneos">
 
     <div>
+
       <p class="sobrelinea">
         PRÓXIMOS ENCUENTROS
       </p>
 
-      <h2>Nuestros torneos</h2>
+      <h2>
+        Nuestros torneos
+      </h2>
 
       <p class="descripcion-torneos">
         Elegí el torneo que quieras jugar e inscribite.
       </p>
+
     </div>
 
   </div>
@@ -162,244 +169,309 @@
 
   <div class="lista-torneos">
 
-  <article class="tarjeta-torneo torneo-proximamente" ...>
-    <!-- 8va -->
-  </article>
 
-  <article class="tarjeta-torneo torneo-proximamente" ...>
-    <!-- 7ma -->
-  </article>
-
-  <article class="tarjeta-torneo" ...>
-    <!-- Cancha abierta -->
-  </article>
-
-</div>
-
-    <!-- =========================
+    <!-- =====================================
          TORNEO 8VA - PRÓXIMAMENTE
-    ========================== -->
+    ====================================== -->
 
     <article
-      class="tarjeta-torneo"
+      class="tarjeta-torneo torneo-proximamente"
       data-torneo="8VA"
-      data-activo="true"
+      data-activo="false"
     >
->
 
-  <div class="torneo-superior">
+      <div class="tarjeta-torneo-superior">
 
-    <div>
+        <div>
 
-      <span class="etiqueta-categoria">
-        CATEGORÍA
-      </span>
-
-      <h3>
-        Torneo Femenino 8va
-      </h3>
-
-    </div>
-
-  </div>
-
-  <div class="proximamente-mensaje">
-
-    <strong>
-      Próximo torneo MATCH 💜
-    </strong>
-
-    <p>
-      Estamos terminando de definir los detalles.
-    </p>
-
-  </div>
-
-
-  <button
-    type="button"
-    class="boton-inscripcion-torneo"
-    disabled
-  >
-    Próximamente
-  </button>
-
-
-<!-- =====================================
-     TORNEO 7MA - PRÓXIMAMENTE
-====================================== -->
-
-<article
-  class="tarjeta-torneo torneo-proximamente"
-  data-torneo="7MA"
-  data-activo="false"
->
-
-  <div class="torneo-superior">
-
-    <div>
-
-      <span class="etiqueta-categoria">
-        CATEGORÍA
-      </span>
-
-      <h3>
-        Torneo Femenino 7ma
-      </h3>
-
-    </div>
-
-  </div>
-
-  <div class="proximamente-mensaje">
-
-    <strong>
-      Próximo torneo MATCH 💜
-    </strong>
-
-    <p>
-      Estamos terminando de definir los detalles.
-    </p>
-
-  </div>
-
-
-  <button
-    type="button"
-    class="boton-inscripcion-torneo"
-    disabled
-  >
-    Próximamente
-  </button>
-
-</article>
-
-<!-- =========================
-     TORNEO 3 - CANCHA ABIERTA
-========================== -->
-
-<article
-  class="tarjeta-torneo"
-  data-torneo="CANCHA_ABIERTA"
-  data-activo="true"
->
-
-  <div class="tarjeta-torneo-superior">
-
-    <div>
-      <span class="etiqueta-categoria">
-        CANCHA ABIERTA
-      </span>
-
-      <h3>Cancha Abierta 8va Principiante</h3>
-    </div>
-
-    <span
-      class="estado-torneo"
-      id="estado-CANCHA_ABIERTA"
-    >
-      Inscripciones abiertas
-    </span>
-
-  </div>
-
-
-  <div class="info-torneo">
-
-    <div class="info-item">
-      <span class="info-icono">1</span>
-
-      <div>
-        <small>Fecha</small>
-        <strong>Domingo 02/08</strong>
-      </div>
-    </div>
-
-    <div class="info-item">
-      <span class="info-icono">3</span>
-
-      <div>
-        <small>Lugar</small>
-        <strong>Sede La Casa Padel</strong>
-      </div>
-    </div>
-
-    <div class="info-item">
-      <span class="info-icono">2</span>
-
-      <div>
-        <small>Horario</small>
-        <strong>10:00 a 13:00</strong>
-      </div>
-    </div>
-
-    <div class="info-item">
-      <span class="info-icono">4</span>
-
-      <div>
-        <small>Valor</small>
-        <strong>$26.000 por persona</strong>
-      </div>
-    </div>
-
-  </div>
-
-
-  <div class="cupos-torneo">
-
-    <p>Cupos</p>
-
-    <div class="cupos-linea">
-
-      <div class="numero-cupos">
-
-        <strong id="inscriptas-CANCHA_ABIERTA">
-          0
-        </strong>
-
-        <span>
-          /
-          <span id="cupos-CANCHA_ABIERTA">
-            12
+          <span class="etiqueta-categoria">
+            CATEGORÍA
           </span>
+
+          <h3>
+            Torneo Femenino 8va
+          </h3>
+
+        </div>
+
+        <span
+          class="estado-torneo estado-proximamente"
+        >
+          Próximamente
         </span>
 
       </div>
 
-      <strong
-        class="lugares"
-        id="lugares-CANCHA_ABIERTA"
+
+      <div class="proximamente-mensaje">
+
+        <strong>
+          Próximo torneo MATCH 💜
+        </strong>
+
+        <p>
+          Estamos terminando de definir los detalles.
+        </p>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="boton-inscripcion-torneo"
+        disabled
       >
-        Cargando...
-      </strong>
+        Próximamente
+      </button>
 
-    </div>
-
-    <div class="barra">
-      <div
-        id="progreso-CANCHA_ABIERTA"
-        class="progreso"
-      ></div>
-    </div>
-
-  </div>
+    </article>
 
 
-  <button
-    type="button"
-    class="boton-inscripcion-torneo"
-    data-torneo="CANCHA_ABIERTA"
-  >
-    Inscribirme
-  </button>
 
-</article>
+    <!-- =====================================
+         TORNEO 7MA - PRÓXIMAMENTE
+    ====================================== -->
+
+    <article
+      class="tarjeta-torneo torneo-proximamente"
+      data-torneo="7MA"
+      data-activo="false"
+    >
+
+      <div class="tarjeta-torneo-superior">
+
+        <div>
+
+          <span class="etiqueta-categoria">
+            CATEGORÍA
+          </span>
+
+          <h3>
+            Torneo Femenino 7ma
+          </h3>
+
+        </div>
+
+        <span
+          class="estado-torneo estado-proximamente"
+        >
+          Próximamente
+        </span>
+
+      </div>
+
+
+      <div class="proximamente-mensaje">
+
+        <strong>
+          Próximo torneo MATCH 💜
+        </strong>
+
+        <p>
+          Estamos terminando de definir los detalles.
+        </p>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="boton-inscripcion-torneo"
+        disabled
+      >
+        Próximamente
+      </button>
+
+    </article>
+
+
+
+    <!-- =====================================
+         CANCHA ABIERTA - ACTIVA
+    ====================================== -->
+
+    <article
+      class="tarjeta-torneo"
+      data-torneo="CANCHA_ABIERTA"
+      data-activo="true"
+    >
+
+      <div class="tarjeta-torneo-superior">
+
+        <div>
+
+          <span class="etiqueta-categoria">
+            CANCHA ABIERTA
+          </span>
+
+          <h3>
+            Cancha Abierta 8va Principiante
+          </h3>
+
+        </div>
+
+
+        <span
+          class="estado-torneo"
+          id="estado-CANCHA_ABIERTA"
+        >
+          Inscripciones abiertas
+        </span>
+
+      </div>
+
+
+      <div class="info-torneo">
+
+
+        <div class="info-item">
+
+          <span class="info-icono">
+            1
+          </span>
+
+          <div>
+
+            <small>
+              Fecha
+            </small>
+
+            <strong>
+              Domingo 02/08
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <div class="info-item">
+
+          <span class="info-icono">
+            3
+          </span>
+
+          <div>
+
+            <small>
+              Lugar
+            </small>
+
+            <strong>
+              Sede La Casa Padel
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <div class="info-item">
+
+          <span class="info-icono">
+            2
+          </span>
+
+          <div>
+
+            <small>
+              Horario
+            </small>
+
+            <strong>
+              10:00 a 13:00
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <div class="info-item">
+
+          <span class="info-icono">
+            4
+          </span>
+
+          <div>
+
+            <small>
+              Valor
+            </small>
+
+            <strong>
+              $26.000 por persona
+            </strong>
+
+          </div>
+
+        </div>
+
+
+      </div>
+
+
+      <div class="cupos-torneo">
+
+        <p>
+          Cupos
+        </p>
+
+
+        <div class="cupos-linea">
+
+          <div class="numero-cupos">
+
+            <strong id="inscriptas-CANCHA_ABIERTA">
+              0
+            </strong>
+
+            <span>
+              /
+              <span id="cupos-CANCHA_ABIERTA">
+                12
+              </span>
+            </span>
+
+          </div>
+
+
+          <strong
+            class="lugares"
+            id="lugares-CANCHA_ABIERTA"
+          >
+            Cargando...
+          </strong>
+
+        </div>
+
+
+        <div class="barra">
+
+          <div
+            id="progreso-CANCHA_ABIERTA"
+            class="progreso"
+          ></div>
+
+        </div>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="boton-inscripcion-torneo"
+        data-torneo="CANCHA_ABIERTA"
+      >
+        Inscribirme
+      </button>
+
+    </article>
+
 
   </div>
 
 </section>
-
-
     <!-- PASOS -->
     <section class="pasos-seccion">
 
