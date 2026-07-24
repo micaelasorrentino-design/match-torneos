@@ -634,18 +634,17 @@ Te envío el comprobante de transferencia para confirmar mi inscripción.`;
     }
 
     const botonWhatsapp =
-      mensajeConfirmacion.querySelector(
-        'a[href*="wa.me"]'
-      );
+  document.getElementById(
+    "boton-comprobante-whatsapp"
+  );
 
-    if (botonWhatsapp) {
-      botonWhatsapp.href =
-        "https://wa.me/5491130091615?text=" +
-        encodeURIComponent(
-          mensajeWhatsapp
-        );
-    }
+if (botonWhatsapp) {
 
+  botonWhatsapp.href =
+    "https://wa.me/5491130091615?text=" +
+    encodeURIComponent(mensajeWhatsapp);
+
+}
 
     /* ======================================
        MOSTRAR CONFIRMACIÓN
