@@ -1744,3 +1744,56 @@ footer > small {
     flex-wrap: wrap;
   }
 }
+/* =========================
+   VERSIÓN CELULAR
+========================= */
+
+@media (max-width: 768px) {
+
+  /* Contenedor de las tarjetas */
+  .torneos-grid,
+  .contenedor-torneos,
+  .lista-torneos {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    width: 100%;
+  }
+
+  /* Cada tarjeta */
+  .torneo-card,
+  .tarjeta-torneo,
+  .card-torneo {
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+    margin: 0;
+    box-sizing: border-box;
+  }
+
+  /* Sección general */
+  .torneos,
+  .proximos-torneos {
+    width: 100%;
+    padding-left: 18px;
+    padding-right: 18px;
+    box-sizing: border-box;
+  }
+
+  /* La tarjeta del evento principal */
+  .evento-destacado,
+  .proximo-evento,
+  .evento-card {
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+    margin-left: 0;
+    margin-right: 0;
+    box-sizing: border-box;
+  }
+
+  /* Evita que la página se desborde horizontalmente */
+  body {
+    overflow-x: hidden;
+  }
+}
