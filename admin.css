@@ -792,3 +792,7 @@ tbody tr:hover {
 .boton-cancelar:hover {
   background: #fbedf1;
 }
+.pago-pagado {
+  background: #e6f3eb;
+  color: #4e8b68;
+}

@@ -160,7 +160,7 @@ function textoPago(estadoPago) {
   const textos = {
     pendiente: "Pago pendiente",
     comprobante_recibido: "Comprobante recibido",
-    confirmado: "Pago confirmado",
+    pagado: "Pago confirmado",
     rechazado: "Pago rechazado"
   };
 
@@ -894,7 +894,7 @@ async function confirmarInscripcion(
       inscripcionId,
       {
         estado: "confirmada",
-        estado_pago: "confirmado"
+        estado_pago: "pagado"
       }
     );
 
