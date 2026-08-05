@@ -157,16 +157,23 @@ function textoEstado(estado) {
 
 
 function textoPago(estadoPago) {
+
   const textos = {
     pendiente: "Pago pendiente",
-    comprobante_recibido: "Comprobante recibido",
-    pagado: "Pago confirmado",
-    rechazado: "Pago rechazado"
+    comprobante_recibido:
+      "Comprobante recibido",
+    confirmado:
+      "Pago confirmado",
+    rechazado:
+      "Pago rechazado"
   };
 
-  return textos[estadoPago] ||
+  return (
+    textos[estadoPago] ||
     estadoPago ||
-    "Sin estado";
+    "Sin estado"
+  );
+
 }
 
 
@@ -1065,21 +1072,18 @@ async function verComprobante(
 
 
 function cerrarVisorComprobante() {
-  modalComprobante.classList.add(
+
+  modalComprobante?.classList.add(
     "oculto"
   );
 
-  visorComprobante.innerHTML = "";
+  if (visorComprobante) {
+    visorComprobante.innerHTML = "";
+  }
+
 }
 
 
-pcion(
-        botonCancelar.dataset
-          .cancelar
-      );
-
-      return;
-    }
 /* ==========================================
    CLICS DINÁMICOS
 ========================================== */
@@ -1094,13 +1098,14 @@ document.addEventListener(
       );
 
     if (botonConfirmar) {
+
       confirmarInscripcion(
-        botonConfirmar.dataset
-          .confirmar
+        botonConfirmar.dataset.confirmar
       );
 
       return;
     }
+
 
     const botonCancelar =
       evento.target.closest(
@@ -1108,17 +1113,27 @@ document.addEventListener(
       );
 
     if (botonCancelar) {
-      cancelarInscri
+
+      cancelarInscripcion(
+        botonCancelar.dataset.cancelar
+      );
+
+      return;
+    }
+
+
     const botonComprobante =
       evento.target.closest(
         "[data-ver-comprobante]"
       );
 
     if (botonComprobante) {
+
       verComprobante(
         botonComprobante.dataset
           .verComprobante
       );
+
     }
 
   }
