@@ -935,3 +935,38 @@ tbody tr:hover {
   }
 
 }
+/* ==========================================
+   BOTONES DE BIENVENIDA
+========================================== */
+
+.acciones-bienvenida {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.acciones-bienvenida .boton-admin {
+  width: auto;
+  min-width: 175px;
+  margin: 0;
+  padding: 0 24px;
+}
+
+.acciones-bienvenida
+.boton-principal-admin {
+  min-width: 190px;
+}
+
+@media (max-width: 700px) {
+  .acciones-bienvenida {
+    width: 100%;
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .acciones-bienvenida .boton-admin {
+    width: 100%;
+    min-width: 0;
+  }
+}

@@ -117,9 +117,105 @@ const tituloModalComprobante =
     "titulo-modal-comprobante"
   );
 
+const botonNuevoEvento =
+  document.getElementById(
+    "boton-nuevo-evento"
+  );
+
+const modalNuevoEvento =
+  document.getElementById(
+    "modal-nuevo-evento"
+  );
+
+const cerrarModalNuevoEvento =
+  document.getElementById(
+    "cerrar-modal-nuevo-evento"
+  );
+
+const cancelarNuevoEvento =
+  document.getElementById(
+    "cancelar-nuevo-evento"
+  );
+
+const formularioNuevoEvento =
+  document.getElementById(
+    "formulario-nuevo-evento"
+  );
+
+const guardarNuevoEvento =
+  document.getElementById(
+    "guardar-nuevo-evento"
+  );
+
+const mensajeNuevoEvento =
+  document.getElementById(
+    "mensaje-nuevo-evento"
+  );
+
+const eventoTitulo =
+  document.getElementById(
+    "evento-titulo"
+  );
+
+const eventoTipo =
+  document.getElementById(
+    "evento-tipo"
+  );
+
+const eventoCategoria =
+  document.getElementById(
+    "evento-categoria"
+  );
+
+const eventoCupos =
+  document.getElementById(
+    "evento-cupos"
+  );
+
+const eventoFecha =
+  document.getElementById(
+    "evento-fecha"
+  );
+
+const eventoHoraInicio =
+  document.getElementById(
+    "evento-hora-inicio"
+  );
+
+const eventoHoraFin =
+  document.getElementById(
+    "evento-hora-fin"
+  );
+
+const eventoSede =
+  document.getElementById(
+    "evento-sede"
+  );
+
+const eventoComplejo =
+  document.getElementById(
+    "evento-complejo"
+  );
+
+const eventoPrecio =
+  document.getElementById(
+    "evento-precio"
+  );
+
+const eventoInscripcionesAbiertas =
+  document.getElementById(
+    "evento-inscripciones-abiertas"
+  );
+
+const eventoDescripcion =
+  document.getElementById(
+    "evento-descripcion"
+  );
 
 let inscripcionesActuales = [];
 let eventoActual = "";
+let sedesDisponibles = [];
+let complejosDisponibles = [];
 
 
 /* ==========================================
@@ -302,7 +398,367 @@ async function cerrarSesion() {
 
   mostrarLogin();
 }
+/* ==========================================
+   CREAR NUEVO EVENTO
+========================================== */
 
+async function cargarSedesYComplejos() {
+
+  const [
+    respuestaSedes,
+    respuestaComplejos
+  ] = await Promise.all([
+
+    window.db
+      .from("sedes")
+      .select(`
+        id,
+        nombre
+      `)
+      .eq("activa", true)
+      .order("nombre"),
+
+    window.db
+      .from("complejos")
+      .select(`
+        id,
+        sede_id,
+        nombre
+      `)
+      .order("nombre")
+
+  ]);
+
+  if (respuestaSedes.error) {
+    console.error(
+      "Error al cargar sedes:",
+      respuestaSedes.error
+    );
+
+    throw new Error(
+      "No pudimos cargar las ciudades."
+    );
+  }
+
+  if (respuestaComplejos.error) {
+    console.error(
+      "Error al cargar complejos:",
+      respuestaComplejos.error
+    );
+
+    throw new Error(
+      "No pudimos cargar los complejos."
+    );
+  }
+
+  sedesDisponibles =
+    respuestaSedes.data || [];
+
+  complejosDisponibles =
+    respuestaComplejos.data || [];
+
+  eventoSede.innerHTML = `
+    <option value="">
+      Seleccioná una ciudad
+    </option>
+  `;
+
+  sedesDisponibles.forEach(
+    (sede) => {
+
+      const opcion =
+        document.createElement(
+          "option"
+        );
+
+      opcion.value = sede.id;
+      opcion.textContent = sede.nombre;
+
+      eventoSede.appendChild(
+        opcion
+      );
+
+    }
+  );
+
+}
+
+
+function cargarComplejosPorSede() {
+
+  const sedeId =
+    eventoSede.value;
+
+  eventoComplejo.innerHTML = "";
+
+  if (!sedeId) {
+
+    eventoComplejo.disabled = true;
+
+    eventoComplejo.innerHTML = `
+      <option value="">
+        Primero seleccioná una ciudad
+      </option>
+    `;
+
+    return;
+  }
+
+  const complejosFiltrados =
+    complejosDisponibles.filter(
+      (complejo) =>
+        complejo.sede_id === sedeId
+    );
+
+  eventoComplejo.disabled = false;
+
+  eventoComplejo.innerHTML = `
+    <option value="">
+      Seleccioná un complejo
+    </option>
+  `;
+
+  complejosFiltrados.forEach(
+    (complejo) => {
+
+      const opcion =
+        document.createElement(
+          "option"
+        );
+
+      opcion.value =
+        complejo.id;
+
+      opcion.textContent =
+        complejo.nombre;
+
+      eventoComplejo.appendChild(
+        opcion
+      );
+
+    }
+  );
+
+}
+
+
+async function abrirModalNuevoEvento() {
+
+  if (mensajeNuevoEvento) {
+    mensajeNuevoEvento.textContent = "";
+  }
+
+  formularioNuevoEvento?.reset();
+
+  eventoInscripcionesAbiertas.checked =
+    true;
+
+  eventoComplejo.disabled =
+    true;
+
+  eventoComplejo.innerHTML = `
+    <option value="">
+      Primero seleccioná una ciudad
+    </option>
+  `;
+
+  try {
+
+    await cargarSedesYComplejos();
+
+    modalNuevoEvento?.classList.remove(
+      "oculto"
+    );
+
+    document.body.style.overflow =
+      "hidden";
+
+  } catch (error) {
+
+    console.error(
+      "Error al abrir formulario:",
+      error
+    );
+
+    alert(
+      error.message ||
+      "No pudimos abrir el formulario."
+    );
+
+  }
+
+}
+
+
+function cerrarNuevoEvento() {
+
+  modalNuevoEvento?.classList.add(
+    "oculto"
+  );
+
+  document.body.style.overflow =
+    "";
+
+  formularioNuevoEvento?.reset();
+
+  if (mensajeNuevoEvento) {
+    mensajeNuevoEvento.textContent = "";
+  }
+
+}
+
+
+async function crearNuevoEvento(evento) {
+
+  evento.preventDefault();
+
+  if (mensajeNuevoEvento) {
+    mensajeNuevoEvento.textContent = "";
+  }
+
+  if (
+    eventoHoraFin.value &&
+    eventoHoraFin.value <=
+      eventoHoraInicio.value
+  ) {
+
+    mensajeNuevoEvento.textContent =
+      "La hora de finalización debe ser posterior a la hora de inicio.";
+
+    return;
+  }
+
+  const complejoSeleccionado =
+    complejosDisponibles.find(
+      (complejo) =>
+        complejo.id ===
+        eventoComplejo.value
+    );
+
+  if (!complejoSeleccionado) {
+
+    mensajeNuevoEvento.textContent =
+      "Seleccioná un complejo.";
+
+    return;
+  }
+
+  const registro = {
+
+    titulo:
+      eventoTitulo.value.trim(),
+
+    tipo:
+      eventoTipo.value,
+
+    categoria:
+      eventoCategoria.value,
+
+    fecha:
+      eventoFecha.value,
+
+    hora_inicio:
+      eventoHoraInicio.value,
+
+    hora_fin:
+      eventoHoraFin.value || null,
+
+    lugar:
+      complejoSeleccionado.nombre,
+
+    precio:
+      Number(eventoPrecio.value),
+
+    cupos_totales:
+      Number(eventoCupos.value),
+
+    inscripciones_abiertas:
+      eventoInscripcionesAbiertas.checked,
+
+    descripcion:
+      eventoDescripcion.value.trim() ||
+      null,
+
+    sede_id:
+      eventoSede.value,
+
+    complejo_id:
+      eventoComplejo.value
+
+  };
+
+  guardarNuevoEvento.disabled =
+    true;
+
+  guardarNuevoEvento.textContent =
+    "Creando evento...";
+
+  try {
+
+    const {
+      data,
+      error
+    } =
+      await window.db
+        .from("eventos")
+        .insert(registro)
+        .select("id")
+        .single();
+
+    if (error) {
+      throw error;
+    }
+
+    mensajeNuevoEvento.textContent =
+      "✓ Evento creado correctamente.";
+
+    mensajeNuevoEvento.style.color =
+      "#4e8b68";
+
+    await cargarEventos();
+
+    if (data?.id) {
+
+      selectorEvento.value =
+        data.id;
+
+      eventoActual =
+        data.id;
+
+      await cargarInscripciones();
+
+    }
+
+    window.setTimeout(
+      cerrarNuevoEvento,
+      900
+    );
+
+  } catch (error) {
+
+    console.error(
+      "Error al crear evento:",
+      error
+    );
+
+    mensajeNuevoEvento.style.color =
+      "";
+
+    mensajeNuevoEvento.textContent =
+      error.message ||
+      "No pudimos crear el evento.";
+
+  } finally {
+
+    guardarNuevoEvento.disabled =
+      false;
+
+    guardarNuevoEvento.textContent =
+      "Crear evento";
+
+  }
+
+}
 
 /* ==========================================
    EVENTOS
@@ -1194,6 +1650,45 @@ document
       elemento.addEventListener(
         "click",
         cerrarVisorComprobante
+      );
+
+    }
+  );
+  botonNuevoEvento?.addEventListener(
+  "click",
+  abrirModalNuevoEvento
+);
+
+cerrarModalNuevoEvento?.addEventListener(
+  "click",
+  cerrarNuevoEvento
+);
+
+cancelarNuevoEvento?.addEventListener(
+  "click",
+  cerrarNuevoEvento
+);
+
+eventoSede?.addEventListener(
+  "change",
+  cargarComplejosPorSede
+);
+
+formularioNuevoEvento?.addEventListener(
+  "submit",
+  crearNuevoEvento
+);
+
+document
+  .querySelectorAll(
+    "[data-cerrar-nuevo-evento]"
+  )
+  .forEach(
+    (elemento) => {
+
+      elemento.addEventListener(
+        "click",
+        cerrarNuevoEvento
       );
 
     }
