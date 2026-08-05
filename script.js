@@ -763,16 +763,6 @@ function prepararConfirmacion(
 
   }
 
-  if (
-    codigoAccesoConfirmacion &&
-    window.inscripcionActual?.codigo
-  ) {
-
-    codigoAccesoConfirmacion.textContent =
-      window.inscripcionActual.codigo;
-
-  }
-
   const datosVisuales =
     obtenerDatosVisualesTorneo(
       torneoSeleccionado

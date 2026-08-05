@@ -152,6 +152,25 @@ function crearTarjetaEvento(evento) {
         </a>
       `
       : "";
+      const ocupados =
+  Number(evento.ocupados) || 0;
+
+const cuposTotales =
+  Number(evento.cupos_totales) || 0;
+
+const disponibles =
+  Math.max(
+    cuposTotales - ocupados,
+    0
+  );
+
+const porcentaje =
+  cuposTotales > 0
+    ? Math.min(
+        (ocupados / cuposTotales) * 100,
+        100
+      )
+    : 0;
 
   return `
     <article
@@ -287,10 +306,10 @@ function crearTarjetaEvento(evento) {
           <div class="numero-cupos">
 
             <strong
-              id="inscriptas-${evento.id}"
-            >
-              0
-            </strong>
+  id="inscriptas-${evento.id}"
+>
+  ${ocupados}
+</strong>
 
             <span>
               /
@@ -312,10 +331,14 @@ function crearTarjetaEvento(evento) {
             id="lugares-${evento.id}"
           >
             ${
-              activo
-                ? "Cupos disponibles"
-                : "Evento cerrado"
-            }
+  !activo
+    ? "Evento cerrado"
+    : disponibles === 0
+      ? "Evento completo"
+      : disponibles === 1
+        ? "Queda un lugar"
+        : `Quedan ${disponibles} lugares`
+}
           </strong>
 
         </div>
@@ -350,6 +373,7 @@ function crearTarjetaEvento(evento) {
 
 
 async function cargarEventos() {
+
   const contenedor =
     document.getElementById(
       "lista-torneos"
@@ -359,8 +383,12 @@ async function cargarEventos() {
     return;
   }
 
-  const { data, error } =
-    await window.db
+  const [
+    respuestaEventos,
+    respuestaOcupacion
+  ] = await Promise.all([
+
+    window.db
       .from("eventos")
       .select(`
         *,
@@ -377,12 +405,19 @@ async function cargarEventos() {
         {
           ascending: true
         }
-      );
+      ),
 
-  if (error) {
+    window.db.rpc(
+      "obtener_ocupacion_eventos"
+    )
+
+  ]);
+
+  if (respuestaEventos.error) {
+
     console.error(
       "Error al cargar eventos:",
-      error
+      respuestaEventos.error
     );
 
     contenedor.innerHTML = `
@@ -393,6 +428,60 @@ async function cargarEventos() {
 
     return;
   }
+
+  if (respuestaOcupacion.error) {
+
+    console.error(
+      "Error al cargar ocupación:",
+      respuestaOcupacion.error
+    );
+
+  }
+
+  const ocupacionPorEvento =
+    new Map(
+      (
+        respuestaOcupacion.data || []
+      ).map(
+        (registro) => [
+          registro.evento_id,
+          Number(registro.ocupados) || 0
+        ]
+      )
+    );
+
+  const eventos =
+    (
+      respuestaEventos.data || []
+    ).map(
+      (evento) => ({
+        ...evento,
+        ocupados:
+          ocupacionPorEvento.get(
+            evento.id
+          ) || 0
+      })
+    );
+
+  if (eventos.length === 0) {
+
+    contenedor.innerHTML = `
+      <p>
+        Próximamente publicaremos nuevos encuentros 💜
+      </p>
+    `;
+
+    return;
+  }
+
+  contenedor.innerHTML =
+    eventos
+      .map(crearTarjetaEvento)
+      .join("");
+
+  cargarScriptPrincipal();
+
+}
 
   if (
     !data ||
