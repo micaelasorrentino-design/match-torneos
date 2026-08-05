@@ -762,88 +762,124 @@
   class="mensaje-confirmacion oculto"
 >
 
-  <div class="confirmacion-cabecera">
+  <div class="confirmacion-exito">
 
-    <div>
-
-      <span class="confirmacion-etiqueta">
-        INSCRIPCIÓN RECIBIDA
-      </span>
-
-      <h3 id="confirmacion-evento">
-        Evento MATCH
-      </h3>
-
+    <div class="confirmacion-check">
+      ✓
     </div>
 
-    <span class="confirmacion-check">
-      ✓
+    <span class="confirmacion-etiqueta">
+      INSCRIPCIÓN RECIBIDA
     </span>
 
-  </div>
+    <h3>
+      ¡Recibimos tu inscripción!
+    </h3>
 
+    <p>
+      Tu lugar está pendiente de confirmación
+      hasta que validemos el pago.
+    </p>
 
-  <div class="confirmacion-estado">
-
-    <span class="estado-badge">
-      PENDIENTE DE CONFIRMACIÓN
+    <span class="corazon-confirmacion">
+      ♥
     </span>
-
-    <strong id="confirmacion-precio">
-      $0
-    </strong>
 
   </div>
 
 
   <div class="confirmacion-datos-evento">
 
-    <div>
-      <small>Fecha</small>
-      <strong id="confirmacion-fecha">—</strong>
+    <div class="dato-evento">
+
+      <div class="dato-evento-icono">
+        01
+      </div>
+
+      <div>
+        <small>FECHA</small>
+
+        <strong id="confirmacion-fecha">
+          —
+        </strong>
+      </div>
+
     </div>
 
-    <div>
-      <small>Horario</small>
-      <strong id="confirmacion-horario">—</strong>
+
+    <div class="dato-evento">
+
+      <div class="dato-evento-icono">
+        02
+      </div>
+
+      <div>
+        <small>HORARIO</small>
+
+        <strong id="confirmacion-horario">
+          —
+        </strong>
+      </div>
+
     </div>
 
-    <div>
-      <small>Lugar</small>
-      <strong id="confirmacion-lugar">—</strong>
+
+    <div class="dato-evento">
+
+      <div class="dato-evento-icono">
+        03
+      </div>
+
+      <div>
+        <small>LUGAR</small>
+
+        <strong id="confirmacion-lugar">
+          —
+        </strong>
+      </div>
+
     </div>
 
   </div>
 
 
-  <div class="confirmacion-aviso">
+  <div class="confirmacion-pago">
 
-    <strong>
-      ¡Recibimos tu inscripción!
-    </strong>
+    <div class="confirmacion-pago-superior">
 
-    <p>
-      Tu lugar está pendiente de confirmación hasta que validemos el pago.
-    </p>
+      <span class="estado-badge">
+        PENDIENTE DE CONFIRMACIÓN
+      </span>
 
-  </div>
+      <strong id="confirmacion-precio">
+        $0
+      </strong>
 
-
-  <div class="datos-transferencia confirmacion-transferencia">
-
-    <div>
-      <small>Alias</small>
-      <strong>CUADRO.ESPIGA.CORO</strong>
     </div>
 
-    <div>
-      <small>Titular</small>
-      <strong>MICAELA SOLANGE SORRENTINO</strong>
+
+    <div class="titulo-transferencia">
+      DATOS PARA TRANSFERENCIA
     </div>
 
-    <div>
-      <small>Banco</small>
-      <strong>BANCO DE LA GALICIA</strong>
+
+    <div class="datos-transferencia-centrados">
+
+      <div>
+        <span>Alias:</span>
+        <strong>CUADRO.ESPIGA.CORO</strong>
+      </div>
+
+      <div>
+        <span>Titular:</span>
+        <strong>MICAELA SOLANGE SORRENTINO</strong>
+      </div>
+
+      <div>
+        <span>Banco:</span>
+        <strong>BANCO DE LA GALICIA</strong>
+      </div>
+
     </div>
 
   </div>
@@ -851,51 +887,61 @@
 
   <div class="comprobante-card">
 
-    <div class="comprobante-titulo">
+    <span class="comprobante-sobrelinea">
+      SUBÍ TU COMPROBANTE
+    </span>
 
-      <div>
-        <span class="comprobante-icono">📎</span>
+    <p>
+      Podés hacerlo ahora o más tarde desde “Mis inscripciones”.
+    </p>
 
-        <div>
-          <h4>Subí tu comprobante</h4>
 
-          <p>
-            Podés hacerlo ahora o más tarde desde “Mis inscripciones”.
-          </p>
-        </div>
-      </div>
+    <label
+      for="archivo-comprobante"
+      class="zona-comprobante"
+    >
 
-      <span class="pago-badge">
-        PAGO PENDIENTE
+      <span class="icono-subida">
+        ↑
       </span>
 
-    </div>
+      <strong>
+        Arrastrá tu comprobante acá
+      </strong>
 
-
-    <label class="selector-comprobante">
-
-      <span>Seleccionar archivo</span>
-
-      <input
-        type="file"
-        id="archivo-comprobante"
-        accept=".jpg,.jpeg,.png,.webp,.pdf"
-      >
+      <span>
+        o hacé clic para seleccionar
+      </span>
 
       <small>
-        JPG, PNG, WEBP o PDF · máximo 5 MB
+        JPG, PNG, WEBP o PDF · Máximo 5 MB
       </small>
 
     </label>
 
 
+    <input
+      type="file"
+      id="archivo-comprobante"
+      class="input-comprobante-oculto"
+      accept=".jpg,.jpeg,.png,.webp,.pdf"
+    >
+
+
+    <p
+      id="nombre-archivo-comprobante"
+      class="nombre-archivo-comprobante"
+    ></p>
+
+
     <button
       type="button"
       id="boton-subir-comprobante"
-      class="boton boton-principal boton-comprobante"
+      class="boton-seleccionar-archivo"
     >
       Subir comprobante
     </button>
+
 
     <p
       id="estado-subida-comprobante"
@@ -905,11 +951,19 @@
   </div>
 
 
-  <div class="codigo-acceso-linea">
+  <div class="codigo-acceso-card">
 
-    <span>
-      Código para consultar la inscripción:
-    </span>
+    <div>
+
+      <span class="codigo-titulo">
+        CÓDIGO DE INSCRIPCIÓN
+      </span>
+
+      <small>
+        Guardalo para consultar tu inscripción.
+      </small>
+
+    </div>
 
     <strong id="codigo-acceso-confirmacion">
       —
@@ -921,7 +975,7 @@
   <button
     type="button"
     id="cerrar-confirmacion"
-    class="boton boton-secundario"
+    class="boton-volver-confirmacion"
   >
     Volver a la página
   </button>
