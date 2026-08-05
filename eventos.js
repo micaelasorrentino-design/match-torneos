@@ -90,33 +90,63 @@ function obtenerNombreCiudad(evento) {
 }
 
 
-function obtenerUbicacion(evento) {
-  return (
-    evento.complejos?.maps_url ||
-    ""
-  );
-}
-
+/* ==========================================
+   CREAR TARJETA
+========================================== */
 
 function crearTarjetaEvento(evento) {
+
   const activo =
     Boolean(
       evento.inscripciones_abiertas
     );
 
- const estado =
-  !activo
-    ? "Inscripciones cerradas"
-    : disponibles === 0
-      ? "Evento completo"
-      : "Inscripciones abiertas";
+  const ocupados =
+    Number(evento.ocupados) || 0;
 
-const textoBoton =
-  permiteInscripcion
-    ? "Inscribirme"
-    : disponibles === 0
-      ? "Evento completo"
-      : "Evento cerrado";
+  const cuposTotales =
+    Number(evento.cupos_totales) || 0;
+
+  const disponibles =
+    Math.max(
+      cuposTotales - ocupados,
+      0
+    );
+
+  const permiteInscripcion =
+    activo &&
+    disponibles > 0;
+
+  const porcentaje =
+    cuposTotales > 0
+      ? Math.min(
+          (ocupados / cuposTotales) * 100,
+          100
+        )
+      : 0;
+
+  const estado =
+    !activo
+      ? "Inscripciones cerradas"
+      : disponibles === 0
+        ? "Evento completo"
+        : "Inscripciones abiertas";
+
+  const textoBoton =
+    permiteInscripcion
+      ? "Inscribirme"
+      : disponibles === 0
+        ? "Evento completo"
+        : "Evento cerrado";
+
+  const textoLugares =
+    !activo
+      ? "Evento cerrado"
+      : disponibles === 0
+        ? "Evento completo"
+        : disponibles === 1
+          ? "Queda un lugar"
+          : `Quedan ${disponibles} lugares`;
 
   const horario =
     evento.hora_fin
@@ -136,43 +166,19 @@ const textoBoton =
     obtenerNombreCiudad(evento);
 
   const lugarCompleto =
-  ciudad
-    ? `${nombreComplejo} · ${ciudad}`
-    : nombreComplejo;
-
-      const ocupados =
-  Number(evento.ocupados) || 0;
-
-const cuposTotales =
-  Number(evento.cupos_totales) || 0;
-
-const disponibles =
-  Math.max(
-    cuposTotales - ocupados,
-    0
-  );
-
-  const permiteInscripcion =
-  activo &&
-  disponibles > 0;
-
-const porcentaje =
-  cuposTotales > 0
-    ? Math.min(
-        (ocupados / cuposTotales) * 100,
-        100
-      )
-    : 0;
+    ciudad
+      ? `${nombreComplejo} · ${ciudad}`
+      : nombreComplejo;
 
   return `
     <article
       class="tarjeta-torneo ${
-        activo
+        permiteInscripcion
           ? ""
           : "torneo-proximamente"
       }"
       data-torneo="${evento.id}"
-      data-activo="${activo}"
+      data-activo="${permiteInscripcion}"
     >
 
       <div class="tarjeta-torneo-superior">
@@ -195,16 +201,17 @@ const porcentaje =
 
         <span
           class="estado-torneo ${
-            activo
+            permiteInscripcion
               ? ""
               : "estado-proximamente"
           }"
           id="estado-${evento.id}"
         >
-          ${estado}
+          ${escaparHTML(estado)}
         </span>
 
       </div>
+
 
       <div class="info-torneo">
 
@@ -228,6 +235,7 @@ const porcentaje =
 
         </div>
 
+
         <div class="info-item">
 
           <span class="info-icono">
@@ -242,11 +250,10 @@ const porcentaje =
                 lugarCompleto
               )}
             </strong>
-
-          
           </div>
 
         </div>
+
 
         <div class="info-item">
 
@@ -265,6 +272,7 @@ const porcentaje =
           </div>
 
         </div>
+
 
         <div class="info-item">
 
@@ -289,6 +297,7 @@ const porcentaje =
 
       </div>
 
+
       <div class="cupos-torneo">
 
         <p>Cupos</p>
@@ -298,21 +307,17 @@ const porcentaje =
           <div class="numero-cupos">
 
             <strong
-  id="inscriptas-${evento.id}"
->
-  ${ocupados}
-</strong>
+              id="inscriptas-${evento.id}"
+            >
+              ${ocupados}
+            </strong>
 
             <span>
               /
               <span
                 id="cupos-${evento.id}"
               >
-                ${
-                  Number(
-                    evento.cupos_totales
-                  ) || 0
-                }
+                ${cuposTotales}
               </span>
             </span>
 
@@ -322,47 +327,46 @@ const porcentaje =
             class="lugares"
             id="lugares-${evento.id}"
           >
-            ${
-  !activo
-    ? "Evento cerrado"
-    : disponibles === 0
-      ? "Evento completo"
-      : disponibles === 1
-        ? "Queda un lugar"
-        : `Quedan ${disponibles} lugares`
-}
+            ${escaparHTML(textoLugares)}
           </strong>
 
         </div>
+
 
         <div class="barra">
 
           <div
             id="progreso-${evento.id}"
             class="progreso"
+            style="width: ${porcentaje}%"
           ></div>
 
         </div>
 
       </div>
 
+
       <button
         type="button"
         class="boton-inscripcion-torneo"
         data-torneo="${evento.id}"
         ${
-  permiteInscripcion
-    ? ""
-    : "disabled"
-}
+          permiteInscripcion
+            ? ""
+            : "disabled"
+        }
       >
-        ${textoBoton}
+        ${escaparHTML(textoBoton)}
       </button>
 
     </article>
   `;
 }
 
+
+/* ==========================================
+   CARGAR EVENTOS
+========================================== */
 
 async function cargarEventos() {
 
@@ -477,6 +481,10 @@ async function cargarEventos() {
 }
 
 
+/* ==========================================
+   CARGAR SCRIPT PRINCIPAL
+========================================== */
+
 function cargarScriptPrincipal() {
 
   const scriptAnterior =
@@ -493,8 +501,8 @@ function cargarScriptPrincipal() {
       "script"
     );
 
-script.src =
-  "./script.js?v=18";
+  script.src =
+    "./script.js?v=18";
 
   script.defer =
     true;
@@ -508,5 +516,9 @@ script.src =
 
 }
 
+
+/* ==========================================
+   INICIO
+========================================== */
 
 cargarEventos();
