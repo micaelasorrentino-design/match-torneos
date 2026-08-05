@@ -1859,3 +1859,249 @@ footer > small {
     font-size: 23px;
   }
 }
+/* ==========================================
+   CONFIRMACIÓN DE INSCRIPCIÓN
+========================================== */
+
+.mensaje-confirmacion {
+  width: 100%;
+  text-align: left;
+}
+
+.confirmacion-cabecera {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 18px;
+}
+
+.confirmacion-etiqueta {
+  display: inline-block;
+  margin-bottom: 8px;
+  color: #8d52c7;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.confirmacion-cabecera h3 {
+  margin: 0;
+  color: #1c1327;
+  font-size: 30px;
+  line-height: 1.1;
+}
+
+.confirmacion-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #a66cc9;
+  color: white;
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.confirmacion-estado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 0;
+  border-top: 1px solid #eadff1;
+  border-bottom: 1px solid #eadff1;
+}
+
+.estado-badge,
+.pago-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 13px;
+  border-radius: 999px;
+  background: #f0e9f7;
+  color: #5a3479;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.confirmacion-estado > strong {
+  color: #3d255b;
+  font-size: 24px;
+}
+
+.confirmacion-datos-evento {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.confirmacion-datos-evento div {
+  padding: 15px;
+  border: 1px solid #e6dcea;
+  border-radius: 16px;
+  background: #fff;
+}
+
+.confirmacion-datos-evento small {
+  display: block;
+  margin-bottom: 5px;
+  color: #807887;
+  font-size: 12px;
+}
+
+.confirmacion-datos-evento strong {
+  color: #1c1327;
+  font-size: 14px;
+}
+
+.confirmacion-aviso {
+  margin-top: 20px;
+  padding: 18px;
+  border-radius: 18px;
+  background: #f8f6fc;
+  text-align: center;
+}
+
+.confirmacion-aviso strong {
+  color: #3d255b;
+  font-size: 19px;
+}
+
+.confirmacion-aviso p {
+  margin: 6px 0 0;
+  color: #746c79;
+  font-size: 14px;
+}
+
+.confirmacion-transferencia {
+  margin-top: 20px;
+}
+
+.comprobante-card {
+  margin-top: 22px;
+  padding: 22px;
+  border: 1px solid #e5d8ec;
+  border-radius: 22px;
+  background: #f8f6fc;
+}
+
+.comprobante-titulo {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.comprobante-titulo > div {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.comprobante-icono {
+  font-size: 24px;
+}
+
+.comprobante-titulo h4 {
+  margin: 0;
+  color: #1c1327;
+  font-size: 19px;
+}
+
+.comprobante-titulo p {
+  margin: 5px 0 0;
+  color: #746c79;
+  font-size: 13px;
+}
+
+.selector-comprobante {
+  display: block;
+  margin-top: 18px;
+}
+
+.selector-comprobante > span {
+  display: block;
+  margin-bottom: 8px;
+  color: #3d255b;
+  font-weight: 700;
+}
+
+.selector-comprobante input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px;
+  border: 1px solid #ded2e5;
+  border-radius: 14px;
+  background: white;
+}
+
+.selector-comprobante small {
+  display: block;
+  margin-top: 7px;
+  color: #847b89;
+  font-size: 12px;
+}
+
+.boton-comprobante {
+  width: 100%;
+  margin-top: 16px;
+}
+
+.estado-subida-comprobante {
+  min-height: 20px;
+  margin: 10px 0 0;
+  color: #5a3479;
+  font-weight: 700;
+  text-align: center;
+}
+
+.codigo-acceso-linea {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin: 20px 0;
+  padding: 14px 16px;
+  border: 1px dashed #cdb7dd;
+  border-radius: 14px;
+  color: #746c79;
+  font-size: 13px;
+}
+
+.codigo-acceso-linea strong {
+  color: #3d255b;
+  font-size: 18px;
+  letter-spacing: 2px;
+}
+
+@media (max-width: 768px) {
+
+  .confirmacion-cabecera h3 {
+    font-size: 24px;
+  }
+
+  .confirmacion-check {
+    width: 44px;
+    height: 44px;
+    font-size: 23px;
+  }
+
+  .confirmacion-datos-evento {
+    grid-template-columns: 1fr;
+  }
+
+  .comprobante-titulo {
+    flex-direction: column;
+  }
+
+  .codigo-acceso-linea {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

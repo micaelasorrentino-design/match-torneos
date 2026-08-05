@@ -757,36 +757,79 @@
 
 
 <!-- CONFIRMACIÓN -->
-<!-- CONFIRMACIÓN -->
 <div
   id="mensaje-confirmacion"
   class="mensaje-confirmacion oculto"
 >
 
-  <span class="confirmacion-icono">✓</span>
+  <div class="confirmacion-cabecera">
 
-  <h3>¡Recibimos tu inscripción!</h3>
+    <div>
 
-  <p>
-    Tu inscripción quedó registrada y está pendiente de confirmación.
-  </p>
+      <span class="confirmacion-etiqueta">
+        INSCRIPCIÓN RECIBIDA
+      </span>
 
-  <div class="codigo-acceso-box">
+      <h3 id="confirmacion-evento">
+        Evento MATCH
+      </h3>
 
-    <small>Tu código de acceso</small>
+    </div>
 
-    <strong id="codigo-acceso-confirmacion">
-      —
+    <span class="confirmacion-check">
+      ✓
+    </span>
+
+  </div>
+
+
+  <div class="confirmacion-estado">
+
+    <span class="estado-badge">
+      PENDIENTE DE CONFIRMACIÓN
+    </span>
+
+    <strong id="confirmacion-precio">
+      $0
+    </strong>
+
+  </div>
+
+
+  <div class="confirmacion-datos-evento">
+
+    <div>
+      <small>Fecha</small>
+      <strong id="confirmacion-fecha">—</strong>
+    </div>
+
+    <div>
+      <small>Horario</small>
+      <strong id="confirmacion-horario">—</strong>
+    </div>
+
+    <div>
+      <small>Lugar</small>
+      <strong id="confirmacion-lugar">—</strong>
+    </div>
+
+  </div>
+
+
+  <div class="confirmacion-aviso">
+
+    <strong>
+      ¡Recibimos tu inscripción!
     </strong>
 
     <p>
-      Guardalo. Lo vas a necesitar junto con tu WhatsApp
-      para consultar tus inscripciones.
+      Tu lugar está pendiente de confirmación hasta que validemos el pago.
     </p>
 
   </div>
 
-  <div class="datos-transferencia">
+
+  <div class="datos-transferencia confirmacion-transferencia">
 
     <div>
       <small>Alias</small>
@@ -799,21 +842,37 @@
     </div>
 
     <div>
-      <small>Banco / billetera</small>
+      <small>Banco</small>
       <strong>BANCO DE LA GALICIA</strong>
     </div>
 
   </div>
 
-  <div class="carga-comprobante">
 
-    <h4>Subí tu comprobante</h4>
+  <div class="comprobante-card">
 
-    <p>
-      Podés hacerlo ahora o más tarde desde “Mis inscripciones”.
-    </p>
+    <div class="comprobante-titulo">
 
-    <label class="campo">
+      <div>
+        <span class="comprobante-icono">📎</span>
+
+        <div>
+          <h4>Subí tu comprobante</h4>
+
+          <p>
+            Podés hacerlo ahora o más tarde desde “Mis inscripciones”.
+          </p>
+        </div>
+      </div>
+
+      <span class="pago-badge">
+        PAGO PENDIENTE
+      </span>
+
+    </div>
+
+
+    <label class="selector-comprobante">
 
       <span>Seleccionar archivo</span>
 
@@ -824,15 +883,16 @@
       >
 
       <small>
-        Formatos permitidos: JPG, PNG, WEBP o PDF. Máximo 5 MB.
+        JPG, PNG, WEBP o PDF · máximo 5 MB
       </small>
 
     </label>
 
+
     <button
       type="button"
       id="boton-subir-comprobante"
-      class="boton boton-principal"
+      class="boton boton-principal boton-comprobante"
     >
       Subir comprobante
     </button>
@@ -844,6 +904,20 @@
 
   </div>
 
+
+  <div class="codigo-acceso-linea">
+
+    <span>
+      Código para consultar la inscripción:
+    </span>
+
+    <strong id="codigo-acceso-confirmacion">
+      —
+    </strong>
+
+  </div>
+
+
   <button
     type="button"
     id="cerrar-confirmacion"
@@ -853,7 +927,6 @@
   </button>
 
 </div>
-
 
 
 

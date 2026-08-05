@@ -81,6 +81,31 @@ const apellidoPareja =
 const whatsappPareja =
   document.getElementById("whatsapp-pareja");
 
+const confirmacionEvento =
+  document.getElementById(
+    "confirmacion-evento"
+  );
+
+const confirmacionFecha =
+  document.getElementById(
+    "confirmacion-fecha"
+  );
+
+const confirmacionHorario =
+  document.getElementById(
+    "confirmacion-horario"
+  );
+
+const confirmacionLugar =
+  document.getElementById(
+    "confirmacion-lugar"
+  );
+
+const confirmacionPrecio =
+  document.getElementById(
+    "confirmacion-precio"
+  );
+
 
 /* ==========================================
    UTILIDADES
@@ -661,6 +686,65 @@ async function registrarInscripcionSegura(datos) {
 function prepararConfirmacion(
   datos
 ) {
+
+  if (confirmacionEvento) {
+    confirmacionEvento.textContent =
+      eventoSeleccionado?.titulo ||
+      "Evento MATCH";
+  }
+
+  if (confirmacionFecha) {
+    confirmacionFecha.textContent =
+      eventoSeleccionado?.fecha ||
+      "A confirmar";
+  }
+
+  if (confirmacionHorario) {
+
+    const inicio =
+      eventoSeleccionado?.hora_inicio?.slice(0,5) || "";
+
+    const fin =
+      eventoSeleccionado?.hora_fin?.slice(0,5) || "";
+
+    confirmacionHorario.textContent =
+      fin
+        ? `${inicio} a ${fin}`
+        : inicio || "A confirmar";
+
+  }
+
+  if (confirmacionLugar) {
+    confirmacionLugar.textContent =
+      eventoSeleccionado?.lugar ||
+      "A confirmar";
+  }
+
+  if (confirmacionPrecio) {
+
+    confirmacionPrecio.textContent =
+      new Intl.NumberFormat(
+        "es-AR",
+        {
+          style: "currency",
+          currency: "ARS",
+          maximumFractionDigits: 0
+        }
+      ).format(
+        Number(eventoSeleccionado?.precio) || 0
+      );
+
+  }
+
+  if (
+    codigoAccesoConfirmacion &&
+    window.inscripcionActual?.codigo
+  ) {
+
+    codigoAccesoConfirmacion.textContent =
+      window.inscripcionActual.codigo;
+
+  }
 
   const datosVisuales =
     obtenerDatosVisualesTorneo(
