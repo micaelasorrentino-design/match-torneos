@@ -121,6 +121,11 @@ const estadoSubidaComprobante =
     "estado-subida-comprobante"
   );
 
+  const nombreArchivoComprobante =
+  document.getElementById(
+    "nombre-archivo-comprobante"
+  );
+
 
 /* ==========================================
    UTILIDADES
@@ -972,6 +977,175 @@ window.inscripcionActual = {
 
 }
 
+/* ==========================================
+   SUBIR COMPROBANTE
+========================================== */
+
+async function subirComprobante() {
+
+  const inscripcionId =
+    window.inscripcionActual?.id;
+
+  const codigoAcceso =
+    window.inscripcionActual?.codigo;
+
+  const archivo =
+    archivoComprobante?.files?.[0];
+
+  if (!inscripcionId || !codigoAcceso) {
+    alert(
+      "No pudimos identificar la inscripción."
+    );
+
+    return;
+  }
+
+  if (!archivo) {
+    alert(
+      "Seleccioná una imagen o un PDF."
+    );
+
+    return;
+  }
+
+  const formatosPermitidos = [
+    "image/jpeg",
+    "image/png",
+    "image/webp",
+    "application/pdf"
+  ];
+
+  if (
+    !formatosPermitidos.includes(
+      archivo.type
+    )
+  ) {
+    alert(
+      "El archivo debe ser JPG, PNG, WEBP o PDF."
+    );
+
+    return;
+  }
+
+  const limiteBytes =
+    5 * 1024 * 1024;
+
+  if (archivo.size > limiteBytes) {
+    alert(
+      "El archivo supera el máximo de 5 MB."
+    );
+
+    return;
+  }
+
+  botonSubirComprobante.disabled = true;
+  botonSubirComprobante.textContent =
+    "Subiendo comprobante...";
+
+  if (estadoSubidaComprobante) {
+    estadoSubidaComprobante.textContent = "";
+  }
+
+  try {
+
+    const extension =
+      archivo.name
+        .split(".")
+        .pop()
+        .toLowerCase();
+
+    const rutaArchivo =
+      `${inscripcionId}/${Date.now()}.${extension}`;
+
+    const { error: errorSubida } =
+      await window.db.storage
+        .from("comprobantes")
+        .upload(
+          rutaArchivo,
+          archivo,
+          {
+            cacheControl: "3600",
+            upsert: false
+          }
+        );
+
+    if (errorSubida) {
+      console.error(
+        "Error al subir el comprobante:",
+        errorSubida
+      );
+
+      throw new Error(
+        "No pudimos subir el comprobante."
+      );
+    }
+
+    const { error: errorRegistro } =
+      await window.db.rpc(
+        "registrar_comprobante",
+        {
+          p_inscripcion_id:
+            inscripcionId,
+
+          p_codigo_acceso:
+            codigoAcceso,
+
+          p_comprobante_path:
+            rutaArchivo
+        }
+      );
+
+    if (errorRegistro) {
+      console.error(
+        "Error al asociar el comprobante:",
+        errorRegistro
+      );
+
+      await window.db.storage
+        .from("comprobantes")
+        .remove([rutaArchivo]);
+
+      throw new Error(
+        "No pudimos asociar el comprobante a la inscripción."
+      );
+    }
+
+    if (estadoSubidaComprobante) {
+      estadoSubidaComprobante.textContent =
+        "✓ Comprobante recibido. En breve vamos a revisarlo.";
+    }
+
+    botonSubirComprobante.textContent =
+      "Comprobante enviado";
+
+    archivoComprobante.disabled = true;
+
+    document
+      .querySelector(".zona-comprobante")
+      ?.classList.add(
+        "comprobante-subido"
+      );
+
+  } catch (error) {
+
+    console.error(
+      "Error durante la carga:",
+      error
+    );
+
+    if (estadoSubidaComprobante) {
+      estadoSubidaComprobante.textContent =
+        error.message ||
+        "No pudimos subir el comprobante.";
+    }
+
+    botonSubirComprobante.disabled = false;
+    botonSubirComprobante.textContent =
+      "Subir comprobante";
+
+  }
+
+}
 
 /* ==========================================
    BOTONES DINÁMICOS
@@ -1069,6 +1243,29 @@ document.addEventListener(
     }
 
   }
+);
+archivoComprobante?.addEventListener(
+  "change",
+  () => {
+
+    const archivo =
+      archivoComprobante.files?.[0];
+
+    if (nombreArchivoComprobante) {
+
+      nombreArchivoComprobante.textContent =
+        archivo
+          ? archivo.name
+          : "";
+
+    }
+
+  }
+);
+
+botonSubirComprobante?.addEventListener(
+  "click",
+  subirComprobante
 );
 
 

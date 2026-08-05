@@ -2527,3 +2527,8 @@ body {
   }
 
 }
+.zona-comprobante.comprobante-subido {
+  border-style: solid;
+  border-color: #a66cc9;
+  background: #f3e9fa;
+}

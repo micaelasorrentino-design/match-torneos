@@ -131,27 +131,11 @@ function crearTarjetaEvento(evento) {
   const ciudad =
     obtenerNombreCiudad(evento);
 
-  const mapsUrl =
-    obtenerUbicacion(evento);
-
   const lugarCompleto =
-    ciudad
-      ? `${nombreComplejo} · ${ciudad}`
-      : nombreComplejo;
+  ciudad
+    ? `${nombreComplejo} · ${ciudad}`
+    : nombreComplejo;
 
-  const linkUbicacion =
-    mapsUrl
-      ? `
-        <a
-          href="${escaparHTML(mapsUrl)}"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="link-ubicacion-tarjeta"
-        >
-          Ver ubicación ↗
-        </a>
-      `
-      : "";
       const ocupados =
   Number(evento.ocupados) || 0;
 
@@ -251,7 +235,7 @@ const porcentaje =
               )}
             </strong>
 
-            ${linkUbicacion}
+          
           </div>
 
         </div>
@@ -501,8 +485,8 @@ function cargarScriptPrincipal() {
       "script"
     );
 
-  script.src =
-    "./script.js?v=16";
+script.src =
+  "./script.js?v=18";
 
   script.defer =
     true;
