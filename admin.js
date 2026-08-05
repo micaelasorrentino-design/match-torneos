@@ -698,21 +698,37 @@ function crearFilaInscripcion(
 
         <div class="acciones-tabla">
 
-          <button
-            type="button"
-            class="boton-tabla boton-tabla-principal"
-            data-confirmar="${inscripcion.id}"
-          >
-            Confirmar
-          </button>
+          ${
+  inscripcion.estado !== "confirmada"
+    ? `
+      <button
+        type="button"
+        class="boton-tabla boton-tabla-principal"
+        data-confirmar="${inscripcion.id}"
+      >
+        Confirmar pago
+      </button>
+    `
+    : `
+      <span class="estado-chip estado-confirmada">
+        Confirmada
+      </span>
+    `
+}
 
-          <button
-            type="button"
-            class="boton-tabla"
-            data-cancelar="${inscripcion.id}"
-          >
-            Cancelar
-          </button>
+${
+  inscripcion.estado !== "cancelada"
+    ? `
+      <button
+        type="button"
+        class="boton-tabla boton-cancelar"
+        data-cancelar="${inscripcion.id}"
+      >
+        Cancelar
+      </button>
+    `
+    : ""
+}
 
           ${
             participante.telefono_normalizado
@@ -820,37 +836,139 @@ async function actualizarInscripcion(
 }
 
 
+/* ==========================================
+   CONFIRMAR Y CANCELAR INSCRIPCIONES
+========================================== */
+
 async function confirmarInscripcion(
   inscripcionId
 ) {
-  await actualizarInscripcion(
-    inscripcionId,
-    {
-      estado: "confirmada",
-      estado_pago: "confirmado"
-    }
-  );
-}
 
+  const inscripcion =
+    inscripcionesActuales.find(
+      (item) =>
+        item.id === inscripcionId
+    );
 
-async function cancelarInscripcion(
-  inscripcionId
-) {
+  if (!inscripcion) {
+    alert(
+      "No encontramos la inscripción."
+    );
+
+    return;
+  }
+
+  if (
+    inscripcion.estado === "confirmada" &&
+    inscripcion.estado_pago === "confirmado"
+  ) {
+    alert(
+      "Esta inscripción ya está confirmada."
+    );
+
+    return;
+  }
+
+  const participante =
+    inscripcion.participantes || {};
+
+  const nombreCompleto =
+    [
+      participante.nombre,
+      participante.apellido
+    ]
+      .filter(Boolean)
+      .join(" ");
+
   const confirmar =
     window.confirm(
-      "¿Querés cancelar esta inscripción?"
+      `¿Confirmar la inscripción y el pago de ${nombreCompleto || "esta participante"}?`
     );
 
   if (!confirmar) {
     return;
   }
 
-  await actualizarInscripcion(
-    inscripcionId,
-    {
-      estado: "cancelada"
-    }
-  );
+  const actualizado =
+    await actualizarInscripcion(
+      inscripcionId,
+      {
+        estado: "confirmada",
+        estado_pago: "confirmado"
+      }
+    );
+
+  if (actualizado) {
+    alert(
+      "Inscripción y pago confirmados."
+    );
+  }
+
+}
+
+
+async function cancelarInscripcion(
+  inscripcionId
+) {
+
+  const inscripcion =
+    inscripcionesActuales.find(
+      (item) =>
+        item.id === inscripcionId
+    );
+
+  if (!inscripcion) {
+    alert(
+      "No encontramos la inscripción."
+    );
+
+    return;
+  }
+
+  if (
+    inscripcion.estado === "cancelada"
+  ) {
+    alert(
+      "Esta inscripción ya está cancelada."
+    );
+
+    return;
+  }
+
+  const participante =
+    inscripcion.participantes || {};
+
+  const nombreCompleto =
+    [
+      participante.nombre,
+      participante.apellido
+    ]
+      .filter(Boolean)
+      .join(" ");
+
+  const confirmar =
+    window.confirm(
+      `¿Cancelar la inscripción de ${nombreCompleto || "esta participante"}?\n\nEl cupo volverá a quedar disponible.`
+    );
+
+  if (!confirmar) {
+    return;
+  }
+
+  const actualizado =
+    await actualizarInscripcion(
+      inscripcionId,
+      {
+        estado: "cancelada"
+      }
+    );
+
+  if (actualizado) {
+    alert(
+      "Inscripción cancelada. El cupo quedó liberado."
+    );
+  }
+
 }
 
 

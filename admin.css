@@ -784,3 +784,11 @@ tbody tr:hover {
   }
 
 }
+.boton-cancelar {
+  border-color: #edcad3;
+  color: #b9536a;
+}
+
+.boton-cancelar:hover {
+  background: #fbedf1;
+}
