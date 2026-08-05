@@ -432,7 +432,7 @@ async function cargarEventos() {
   if (respuestaOcupacion.error) {
 
     console.error(
-      "Error al cargar ocupación:",
+      "Error al cargar la ocupación:",
       respuestaOcupacion.error
     );
 
@@ -456,6 +456,7 @@ async function cargarEventos() {
     ).map(
       (evento) => ({
         ...evento,
+
         ocupados:
           ocupacionPorEvento.get(
             evento.id
@@ -483,31 +484,9 @@ async function cargarEventos() {
 
 }
 
-  if (
-    !data ||
-    data.length === 0
-  ) {
-    contenedor.innerHTML = `
-      <p>
-        Próximamente publicaremos nuevos encuentros 💜
-      </p>
-    `;
-
-    return;
-  }
-
-  contenedor.innerHTML =
-    data
-      .map(
-        crearTarjetaEvento
-      )
-      .join("");
-
-  cargarScriptPrincipal();
-}
-
 
 function cargarScriptPrincipal() {
+
   const scriptAnterior =
     document.querySelector(
       'script[data-script-match="principal"]'
@@ -522,8 +501,8 @@ function cargarScriptPrincipal() {
       "script"
     );
 
-script.src =
-  "./script.js?v=16";
+  script.src =
+    "./script.js?v=16";
 
   script.defer =
     true;
@@ -534,6 +513,7 @@ script.src =
   document.body.appendChild(
     script
   );
+
 }
 
 
