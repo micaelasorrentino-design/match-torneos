@@ -2105,9 +2105,7 @@ footer > small {
     flex-direction: column;
   }
 }
-body.modal-abierto footer {
-  display: none;
-}
+
 /* ==========================================
    CONFIRMACIÓN MATCH — VERSIÓN ARMONIOSA
 ========================================== */
@@ -2550,4 +2548,23 @@ body {
 
     color:#7c5aa7;
 
+}
+footer {
+  display: block;
+}
+
+.footer-admin {
+  margin-top: 16px;
+  text-align: center;
+}
+
+.footer-admin a {
+  color: #9f96aa;
+  font-family: "Poppins", sans-serif;
+  font-size: 11px;
+  text-decoration: none;
+}
+
+.footer-admin a:hover {
+  color: #7c5aa7;
 }
