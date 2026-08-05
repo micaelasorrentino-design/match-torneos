@@ -1,3 +1,16 @@
+async function probarSupabase() {
+
+    const { data, error } = await window.db
+        .from("eventos")
+        .select("*");
+
+    console.log("EVENTOS:", data);
+    console.log("ERROR:", error);
+
+}
+
+probarSupabase();
+
 /* ==========================================
    MATCH BRAGADO
    SCRIPT PRINCIPAL
