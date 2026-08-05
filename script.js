@@ -1,71 +1,10 @@
-async function probarSupabase() {
-
-    const { data, error } = await window.db
-        .from("eventos")
-        .select("*");
-
-    console.log("EVENTOS:", data);
-    console.log("ERROR:", error);
-
-}
-
-probarSupabase();
-
 /* ==========================================
-   MATCH BRAGADO
-   SCRIPT PRINCIPAL
-========================================== */
-
-
-/* ==========================================
-   CONEXIÓN CON GOOGLE SHEETS
-========================================== */
-
-const URL_APPS_SCRIPT =
-  "https://script.google.com/macros/s/AKfycbxqKwR50LZzkeexptYniJncGfJLOUBwumD-K1TCgdrXTvom3z8d8NjN6ZyusCe86XL1OQ/exec";
-
-
-/* ==========================================
-   TORNEO SELECCIONADO
+   SOMOS MATCH
+   SCRIPT PRINCIPAL — SUPABASE
 ========================================== */
 
 let torneoSeleccionado = "";
-
-
-/* ==========================================
-   ESTADO CANCHA ABIERTA
-========================================== */
-
-let estadoCanchaAbierta = {
-  drive: 0,
-  reves: 0,
-
-  driveDisponibles: 6,
-  revesDisponibles: 6,
-
-  driveCompleto: false,
-  revesCompleto: false
-};
-
-
-/* ==========================================
-   ELEMENTOS DE LOS TORNEOS
-========================================== */
-
-const tarjetasTorneos =
-  document.querySelectorAll(
-    ".tarjeta-torneo"
-  );
-
-const tarjetasTorneosActivos =
-  document.querySelectorAll(
-    '.tarjeta-torneo[data-activo="true"]'
-  );
-
-const botonesInscripcion =
-  document.querySelectorAll(
-    '.tarjeta-torneo[data-activo="true"] .boton-inscripcion-torneo'
-  );
+let eventoSeleccionado = null;
 
 
 /* ==========================================
@@ -73,59 +12,37 @@ const botonesInscripcion =
 ========================================== */
 
 const modal =
-  document.getElementById(
-    "modal-inscripcion"
-  );
+  document.getElementById("modal-inscripcion");
 
 const cerrarModal =
-  document.getElementById(
-    "cerrar-modal"
-  );
+  document.getElementById("cerrar-modal");
 
 const cerrarConfirmacion =
-  document.getElementById(
-    "cerrar-confirmacion"
-  );
+  document.getElementById("cerrar-confirmacion");
 
 const formulario =
-  document.getElementById(
-    "formulario-inscripcion"
-  );
+  document.getElementById("formulario-inscripcion");
 
 const mensajeConfirmacion =
-  document.getElementById(
-    "mensaje-confirmacion"
-  );
+  document.getElementById("mensaje-confirmacion");
 
 const datosPareja =
-  document.getElementById(
-    "datos-pareja"
-  );
+  document.getElementById("datos-pareja");
 
 const mensajeBuscoPareja =
-  document.getElementById(
-    "mensaje-busco-pareja"
-  );
+  document.getElementById("mensaje-busco-pareja");
 
 const bloquePosicion =
-  document.getElementById(
-    "bloque-posicion"
-  );
+  document.getElementById("bloque-posicion");
 
 const bloqueModalidad =
-  document.getElementById(
-    "bloque-modalidad"
-  );
+  document.getElementById("bloque-modalidad");
 
 const torneoSeleccionadoInput =
-  document.getElementById(
-    "torneo-seleccionado"
-  );
+  document.getElementById("torneo-seleccionado");
 
 const tituloFormulario =
-  document.getElementById(
-    "titulo-formulario"
-  );
+  document.getElementById("titulo-formulario");
 
 const torneoSeleccionadoTexto =
   document.getElementById(
@@ -133,8 +50,16 @@ const torneoSeleccionadoTexto =
   );
 
 const botonEnviar =
-  document.querySelector(
-    ".boton-enviar"
+  document.querySelector(".boton-enviar");
+
+const botonWhatsapp =
+  document.getElementById(
+    "boton-comprobante-whatsapp"
+  );
+
+const instruccionComprobante =
+  document.getElementById(
+    "instruccion-comprobante"
   );
 
 const modalidades =
@@ -147,747 +72,281 @@ const opcionesPosicion =
     'input[name="posicion"]'
   );
 
-const opcionDrive =
-  document.querySelector(
-    'input[name="posicion"][value="Drive"]'
-  );
-
-const opcionReves =
-  document.querySelector(
-    'input[name="posicion"][value="Revés"]'
-  );
-
-const opcionIndistinto =
-  document.querySelector(
-    'input[name="posicion"][value="Indistinto"]'
-  );
-
 const nombrePareja =
-  document.getElementById(
-    "nombre-pareja"
-  );
+  document.getElementById("nombre-pareja");
 
 const apellidoPareja =
-  document.getElementById(
-    "apellido-pareja"
-  );
+  document.getElementById("apellido-pareja");
 
 const whatsappPareja =
-  document.getElementById(
-    "whatsapp-pareja"
-  );
-
-const botonWhatsapp =
-  document.getElementById(
-    "boton-comprobante-whatsapp"
-  );
-
-const instruccionComprobante =
-  document.getElementById(
-    "instruccion-comprobante"
-  );
+  document.getElementById("whatsapp-pareja");
 
 
 /* ==========================================
-   DATOS VISUALES DE UNA TARJETA
-
-   Esto permite cambiar nombre, categoría
-   o sede desde HTML sin tocar este script.
+   UTILIDADES
 ========================================== */
 
-function obtenerDatosVisualesTorneo(codigo) {
+function normalizarTelefono(valor = "") {
+
+  return String(valor)
+    .replace(/\D/g, "");
+
+}
+
+
+function normalizarPosicion(valor = "") {
+
+  const posicion =
+    String(valor)
+      .trim()
+      .toLowerCase();
+
+  if (
+    posicion === "revés" ||
+    posicion === "reves"
+  ) {
+    return "reves";
+  }
+
+  if (posicion === "drive") {
+    return "drive";
+  }
+
+  if (posicion === "indistinto") {
+    return "indistinto";
+  }
+
+  return null;
+
+}
+
+
+function esCanchaAbierta() {
+
+  return (
+    eventoSeleccionado?.tipo ===
+    "cancha_abierta"
+  );
+
+}
+
+
+function obtenerDatosVisualesTorneo(
+  idEvento
+) {
 
   const tarjeta =
     document.querySelector(
-      `.tarjeta-torneo[data-torneo="${codigo}"]`
+      `.tarjeta-torneo[data-torneo="${idEvento}"]`
     );
 
   if (!tarjeta) {
-    return {
-      nombre: codigo,
-      sede: ""
-    };
-  }
 
+    return {
+
+      nombre:
+        eventoSeleccionado?.titulo ||
+        "Evento MATCH",
+
+      sede:
+        eventoSeleccionado?.lugar ||
+        ""
+
+    };
+
+  }
 
   const titulo =
     tarjeta.querySelector("h3");
 
-
   let sede = "";
 
-  const items =
-    tarjeta.querySelectorAll(
-      ".info-item"
-    );
+  tarjeta
+    .querySelectorAll(".info-item")
+    .forEach((item) => {
 
-  items.forEach((item) => {
+      const etiqueta =
+        item.querySelector("small");
 
-    const etiqueta =
-      item.querySelector("small");
+      const valor =
+        item.querySelector("strong");
 
-    const valor =
-      item.querySelector("strong");
+      if (
+        etiqueta &&
+        valor &&
+        etiqueta.textContent
+          .trim()
+          .toLowerCase() === "lugar"
+      ) {
 
-    if (
-      etiqueta &&
-      valor &&
-      etiqueta.textContent
-        .trim()
-        .toLowerCase() === "lugar"
-    ) {
+        sede =
+          valor.textContent.trim();
 
-      sede =
-        valor.textContent.trim();
+      }
 
-    }
-
-  });
-
+    });
 
   return {
 
     nombre:
-      titulo
-        ? titulo.textContent.trim()
-        : codigo,
+      titulo?.textContent.trim() ||
+      eventoSeleccionado?.titulo ||
+      "Evento MATCH",
 
     sede:
-      sede
-
-  };
-}
-
-
-/* ==========================================
-   CUPOS INICIALES DEL HTML
-========================================== */
-
-function obtenerCuposIniciales(codigo) {
-
-  const elemento =
-    document.getElementById(
-      `cupos-${codigo}`
-    );
-
-  if (!elemento) {
-    return 32;
-  }
-
-  return (
-    Number(
-      elemento.textContent.trim()
-    ) || 32
-  );
-}
-
-
-/* ==========================================
-   MOSTRAR CUPOS DE UN TORNEO
-========================================== */
-
-function actualizarTarjetaTorneo(
-  codigo,
-  ocupados,
-  cuposTotales
-) {
-
-  const elementoInscriptas =
-    document.getElementById(
-      `inscriptas-${codigo}`
-    );
-
-  const elementoCupos =
-    document.getElementById(
-      `cupos-${codigo}`
-    );
-
-  const elementoLugares =
-    document.getElementById(
-      `lugares-${codigo}`
-    );
-
-  const elementoProgreso =
-    document.getElementById(
-      `progreso-${codigo}`
-    );
-
-  const elementoEstado =
-    document.getElementById(
-      `estado-${codigo}`
-    );
-
-  const boton =
-    document.querySelector(
-      `.boton-inscripcion-torneo[data-torneo="${codigo}"]`
-    );
-
-
-  if (
-    !elementoInscriptas ||
-    !elementoCupos ||
-    !elementoLugares ||
-    !elementoProgreso ||
-    !elementoEstado ||
-    !boton
-  ) {
-    return;
-  }
-
-
-  ocupados =
-    Number(ocupados) || 0;
-
-  cuposTotales =
-    Number(cuposTotales) ||
-    obtenerCuposIniciales(codigo);
-
-
-  const disponibles =
-    Math.max(
-      cuposTotales - ocupados,
-      0
-    );
-
-
-  const porcentaje =
-    cuposTotales > 0
-      ? (
-          ocupados /
-          cuposTotales
-        ) * 100
-      : 0;
-
-
-  elementoInscriptas.textContent =
-    ocupados;
-
-  elementoCupos.textContent =
-    cuposTotales;
-
-  elementoProgreso.style.width =
-    `${Math.min(
-      porcentaje,
-      100
-    )}%`;
-
-
-  if (disponibles > 1) {
-
-    elementoLugares.textContent =
-      `Quedan ${disponibles} lugares`;
-
-  } else if (disponibles === 1) {
-
-    elementoLugares.textContent =
-      "Queda un solo lugar";
-
-  } else {
-
-    elementoLugares.textContent =
-      "Evento completo";
-
-  }
-
-
-  if (disponibles <= 0) {
-
-    elementoEstado.textContent =
-      "Inscripciones cerradas";
-
-    boton.textContent =
-      "Evento completo";
-
-    boton.disabled = true;
-
-  } else {
-
-    elementoEstado.textContent =
-      "Inscripciones abiertas";
-
-    boton.textContent =
-      "Inscribirme";
-
-    boton.disabled = false;
-
-  }
-}
-
-
-/* ==========================================
-   GUARDAR ESTADO DRIVE / REVÉS
-========================================== */
-
-function actualizarEstadoCanchaAbierta(
-  posiciones
-) {
-
-  if (!posiciones) {
-    return;
-  }
-
-
-  estadoCanchaAbierta = {
-
-    drive:
-      Number(
-        posiciones.drive
-      ) || 0,
-
-    reves:
-      Number(
-        posiciones.reves
-      ) || 0,
-
-    driveDisponibles:
-      Number(
-        posiciones.driveDisponibles
-      ) || 0,
-
-    revesDisponibles:
-      Number(
-        posiciones.revesDisponibles
-      ) || 0,
-
-    driveCompleto:
-      Boolean(
-        posiciones.driveCompleto
-      ),
-
-    revesCompleto:
-      Boolean(
-        posiciones.revesCompleto
-      )
+      sede ||
+      eventoSeleccionado?.lugar ||
+      ""
 
   };
 
-
-  actualizarOpcionesPosicionCanchaAbierta();
 }
 
 
 /* ==========================================
-   TEXTO DE LAS OPCIONES
-========================================== */
-
-function cambiarTextoOpcion(
-  opcion,
-  texto
-) {
-
-  if (!opcion) {
-    return;
-  }
-
-
-  const label =
-    opcion.closest("label");
-
-  if (!label) {
-    return;
-  }
-
-
-  const span =
-    label.querySelector("span");
-
-  if (span) {
-    span.textContent = texto;
-  }
-}
-
-
-/* ==========================================
-   RESTAURAR DRIVE / REVÉS / INDISTINTO
+   OPCIONES DE POSICIÓN
 ========================================== */
 
 function restaurarOpcionesPosicion() {
 
-  if (opcionDrive) {
+  opcionesPosicion.forEach(
+    (opcion) => {
 
-    opcionDrive.disabled = false;
+      opcion.disabled = false;
 
-    cambiarTextoOpcion(
-      opcionDrive,
-      "Drive"
-    );
+      const span =
+        opcion
+          .closest("label")
+          ?.querySelector("span");
 
-  }
-
-
-  if (opcionReves) {
-
-    opcionReves.disabled = false;
-
-    cambiarTextoOpcion(
-      opcionReves,
-      "Revés"
-    );
-
-  }
-
-
-  if (opcionIndistinto) {
-
-    opcionIndistinto.disabled = false;
-
-    cambiarTextoOpcion(
-      opcionIndistinto,
-      "Indistinto"
-    );
-
-  }
-}
-
-
-/* ==========================================
-   BLOQUEAR POSICIONES COMPLETAS
-========================================== */
-
-function actualizarOpcionesPosicionCanchaAbierta() {
-
-  restaurarOpcionesPosicion();
-
-
-  /* DRIVE */
-
-  if (
-    opcionDrive &&
-    estadoCanchaAbierta.driveCompleto
-  ) {
-
-    opcionDrive.disabled = true;
-
-    opcionDrive.checked = false;
-
-    cambiarTextoOpcion(
-      opcionDrive,
-      "Drive — completo"
-    );
-
-  }
-
-
-  /* REVÉS */
-
-  if (
-    opcionReves &&
-    estadoCanchaAbierta.revesCompleto
-  ) {
-
-    opcionReves.disabled = true;
-
-    opcionReves.checked = false;
-
-    cambiarTextoOpcion(
-      opcionReves,
-      "Revés — completo"
-    );
-
-  }
-
-
-  /* INDISTINTO */
-
-  if (
-    opcionIndistinto &&
-    estadoCanchaAbierta.driveCompleto &&
-    estadoCanchaAbierta.revesCompleto
-  ) {
-
-    opcionIndistinto.disabled = true;
-
-    opcionIndistinto.checked = false;
-
-    cambiarTextoOpcion(
-      opcionIndistinto,
-      "Indistinto — completo"
-    );
-
-  }
-}
-
-
-/* ==========================================
-   ESTADO DE CARGA
-========================================== */
-
-function mostrarCargandoTorneos() {
-
-  tarjetasTorneosActivos.forEach(
-    (tarjeta) => {
-
-      const codigo =
-        tarjeta.dataset.torneo;
-
-
-      const lugares =
-        document.getElementById(
-          `lugares-${codigo}`
-        );
-
-
-      const boton =
-        tarjeta.querySelector(
-          ".boton-inscripcion-torneo"
-        );
-
-
-      if (lugares) {
-
-        lugares.textContent =
-          "Cargando disponibilidad...";
-
+      if (!span) {
+        return;
       }
 
+      if (opcion.value === "Drive") {
+        span.textContent = "Drive";
+      }
 
-      if (boton) {
+      if (opcion.value === "Revés") {
+        span.textContent = "Revés";
+      }
 
-        boton.disabled = true;
-
+      if (opcion.value === "Indistinto") {
+        span.textContent = "Indistinto";
       }
 
     }
   );
+
 }
 
 
 /* ==========================================
-   CONSULTAR GOOGLE SHEETS
+   FORMULARIO SEGÚN MODALIDAD
 ========================================== */
 
-async function consultarCupos() {
+function actualizarModalidad() {
 
-  mostrarCargandoTorneos();
+  if (esCanchaAbierta()) {
+    return;
+  }
 
+  const modalidadSeleccionada =
+    document.querySelector(
+      'input[name="modalidad"]:checked'
+    )?.value;
 
-  try {
+  const tienePareja =
+    modalidadSeleccionada ===
+    "Con pareja";
 
-    const respuesta =
-      await fetch(
-        `${URL_APPS_SCRIPT}?t=${Date.now()}`,
-        {
-          method: "GET",
-          cache: "no-store"
-        }
-      );
+  datosPareja?.classList.toggle(
+    "oculto",
+    !tienePareja
+  );
 
+  mensajeBuscoPareja?.classList.toggle(
+    "oculto",
+    tienePareja
+  );
 
-    if (!respuesta.ok) {
+  bloquePosicion?.classList.toggle(
+    "oculto",
+    tienePareja
+  );
 
-      throw new Error(
-        "No se pudo consultar la disponibilidad."
-      );
+  if (nombrePareja) {
+    nombrePareja.required =
+      tienePareja;
+  }
 
-    }
+  if (apellidoPareja) {
+    apellidoPareja.required =
+      tienePareja;
+  }
 
+  if (whatsappPareja) {
+    whatsappPareja.required =
+      tienePareja;
+  }
 
-    const resultado =
-      await respuesta.json();
+  opcionesPosicion.forEach(
+    (opcion) => {
 
+      opcion.required =
+        !tienePareja;
 
-    if (!resultado.correcto) {
-
-      throw new Error(
-        resultado.mensaje ||
-        "Google Sheets no devolvió los cupos."
-      );
-
-    }
-
-
-    if (resultado.torneos) {
-
-      tarjetasTorneosActivos.forEach(
-        (tarjeta) => {
-
-          const codigo =
-            tarjeta.dataset.torneo;
-
-
-          const datosTorneo =
-            resultado.torneos[
-              codigo
-            ];
-
-
-          if (datosTorneo) {
-
-            actualizarTarjetaTorneo(
-              codigo,
-              datosTorneo.ocupados,
-              datosTorneo.cuposTotales
-            );
-
-
-            /*
-              Si es la cancha abierta,
-              guardamos también Drive / Revés.
-            */
-
-            if (
-              codigo ===
-                "CANCHA_ABIERTA" &&
-              datosTorneo.posiciones
-            ) {
-
-              actualizarEstadoCanchaAbierta(
-                datosTorneo.posiciones
-              );
-
-            }
-
-          } else {
-
-            /*
-              Si no existe todavía en Sheets,
-              conservamos los cupos que dice HTML.
-            */
-
-            actualizarTarjetaTorneo(
-              codigo,
-              0,
-              obtenerCuposIniciales(
-                codigo
-              )
-            );
-
-          }
-
-        }
-      );
-
-    }
-
-
-  } catch (error) {
-
-    console.error(
-      "Error al consultar los cupos:",
-      error
-    );
-
-
-    tarjetasTorneosActivos.forEach(
-      (tarjeta) => {
-
-        const codigo =
-          tarjeta.dataset.torneo;
-
-
-        const lugares =
-          document.getElementById(
-            `lugares-${codigo}`
-          );
-
-
-        const boton =
-          tarjeta.querySelector(
-            ".boton-inscripcion-torneo"
-          );
-
-
-        if (lugares) {
-
-          lugares.textContent =
-            "No pudimos consultar los cupos";
-
-        }
-
-
-        if (boton) {
-
-          boton.textContent =
-            "Reintentar";
-
-          boton.disabled = false;
-
-        }
-
+      if (tienePareja) {
+        opcion.checked = false;
       }
-    );
+
+    }
+  );
+
+  if (!tienePareja) {
+
+    if (nombrePareja) {
+      nombrePareja.value = "";
+    }
+
+    if (apellidoPareja) {
+      apellidoPareja.value = "";
+    }
+
+    if (whatsappPareja) {
+      whatsappPareja.value = "";
+    }
 
   }
+
 }
 
 
 /* ==========================================
-   ABRIR FORMULARIO
+   FORMULARIO SEGÚN TIPO DE EVENTO
 ========================================== */
 
-function abrirModal(codigo) {
+function configurarFormularioSegunEvento() {
 
-  torneoSeleccionado =
-    codigo;
+  restaurarOpcionesPosicion();
 
+  if (esCanchaAbierta()) {
 
-  torneoSeleccionadoInput.value =
-    codigo;
-
-
-  const datosVisuales =
-    obtenerDatosVisualesTorneo(
-      codigo
-    );
-
-
-  /*
-    El título y la sede salen directamente
-    de la tarjeta del HTML.
-  */
-
-  tituloFormulario.textContent =
-    datosVisuales.nombre;
-
-
-  torneoSeleccionadoTexto.textContent =
-    datosVisuales.sede ||
-    "MATCH | Bragado";
-
-
-  /* ======================================
-     CANCHA ABIERTA
-  ====================================== */
-
-  if (
-    codigo ===
-    "CANCHA_ABIERTA"
-  ) {
-
-    /*
-      No existe Con pareja / Busco pareja.
-    */
-
-    bloqueModalidad.classList.add(
+    bloqueModalidad?.classList.add(
       "oculto"
     );
 
-
-    /*
-      Mostramos posición.
-    */
-
-    bloquePosicion.classList.remove(
+    bloquePosicion?.classList.remove(
       "oculto"
     );
 
-
-    /*
-      No mostramos datos de pareja.
-    */
-
-    datosPareja.classList.add(
+    datosPareja?.classList.add(
       "oculto"
     );
 
-    mensajeBuscoPareja.classList.add(
+    mensajeBuscoPareja?.classList.add(
       "oculto"
     );
-
-
-    /*
-      Posición obligatoria.
-    */
 
     opcionesPosicion.forEach(
       (opcion) => {
@@ -897,60 +356,117 @@ function abrirModal(codigo) {
       }
     );
 
+    if (nombrePareja) {
+      nombrePareja.required = false;
+    }
 
-    nombrePareja.required = false;
-    apellidoPareja.required = false;
-    whatsappPareja.required = false;
+    if (apellidoPareja) {
+      apellidoPareja.required = false;
+    }
 
-
-    /*
-      Aplicamos Drive / Revés completos.
-    */
-
-    actualizarOpcionesPosicionCanchaAbierta();
-
+    if (whatsappPareja) {
+      whatsappPareja.required = false;
+    }
 
   } else {
 
-    /* ======================================
-       TORNEO NORMAL
-    ====================================== */
-
-    bloqueModalidad.classList.remove(
+    bloqueModalidad?.classList.remove(
       "oculto"
     );
-
-
-    /*
-      Restablecemos las posiciones,
-      porque quizá antes abrió Cancha Abierta.
-    */
-
-    restaurarOpcionesPosicion();
-
 
     actualizarModalidad();
 
   }
 
+}
 
-  /* ======================================
-     ABRIR MODAL
-  ====================================== */
 
-  formulario.classList.remove(
+/* ==========================================
+   ABRIR MODAL
+========================================== */
+
+async function abrirModal(idEvento) {
+
+  const { data, error } =
+    await window.db
+      .from("eventos")
+      .select("*")
+      .eq("id", idEvento)
+      .single();
+
+  if (error || !data) {
+
+    console.error(
+      "No se pudo obtener el evento:",
+      error
+    );
+
+    alert(
+      "No pudimos abrir este evento. Actualizá la página y probá nuevamente."
+    );
+
+    return;
+
+  }
+
+  if (!data.inscripciones_abiertas) {
+
+    alert(
+      "Las inscripciones de este evento están cerradas."
+    );
+
+    return;
+
+  }
+
+  torneoSeleccionado =
+    idEvento;
+
+  eventoSeleccionado =
+    data;
+
+  if (torneoSeleccionadoInput) {
+
+    torneoSeleccionadoInput.value =
+      idEvento;
+
+  }
+
+  const datosVisuales =
+    obtenerDatosVisualesTorneo(
+      idEvento
+    );
+
+  if (tituloFormulario) {
+
+    tituloFormulario.textContent =
+      datosVisuales.nombre;
+
+  }
+
+  if (torneoSeleccionadoTexto) {
+
+    torneoSeleccionadoTexto.textContent =
+      datosVisuales.sede ||
+      "SOMOS MATCH";
+
+  }
+
+  configurarFormularioSegunEvento();
+
+  formulario?.classList.remove(
     "oculto"
   );
 
-  mensajeConfirmacion.classList.add(
+  mensajeConfirmacion?.classList.add(
     "oculto"
   );
 
-  modal.classList.add(
+  modal?.classList.add(
     "abierto"
   );
 
-  modal.setAttribute(
+  modal?.setAttribute(
     "aria-hidden",
     "false"
   );
@@ -963,16 +479,16 @@ function abrirModal(codigo) {
 
 
 /* ==========================================
-   CERRAR FORMULARIO
+   CERRAR MODAL
 ========================================== */
 
 function cerrarFormulario() {
 
-  modal.classList.remove(
+  modal?.classList.remove(
     "abierto"
   );
 
-  modal.setAttribute(
+  modal?.setAttribute(
     "aria-hidden",
     "true"
   );
@@ -985,100 +501,19 @@ function cerrarFormulario() {
 
 
 /* ==========================================
-   CAMPOS SEGÚN MODALIDAD
-========================================== */
-
-function actualizarModalidad() {
-
-  /*
-    Esta función no debe modificar
-    Cancha Abierta.
-  */
-
-  if (
-    torneoSeleccionado ===
-    "CANCHA_ABIERTA"
-  ) {
-    return;
-  }
-
-
-  const modalidadSeleccionada =
-    document.querySelector(
-      'input[name="modalidad"]:checked'
-    )?.value;
-
-
-  const tienePareja =
-    modalidadSeleccionada ===
-    "Con pareja";
-
-
-  datosPareja.classList.toggle(
-    "oculto",
-    !tienePareja
-  );
-
-  mensajeBuscoPareja.classList.toggle(
-    "oculto",
-    tienePareja
-  );
-
-  bloquePosicion.classList.toggle(
-    "oculto",
-    tienePareja
-  );
-
-
-  nombrePareja.required =
-    tienePareja;
-
-  apellidoPareja.required =
-    tienePareja;
-
-  whatsappPareja.required =
-    tienePareja;
-
-
-  opcionesPosicion.forEach(
-    (opcion) => {
-
-      opcion.required =
-        !tienePareja;
-
-
-      if (tienePareja) {
-
-        opcion.checked = false;
-
-      }
-
-    }
-  );
-
-
-  if (!tienePareja) {
-
-    nombrePareja.value = "";
-    apellidoPareja.value = "";
-    whatsappPareja.value = "";
-
-  }
-
-}
-
-
-/* ==========================================
-   BLOQUEAR BOTÓN DE ENVÍO
+   BOTÓN DE ENVÍO
 ========================================== */
 
 function cambiarEstadoEnvio(
   enviando
 ) {
 
+  if (!botonEnviar) {
+    return;
+  }
+
   botonEnviar.disabled =
     enviando;
-
 
   botonEnviar.textContent =
     enviando
@@ -1089,7 +524,314 @@ function cambiarEstadoEnvio(
 
 
 /* ==========================================
-   ENVIAR INSCRIPCIÓN
+   GUARDAR PARTICIPANTE
+========================================== */
+
+async function guardarParticipante(
+  datos
+) {
+
+  const telefonoNormalizado =
+    normalizarTelefono(
+      datos.get("whatsapp")
+    );
+
+  const email =
+    String(
+      datos.get("email") || ""
+    )
+      .trim()
+      .toLowerCase();
+
+  if (!email) {
+
+    throw new Error(
+      "Necesitamos tu email para enviarte la confirmación de la inscripción."
+    );
+
+  }
+
+  if (
+    telefonoNormalizado.length < 8
+  ) {
+
+    throw new Error(
+      "Ingresá un número de WhatsApp válido."
+    );
+
+  }
+
+  const participante = {
+
+    nombre:
+      String(
+        datos.get("nombre") || ""
+      ).trim(),
+
+    apellido:
+      String(
+        datos.get("apellido") || ""
+      ).trim(),
+
+    email:
+      email,
+
+    telefono:
+      String(
+        datos.get("whatsapp") || ""
+      ).trim(),
+
+    telefono_normalizado:
+      telefonoNormalizado
+
+  };
+
+  const { data, error } =
+    await window.db
+      .from("participantes")
+      .upsert(
+        participante,
+        {
+          onConflict:
+            "email,telefono_normalizado"
+        }
+      )
+      .select("id")
+      .single();
+
+  if (error) {
+
+    console.error(
+      "Error al guardar participante:",
+      error
+    );
+
+    throw new Error(
+      "No pudimos guardar tus datos."
+    );
+
+  }
+
+  return data.id;
+
+}
+
+
+/* ==========================================
+   GUARDAR INSCRIPCIÓN
+========================================== */
+
+async function guardarInscripcion(
+  datos,
+  participanteId
+) {
+
+  const modalidadElegida =
+    esCanchaAbierta()
+      ? "individual"
+      : (
+          datos.get("modalidad") ===
+          "Con pareja"
+            ? "pareja"
+            : "individual"
+        );
+
+  const nombreCompletoPareja =
+    [
+      String(
+        datos.get("nombrePareja") ||
+        ""
+      ).trim(),
+
+      String(
+        datos.get("apellidoPareja") ||
+        ""
+      ).trim()
+    ]
+      .filter(Boolean)
+      .join(" ");
+
+  const registro = {
+
+    evento_id:
+      torneoSeleccionado,
+
+    participante_id:
+      participanteId,
+
+    modalidad:
+      modalidadElegida,
+
+    posicion:
+      normalizarPosicion(
+        datos.get("posicion")
+      ),
+
+    nombre_companera:
+      modalidadElegida === "pareja"
+        ? nombreCompletoPareja || null
+        : null,
+
+    telefono_companera:
+      modalidadElegida === "pareja"
+        ? (
+            normalizarTelefono(
+              datos.get(
+                "whatsappPareja"
+              )
+            ) || null
+          )
+        : null,
+
+    estado:
+      "pendiente",
+
+    estado_pago:
+      "pendiente",
+
+    observaciones_participante:
+      String(
+        datos.get(
+          "observaciones"
+        ) || ""
+      ).trim() || null
+
+  };
+
+  const { data, error } =
+    await window.db
+      .from("inscripciones")
+      .insert(registro)
+      .select("id")
+      .single();
+
+  if (error) {
+
+    console.error(
+      "Error al guardar inscripción:",
+      error
+    );
+
+    if (error.code === "23505") {
+
+      throw new Error(
+        "Ya tenés una inscripción registrada para este evento."
+      );
+
+    }
+
+    throw new Error(
+      "No pudimos registrar tu inscripción."
+    );
+
+  }
+
+  return data.id;
+
+}
+
+
+/* ==========================================
+   CONFIRMACIÓN
+========================================== */
+
+function prepararConfirmacion(
+  datos
+) {
+
+  const datosVisuales =
+    obtenerDatosVisualesTorneo(
+      torneoSeleccionado
+    );
+
+  const nombre =
+    String(
+      datos.get("nombre") || ""
+    ).trim();
+
+  const apellido =
+    String(
+      datos.get("apellido") || ""
+    ).trim();
+
+  let mensajeWhatsapp =
+`Hola MATCH 👋
+
+Soy ${nombre} ${apellido}.
+
+Me inscribí a ${datosVisuales.nombre}.
+
+Te envío el comprobante de transferencia para confirmar mi inscripción.`;
+
+  if (
+    !esCanchaAbierta() &&
+    datos.get("modalidad") ===
+      "Con pareja"
+  ) {
+
+    const nombreCompletoPareja =
+      [
+        String(
+          datos.get(
+            "nombrePareja"
+          ) || ""
+        ).trim(),
+
+        String(
+          datos.get(
+            "apellidoPareja"
+          ) || ""
+        ).trim()
+      ]
+        .filter(Boolean)
+        .join(" ");
+
+    mensajeWhatsapp =
+`Hola MATCH 👋
+
+Soy ${nombre} ${apellido}.
+
+Me inscribí a ${datosVisuales.nombre} junto a ${nombreCompletoPareja}.
+
+Te envío los comprobantes de transferencia para confirmar nuestra inscripción.`;
+
+  }
+
+  if (instruccionComprobante) {
+
+    instruccionComprobante.textContent =
+      "Podés enviar el comprobante ahora por WhatsApp. Próximamente también vas a poder subirlo directamente desde la web.";
+
+  }
+
+  if (botonWhatsapp) {
+
+    botonWhatsapp.href =
+      "https://wa.me/5491130091615?text=" +
+      encodeURIComponent(
+        mensajeWhatsapp
+      );
+
+  }
+
+  formulario?.classList.add(
+    "oculto"
+  );
+
+  mensajeConfirmacion?.classList.remove(
+    "oculto"
+  );
+
+  modal?.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+
+}
+
+
+/* ==========================================
+   ENVIAR FORMULARIO
 ========================================== */
 
 async function enviarFormulario(
@@ -1098,19 +840,20 @@ async function enviarFormulario(
 
   evento.preventDefault();
 
-
   if (
-    !formulario.checkValidity()
+    !formulario?.checkValidity()
   ) {
 
-    formulario.reportValidity();
+    formulario?.reportValidity();
 
     return;
 
   }
 
-
-  if (!torneoSeleccionado) {
+  if (
+    !torneoSeleccionado ||
+    !eventoSeleccionado
+  ) {
 
     alert(
       "No pudimos identificar el evento seleccionado."
@@ -1120,355 +863,47 @@ async function enviarFormulario(
 
   }
 
-
   const datos =
     new FormData(
       formulario
     );
 
-
-  const inscripcion = {
-
-    torneo:
-      torneoSeleccionado,
-
-
-    modalidad:
-      torneoSeleccionado ===
-      "CANCHA_ABIERTA"
-        ? "Individual"
-        : datos.get(
-            "modalidad"
-          ),
-
-
-    posicion:
-      datos.get(
-        "posicion"
-      ) || "",
-
-
-    nombre:
-      datos.get(
-        "nombre"
-      ),
-
-
-    apellido:
-      datos.get(
-        "apellido"
-      ),
-
-
-    whatsapp:
-      datos.get(
-        "whatsapp"
-      ),
-
-
-    email:
-      datos.get(
-        "email"
-      ) || "",
-
-
-    categoria:
-      datos.get(
-        "categoria"
-      ) || "",
-
-
-    nombrePareja:
-      torneoSeleccionado ===
-      "CANCHA_ABIERTA"
-        ? ""
-        : (
-            datos.get(
-              "nombrePareja"
-            ) || ""
-          ),
-
-
-    apellidoPareja:
-      torneoSeleccionado ===
-      "CANCHA_ABIERTA"
-        ? ""
-        : (
-            datos.get(
-              "apellidoPareja"
-            ) || ""
-          ),
-
-
-    whatsappPareja:
-      torneoSeleccionado ===
-      "CANCHA_ABIERTA"
-        ? ""
-        : (
-            datos.get(
-              "whatsappPareja"
-            ) || ""
-          ),
-
-
-    observaciones:
-      datos.get(
-        "observaciones"
-      ) || "",
-
-
-    reglamentoAceptado:
-      datos.get(
-        "reglamento"
-      ) === "on"
-
-  };
-
-
   cambiarEstadoEnvio(
     true
   );
 
-
   try {
 
-    const respuesta =
-      await fetch(
-        URL_APPS_SCRIPT,
-        {
-          method: "POST",
-          body: JSON.stringify(
-            inscripcion
-          )
-        }
+    const participanteId =
+      await guardarParticipante(
+        datos
       );
 
-
-    if (!respuesta.ok) {
-
-      throw new Error(
-        "Google no pudo registrar la inscripción."
-      );
-
-    }
-
-
-    const resultado =
-      await respuesta.json();
-
-
-    if (!resultado.correcto) {
-
-      /*
-        Volvemos a consultar porque quizá
-        justo se completó Drive / Revés.
-      */
-
-      await consultarCupos();
-
-
-      throw new Error(
-        resultado.mensaje ||
-        "No se pudo completar la inscripción."
-      );
-
-    }
-
-
-    /* ======================================
-       ACTUALIZAR CONTADOR
-    ====================================== */
-
-    if (
-      resultado.ocupados !==
-      undefined
-    ) {
-
-      actualizarTarjetaTorneo(
-        torneoSeleccionado,
-        resultado.ocupados,
-        resultado.cuposTotales ||
-          obtenerCuposIniciales(
-            torneoSeleccionado
-          )
-      );
-
-    }
-
-
-    /*
-      Actualizamos Drive / Revés después
-      de una inscripción en Cancha Abierta.
-    */
-
-    if (
-      torneoSeleccionado ===
-        "CANCHA_ABIERTA" &&
-      resultado.posiciones
-    ) {
-
-      actualizarEstadoCanchaAbierta(
-        resultado.posiciones
-      );
-
-    }
-
-
-    /* ======================================
-       MENSAJE DE WHATSAPP
-    ====================================== */
-
-    const datosVisuales =
-      obtenerDatosVisualesTorneo(
-        torneoSeleccionado
-      );
-
-
-    let mensajeWhatsapp = "";
-
-
-    /*
-      CANCHA ABIERTA
-    */
-
-    if (
-      torneoSeleccionado ===
-      "CANCHA_ABIERTA"
-    ) {
-
-      mensajeWhatsapp =
-`Hola MATCH 👋
-
-Soy ${inscripcion.nombre} ${inscripcion.apellido}.
-
-Me inscribí a ${datosVisuales.nombre}.
-
-Mi posición preferida es ${inscripcion.posicion}.
-
-Te envío el comprobante de transferencia para confirmar mi inscripción.`;
-
-      if (
-        instruccionComprobante
-      ) {
-
-        instruccionComprobante.textContent =
-          "Realizá la transferencia y envianos el comprobante por WhatsApp para confirmar tu lugar.";
-
-      }
-
-
-    /*
-      TORNEO CON PAREJA
-    */
-
-    } else if (
-      inscripcion.modalidad ===
-      "Con pareja"
-    ) {
-
-      mensajeWhatsapp =
-`Hola MATCH 👋
-
-Soy ${inscripcion.nombre} ${inscripcion.apellido}.
-
-Me inscribí a ${datosVisuales.nombre} junto a ${inscripcion.nombrePareja} ${inscripcion.apellidoPareja}.
-
-Te envío los dos comprobantes de transferencia para confirmar nuestra inscripción.`;
-
-      if (
-        instruccionComprobante
-      ) {
-
-        instruccionComprobante.textContent =
-          "Para confirmar la inscripción, envianos los dos comprobantes de transferencia por WhatsApp.";
-
-      }
-
-
-    /*
-      TORNEO BUSCO PAREJA
-    */
-
-    } else {
-
-      mensajeWhatsapp =
-`Hola MATCH 👋
-
-Soy ${inscripcion.nombre} ${inscripcion.apellido}.
-
-Me inscribí a ${datosVisuales.nombre} en la modalidad "Busco pareja".
-
-Mi posición preferida es ${inscripcion.posicion}.
-
-Te envío el comprobante de transferencia para confirmar mi inscripción.`;
-
-      if (
-        instruccionComprobante
-      ) {
-
-        instruccionComprobante.textContent =
-          "Realizá la transferencia y envianos el comprobante por WhatsApp para confirmar tu lugar.";
-
-      }
-
-    }
-
-
-    if (botonWhatsapp) {
-
-      botonWhatsapp.href =
-        "https://wa.me/5491130091615?text=" +
-        encodeURIComponent(
-          mensajeWhatsapp
-        );
-
-    }
-
-
-    /* ======================================
-       MOSTRAR CONFIRMACIÓN
-    ====================================== */
-
-    formulario.classList.add(
-      "oculto"
+    await guardarInscripcion(
+      datos,
+      participanteId
     );
 
-    mensajeConfirmacion.classList.remove(
-      "oculto"
+    prepararConfirmacion(
+      datos
     );
-
-
-    modal.scrollTo({
-      top: 0,
-      behavior: "smooth"
-    });
-
-
-    /*
-      Guardamos el código antes de resetear.
-    */
 
     const codigoActual =
       torneoSeleccionado;
 
-
     formulario.reset();
 
+    if (torneoSeleccionadoInput) {
 
-    torneoSeleccionadoInput.value =
-      codigoActual;
+      torneoSeleccionadoInput.value =
+        codigoActual;
 
-
-    /*
-      Dejamos "Con pareja" como opción
-      inicial para el próximo torneo normal.
-    */
+    }
 
     const modalidadConPareja =
       document.querySelector(
         'input[name="modalidad"][value="Con pareja"]'
       );
-
 
     if (modalidadConPareja) {
 
@@ -1477,20 +912,16 @@ Te envío el comprobante de transferencia para confirmar mi inscripción.`;
 
     }
 
-
     const reglamento =
       document.querySelector(
         ".reglamento"
       );
 
-
     if (reglamento) {
 
-      reglamento.open =
-        false;
+      reglamento.open = false;
 
     }
-
 
   } catch (error) {
 
@@ -1499,12 +930,10 @@ Te envío el comprobante de transferencia para confirmar mi inscripción.`;
       error
     );
 
-
     alert(
       error.message ||
       "No pudimos registrar la inscripción. Probá nuevamente."
     );
-
 
   } finally {
 
@@ -1518,39 +947,35 @@ Te envío el comprobante de transferencia para confirmar mi inscripción.`;
 
 
 /* ==========================================
-   BOTONES DE INSCRIPCIÓN
+   BOTONES DINÁMICOS
 ========================================== */
 
-botonesInscripcion.forEach(
-  (boton) => {
+document.addEventListener(
+  "click",
+  (evento) => {
 
-    boton.addEventListener(
-      "click",
-      () => {
+    const boton =
+      evento.target.closest(
+        ".boton-inscripcion-torneo"
+      );
 
-        if (
-          boton.textContent
-            .trim() ===
-          "Reintentar"
-        ) {
+    if (
+      !boton ||
+      boton.disabled
+    ) {
+      return;
+    }
 
-          consultarCupos();
+    const idEvento =
+      boton.dataset.torneo;
 
-          return;
+    if (idEvento) {
 
-        }
+      abrirModal(
+        idEvento
+      );
 
-
-        const codigo =
-          boton.dataset.torneo;
-
-
-        abrirModal(
-          codigo
-        );
-
-      }
-    );
+    }
 
   }
 );
@@ -1560,23 +985,20 @@ botonesInscripcion.forEach(
    EVENTOS DEL FORMULARIO
 ========================================== */
 
-cerrarModal.addEventListener(
+cerrarModal?.addEventListener(
   "click",
   cerrarFormulario
 );
 
-
-cerrarConfirmacion.addEventListener(
+cerrarConfirmacion?.addEventListener(
   "click",
   cerrarFormulario
 );
 
-
-formulario.addEventListener(
+formulario?.addEventListener(
   "submit",
   enviarFormulario
 );
-
 
 modalidades.forEach(
   (opcion) => {
@@ -1588,7 +1010,6 @@ modalidades.forEach(
 
   }
 );
-
 
 document
   .querySelectorAll(
@@ -1605,14 +1026,13 @@ document
     }
   );
 
-
 document.addEventListener(
   "keydown",
   (evento) => {
 
     if (
       evento.key === "Escape" &&
-      modal.classList.contains(
+      modal?.classList.contains(
         "abierto"
       )
     ) {
@@ -1630,5 +1050,3 @@ document.addEventListener(
 ========================================== */
 
 restaurarOpcionesPosicion();
-
-consultarCupos();
