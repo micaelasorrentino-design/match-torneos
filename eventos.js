@@ -523,7 +523,7 @@ function cargarScriptPrincipal() {
     );
 
 script.src =
-  "./script.js?v=14";
+  "./script.js?v=16";
 
   script.defer =
     true;

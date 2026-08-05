@@ -105,18 +105,6 @@ const confirmacionPrecio =
   document.getElementById(
     "confirmacion-precio"
   );
-  const elementoCodigoAcceso =
-  document.getElementById(
-    "codigo-acceso-confirmacion"
-  );
-
-if (
-  elementoCodigoAcceso &&
-  window.inscripcionActual?.codigo
-) {
-  elementoCodigoAcceso.textContent =
-    window.inscripcionActual.codigo;
-}
 
 const archivoComprobante =
   document.getElementById(
@@ -760,6 +748,18 @@ function prepararConfirmacion(
       ).format(
         Number(eventoSeleccionado?.precio) || 0
       );
+      const elementoCodigoAcceso =
+  document.getElementById(
+    "codigo-acceso-confirmacion"
+  );
+
+if (
+  elementoCodigoAcceso &&
+  window.inscripcionActual?.codigo
+) {
+  elementoCodigoAcceso.textContent =
+    window.inscripcionActual.codigo;
+}
 
   }
 
