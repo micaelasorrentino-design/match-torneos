@@ -894,7 +894,7 @@ async function confirmarInscripcion(
       inscripcionId,
       {
         estado: "confirmada",
-        estado_pago: "pagado"
+        estado_pago: "confirmado"
       }
     );
 
@@ -1073,6 +1073,13 @@ function cerrarVisorComprobante() {
 }
 
 
+pcion(
+        botonCancelar.dataset
+          .cancelar
+      );
+
+      return;
+    }
 /* ==========================================
    CLICS DINÁMICOS
 ========================================== */
@@ -1101,14 +1108,7 @@ document.addEventListener(
       );
 
     if (botonCancelar) {
-      cancelarInscripcion(
-        botonCancelar.dataset
-          .cancelar
-      );
-
-      return;
-    }
-
+      cancelarInscri
     const botonComprobante =
       evento.target.closest(
         "[data-ver-comprobante]"
