@@ -523,115 +523,13 @@ function cambiarEstadoEnvio(
 }
 
 
-/* ==========================================
-   GUARDAR PARTICIPANTE
-========================================== */
-
-async function guardarParticipante(
-  datos
-) {
-
-  const telefonoNormalizado =
-    normalizarTelefono(
-      datos.get("whatsapp")
-    );
-
-  const email =
-    String(
-      datos.get("email") || ""
-    )
-      .trim()
-      .toLowerCase();
-
-  if (!email) {
-
-    throw new Error(
-      "Necesitamos tu email para enviarte la confirmación de la inscripción."
-    );
-
-  }
-
-  if (
-    telefonoNormalizado.length < 8
-  ) {
-
-    throw new Error(
-      "Ingresá un número de WhatsApp válido."
-    );
-
-  }
-
-  const participante = {
-
-    nombre:
-      String(
-        datos.get("nombre") || ""
-      ).trim(),
-
-    apellido:
-      String(
-        datos.get("apellido") || ""
-      ).trim(),
-
-    email:
-      email,
-
-    telefono:
-      String(
-        datos.get("whatsapp") || ""
-      ).trim(),
-
-    telefono_normalizado:
-      telefonoNormalizado
-
-  };
-
-  const { data, error } =
-    await window.db
-      .from("participantes")
-      .upsert(
-        participante,
-        {
-          onConflict:
-            "email,telefono_normalizado"
-        }
-      )
-      .select("id")
-      .single();
-
-  if (error) {
-
-    console.error(
-      "Error al guardar participante:",
-      error
-    );
-
-    throw new Error(
-      "No pudimos guardar tus datos."
-    );
-
-  }
-
-  return data.id;
-
-}
-
-
-/* ==========================================
-   GUARDAR INSCRIPCIÓN
-========================================== */
-
-async function guardarInscripcion(
-  datos,
-  participanteId
-) {
+async function registrarInscripcionSegura(datos) {
 
   const modalidadElegida =
     esCanchaAbierta()
       ? "individual"
       : (
-          datos.get("modalidad") ===
-          "Con pareja"
+          datos.get("modalidad") === "Con pareja"
             ? "pareja"
             : "individual"
         );
@@ -639,94 +537,119 @@ async function guardarInscripcion(
   const nombreCompletoPareja =
     [
       String(
-        datos.get("nombrePareja") ||
-        ""
+        datos.get("nombrePareja") || ""
       ).trim(),
 
       String(
-        datos.get("apellidoPareja") ||
-        ""
+        datos.get("apellidoPareja") || ""
       ).trim()
     ]
       .filter(Boolean)
       .join(" ");
 
-  const registro = {
-
-    evento_id:
-      torneoSeleccionado,
-
-    participante_id:
-      participanteId,
-
-    modalidad:
-      modalidadElegida,
-
-    posicion:
-      normalizarPosicion(
-        datos.get("posicion")
-      ),
-
-    nombre_companera:
-      modalidadElegida === "pareja"
-        ? nombreCompletoPareja || null
-        : null,
-
-    telefono_companera:
-      modalidadElegida === "pareja"
-        ? (
-            normalizarTelefono(
-              datos.get(
-                "whatsappPareja"
-              )
-            ) || null
-          )
-        : null,
-
-    estado:
-      "pendiente",
-
-    estado_pago:
-      "pendiente",
-
-    observaciones_participante:
-      String(
-        datos.get(
-          "observaciones"
-        ) || ""
-      ).trim() || null
-
-  };
+  const telefonoNormalizado =
+    normalizarTelefono(
+      datos.get("whatsapp")
+    );
 
   const { data, error } =
-    await window.db
-      .from("inscripciones")
-      .insert(registro)
-      .select("id")
-      .single();
+    await window.db.rpc(
+      "registrar_inscripcion",
+      {
+        p_evento_id:
+          torneoSeleccionado,
+
+        p_nombre:
+          String(
+            datos.get("nombre") || ""
+          ).trim(),
+
+        p_apellido:
+          String(
+            datos.get("apellido") || ""
+          ).trim(),
+
+        p_email:
+          String(
+            datos.get("email") || ""
+          )
+            .trim()
+            .toLowerCase(),
+
+        p_telefono:
+          String(
+            datos.get("whatsapp") || ""
+          ).trim(),
+
+        p_telefono_normalizado:
+          telefonoNormalizado,
+
+        p_modalidad:
+          modalidadElegida,
+
+        p_posicion:
+          normalizarPosicion(
+            datos.get("posicion")
+          ) || "",
+
+        p_nombre_companera:
+          modalidadElegida === "pareja"
+            ? nombreCompletoPareja
+            : "",
+
+        p_telefono_companera:
+          modalidadElegida === "pareja"
+            ? normalizarTelefono(
+                datos.get(
+                  "whatsappPareja"
+                )
+              )
+            : "",
+
+        p_observaciones:
+          String(
+            datos.get(
+              "observaciones"
+            ) || ""
+          ).trim()
+      }
+    );
 
   if (error) {
 
     console.error(
-      "Error al guardar inscripción:",
+      "Error al registrar inscripción:",
       error
     );
 
-    if (error.code === "23505") {
-
-      throw new Error(
-        "Ya tenés una inscripción registrada para este evento."
-      );
-
-    }
-
     throw new Error(
-      "No pudimos registrar tu inscripción."
+      error.message ||
+      "No pudimos registrar la inscripción."
     );
 
   }
 
-  return data.id;
+  const resultado =
+    Array.isArray(data)
+      ? data[0]
+      : data;
+
+  if (!resultado) {
+
+    throw new Error(
+      "No recibimos la confirmación de la inscripción."
+    );
+
+  }
+
+  return {
+    inscripcionId:
+      resultado.inscripcion_id,
+
+    codigoAcceso:
+      resultado.codigo_acceso
+  };
+
 
 }
 
@@ -874,15 +797,18 @@ async function enviarFormulario(
 
   try {
 
-    const participanteId =
-      await guardarParticipante(
-        datos
-      );
+  const resultadoInscripcion =
+  await registrarInscripcionSegura(
+    datos
+  );
 
-    await guardarInscripcion(
-      datos,
-      participanteId
-    );
+window.inscripcionActual = {
+  id:
+    resultadoInscripcion.inscripcionId,
+
+  codigo:
+    resultadoInscripcion.codigoAcceso
+};
 
     prepararConfirmacion(
       datos
