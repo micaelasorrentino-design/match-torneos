@@ -105,6 +105,25 @@ const confirmacionPrecio =
   document.getElementById(
     "confirmacion-precio"
   );
+  const codigoAccesoConfirmacion =
+  document.getElementById(
+    "codigo-acceso-confirmacion"
+  );
+
+const archivoComprobante =
+  document.getElementById(
+    "archivo-comprobante"
+  );
+
+const botonSubirComprobante =
+  document.getElementById(
+    "boton-subir-comprobante"
+  );
+
+const estadoSubidaComprobante =
+  document.getElementById(
+    "estado-subida-comprobante"
+  );
 
 
 /* ==========================================
