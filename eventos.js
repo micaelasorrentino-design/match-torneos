@@ -433,8 +433,8 @@ function cargarScriptPrincipal() {
       "script"
     );
 
-  script.src =
-    "./script.js?v=13";
+script.src =
+  "./script.js?v=14";
 
   script.defer =
     true;

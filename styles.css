@@ -2105,3 +2105,6 @@ footer > small {
     flex-direction: column;
   }
 }
+body.modal-abierto footer {
+  display: none;
+}
