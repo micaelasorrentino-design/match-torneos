@@ -1797,3 +1797,65 @@ footer > small {
     overflow-x: hidden;
   }
 }
+.codigo-acceso-box,
+.carga-comprobante {
+  width: 100%;
+  margin-top: 22px;
+  padding: 20px;
+  box-sizing: border-box;
+  background: #f0e9f7;
+  border-radius: 20px;
+  text-align: center;
+}
+
+.codigo-acceso-box small {
+  display: block;
+  margin-bottom: 6px;
+  color: #746c79;
+}
+
+.codigo-acceso-box strong {
+  display: block;
+  color: #3d255b;
+  font-size: 28px;
+  letter-spacing: 3px;
+}
+
+.codigo-acceso-box p,
+.carga-comprobante p {
+  margin: 10px 0 0;
+  color: #746c79;
+  font-size: 14px;
+}
+
+.carga-comprobante h4 {
+  margin: 0;
+  color: #1c1327;
+  font-size: 20px;
+}
+
+.carga-comprobante .campo {
+  margin-top: 18px;
+  text-align: left;
+}
+
+.carga-comprobante input[type="file"] {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.estado-subida-comprobante {
+  min-height: 20px;
+  font-weight: 700;
+}
+
+@media (max-width: 768px) {
+  .codigo-acceso-box,
+  .carga-comprobante {
+    padding: 16px;
+  }
+
+  .codigo-acceso-box strong {
+    font-size: 23px;
+  }
+}

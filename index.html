@@ -757,6 +757,7 @@
 
 
 <!-- CONFIRMACIÓN -->
+<!-- CONFIRMACIÓN -->
 <div
   id="mensaje-confirmacion"
   class="mensaje-confirmacion oculto"
@@ -767,9 +768,23 @@
   <h3>¡Recibimos tu inscripción!</h3>
 
   <p>
-    Para confirmar tu lugar, realizá la transferencia
-    con los siguientes datos:
+    Tu inscripción quedó registrada y está pendiente de confirmación.
   </p>
+
+  <div class="codigo-acceso-box">
+
+    <small>Tu código de acceso</small>
+
+    <strong id="codigo-acceso-confirmacion">
+      —
+    </strong>
+
+    <p>
+      Guardalo. Lo vas a necesitar junto con tu WhatsApp
+      para consultar tus inscripciones.
+    </p>
+
+  </div>
 
   <div class="datos-transferencia">
 
@@ -789,20 +804,45 @@
     </div>
 
   </div>
-  <p
-    id="instruccion-comprobante"
-    class="aviso-comprobante"
-  ></p>
 
-  <a
-    id="boton-comprobante-whatsapp"
-    href="#"
-    target="_blank"
-    rel="noopener noreferrer"
-    class="boton boton-principal"
-  >
-    Enviar comprobante
-  </a>
+  <div class="carga-comprobante">
+
+    <h4>Subí tu comprobante</h4>
+
+    <p>
+      Podés hacerlo ahora o más tarde desde “Mis inscripciones”.
+    </p>
+
+    <label class="campo">
+
+      <span>Seleccionar archivo</span>
+
+      <input
+        type="file"
+        id="archivo-comprobante"
+        accept=".jpg,.jpeg,.png,.webp,.pdf"
+      >
+
+      <small>
+        Formatos permitidos: JPG, PNG, WEBP o PDF. Máximo 5 MB.
+      </small>
+
+    </label>
+
+    <button
+      type="button"
+      id="boton-subir-comprobante"
+      class="boton boton-principal"
+    >
+      Subir comprobante
+    </button>
+
+    <p
+      id="estado-subida-comprobante"
+      class="estado-subida-comprobante"
+    ></p>
+
+  </div>
 
   <button
     type="button"
@@ -814,9 +854,7 @@
 
 </div>
 
-    </section>
 
-  </div>
 
 
   <footer>
