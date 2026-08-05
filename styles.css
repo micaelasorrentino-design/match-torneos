@@ -2532,3 +2532,22 @@ body {
   border-color: #a66cc9;
   background: #f3e9fa;
 }
+.footer-admin{
+    margin-top:18px;
+    text-align:center;
+}
+
+.footer-admin a{
+
+    color:#9f96aa;
+    font-size:11px;
+    text-decoration:none;
+    font-family:"Poppins",sans-serif;
+    transition:.2s;
+}
+
+.footer-admin a:hover{
+
+    color:#7c5aa7;
+
+}
