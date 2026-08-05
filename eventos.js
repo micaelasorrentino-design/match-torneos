@@ -104,14 +104,18 @@ function crearTarjetaEvento(evento) {
       evento.inscripciones_abiertas
     );
 
-  const estado =
-    activo
-      ? "Inscripciones abiertas"
-      : "Inscripciones cerradas";
+ const estado =
+  !activo
+    ? "Inscripciones cerradas"
+    : disponibles === 0
+      ? "Evento completo"
+      : "Inscripciones abiertas";
 
-  const textoBoton =
-    activo
-      ? "Inscribirme"
+const textoBoton =
+  permiteInscripcion
+    ? "Inscribirme"
+    : disponibles === 0
+      ? "Evento completo"
       : "Evento cerrado";
 
   const horario =
@@ -147,6 +151,10 @@ const disponibles =
     cuposTotales - ocupados,
     0
   );
+
+  const permiteInscripcion =
+  activo &&
+  disponibles > 0;
 
 const porcentaje =
   cuposTotales > 0
@@ -343,10 +351,10 @@ const porcentaje =
         class="boton-inscripcion-torneo"
         data-torneo="${evento.id}"
         ${
-          activo
-            ? ""
-            : "disabled"
-        }
+  permiteInscripcion
+    ? ""
+    : "disabled"
+}
       >
         ${textoBoton}
       </button>
