@@ -1,0 +1,786 @@
+/* ==========================================
+   MATCH — PANEL ADMINISTRADOR
+========================================== */
+
+:root {
+  --match-principal: #a66cc9;
+  --match-oscuro: #3d255b;
+  --match-fondo: #f0e9f7;
+  --match-fondo-claro: #f8f6fc;
+  --match-texto: #1c1327;
+  --match-blanco: #ffffff;
+  --match-borde: #e8deee;
+  --match-gris: #756d7a;
+  --match-exito: #4e8b68;
+  --match-alerta: #b77b2f;
+  --match-error: #b9536a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(166, 108, 201, 0.13),
+      transparent 34%
+    ),
+    linear-gradient(
+      180deg,
+      #fbf9fd 0%,
+      #f4eff8 100%
+    );
+  color: var(--match-texto);
+  font-family: "Poppins", sans-serif;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  border: 0;
+}
+
+.oculto {
+  display: none !important;
+}
+
+.sobrelinea {
+  display: block;
+  color: #8b4fc1;
+  font-family: "Montserrat", sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2.5px;
+}
+
+
+/* ==========================================
+   LOGIN
+========================================== */
+
+.pantalla-login {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 32px 20px;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 460px;
+  padding: 42px;
+  border: 1px solid rgba(232, 222, 238, 0.95);
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow:
+    0 24px 70px rgba(61, 37, 91, 0.12),
+    0 4px 15px rgba(61, 37, 91, 0.05);
+  backdrop-filter: blur(14px);
+}
+
+.login-logo {
+  display: block;
+  width: 86px;
+  height: 86px;
+  margin: 0 auto 24px;
+  object-fit: contain;
+}
+
+.login-card .sobrelinea {
+  text-align: center;
+}
+
+.login-card h1 {
+  margin: 10px 0 12px;
+  color: var(--match-texto);
+  font-family: "Montserrat", sans-serif;
+  font-size: 32px;
+  line-height: 1.1;
+  text-align: center;
+}
+
+.login-card > p {
+  margin: 0 0 30px;
+  color: var(--match-gris);
+  font-size: 14px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.campo-admin {
+  display: block;
+  margin-bottom: 18px;
+}
+
+.campo-admin span {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--match-oscuro);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.campo-admin input {
+  width: 100%;
+  min-height: 52px;
+  padding: 0 16px;
+  border: 1px solid #ded2e5;
+  border-radius: 16px;
+  outline: none;
+  background: #ffffff;
+  color: var(--match-texto);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.campo-admin input:focus {
+  border-color: var(--match-principal);
+  box-shadow: 0 0 0 4px rgba(166, 108, 201, 0.12);
+}
+
+.boton-admin {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 20px;
+  border-radius: 999px;
+  font-family: "Montserrat", sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.boton-admin:hover {
+  transform: translateY(-1px);
+}
+
+.boton-admin:disabled {
+  cursor: default;
+  opacity: 0.6;
+  transform: none;
+}
+
+.boton-principal-admin {
+  width: 100%;
+  margin-top: 8px;
+  background: linear-gradient(
+    90deg,
+    #4a206d,
+    #7941a3
+  );
+  color: #ffffff;
+  box-shadow: 0 12px 28px rgba(74, 32, 109, 0.22);
+}
+
+.boton-secundario-admin {
+  border: 1px solid #d9c9e5;
+  background: #ffffff;
+  color: var(--match-oscuro);
+}
+
+.mensaje-error {
+  min-height: 20px;
+  margin: 14px 0 0;
+  color: var(--match-error);
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+}
+
+
+/* ==========================================
+   HEADER
+========================================== */
+
+.panel-administrador {
+  min-height: 100vh;
+}
+
+.admin-header {
+  position: sticky;
+  z-index: 20;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  min-height: 82px;
+  padding: 14px clamp(20px, 5vw, 64px);
+  border-bottom: 1px solid rgba(232, 222, 238, 0.9);
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 8px 30px rgba(61, 37, 91, 0.05);
+  backdrop-filter: blur(16px);
+}
+
+.admin-marca {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.admin-marca img {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+}
+
+.admin-marca div {
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-marca strong {
+  color: var(--match-oscuro);
+  font-family: "Montserrat", sans-serif;
+  font-size: 18px;
+}
+
+.admin-marca span {
+  color: var(--match-gris);
+  font-size: 12px;
+}
+
+.boton-cerrar-sesion {
+  padding: 11px 18px;
+  border: 1px solid #dfd3e6;
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--match-oscuro);
+  font-family: "Montserrat", sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+
+/* ==========================================
+   CONTENIDO
+========================================== */
+
+.admin-contenido {
+  width: min(1380px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 44px 0 70px;
+}
+
+.admin-bienvenida {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+.admin-bienvenida h1 {
+  margin: 9px 0 8px;
+  color: var(--match-texto);
+  font-family: "Montserrat", sans-serif;
+  font-size: clamp(30px, 4vw, 46px);
+  line-height: 1.05;
+}
+
+.admin-bienvenida p {
+  margin: 0;
+  color: var(--match-gris);
+  font-size: 15px;
+}
+
+
+/* ==========================================
+   SELECTOR DE EVENTO
+========================================== */
+
+.selector-evento-card {
+  display: grid;
+  grid-template-columns: 120px minmax(260px, 1fr);
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 24px;
+  padding: 22px 24px;
+  border: 1px solid var(--match-borde);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 12px 34px rgba(61, 37, 91, 0.06);
+}
+
+.selector-evento-card label {
+  color: var(--match-oscuro);
+  font-family: "Montserrat", sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.selector-evento-card select,
+.filtros-admin input,
+.filtros-admin select {
+  width: 100%;
+  min-height: 50px;
+  padding: 0 15px;
+  border: 1px solid #ded3e5;
+  border-radius: 15px;
+  outline: none;
+  background: #ffffff;
+  color: var(--match-texto);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.selector-evento-card select:focus,
+.filtros-admin input:focus,
+.filtros-admin select:focus {
+  border-color: var(--match-principal);
+  box-shadow: 0 0 0 4px rgba(166, 108, 201, 0.1);
+}
+
+
+/* ==========================================
+   RESUMEN
+========================================== */
+
+.resumen-admin {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.resumen-admin article {
+  position: relative;
+  overflow: hidden;
+  min-height: 150px;
+  padding: 24px;
+  border: 1px solid var(--match-borde);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 12px 32px rgba(61, 37, 91, 0.06);
+}
+
+.resumen-admin article::after {
+  position: absolute;
+  right: -22px;
+  bottom: -34px;
+  width: 105px;
+  height: 105px;
+  border-radius: 50%;
+  background: rgba(166, 108, 201, 0.09);
+  content: "";
+}
+
+.resumen-admin span {
+  display: block;
+  color: var(--match-gris);
+  font-family: "Montserrat", sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.resumen-admin strong {
+  position: relative;
+  z-index: 1;
+  display: block;
+  margin: 11px 0 2px;
+  color: var(--match-oscuro);
+  font-family: "Montserrat", sans-serif;
+  font-size: 42px;
+  line-height: 1;
+}
+
+.resumen-admin small {
+  position: relative;
+  z-index: 1;
+  color: #8a818e;
+  font-size: 12px;
+}
+
+
+/* ==========================================
+   FILTROS
+========================================== */
+
+.filtros-admin {
+  display: grid;
+  grid-template-columns: minmax(260px, 1.7fr) repeat(2, minmax(190px, 0.7fr));
+  gap: 14px;
+  margin-bottom: 24px;
+  padding: 18px;
+  border: 1px solid var(--match-borde);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.84);
+}
+
+
+/* ==========================================
+   TABLA
+========================================== */
+
+.tabla-card {
+  overflow: hidden;
+  border: 1px solid var(--match-borde);
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 16px 40px rgba(61, 37, 91, 0.07);
+}
+
+.tabla-cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 24px 26px;
+  border-bottom: 1px solid var(--match-borde);
+}
+
+.tabla-cabecera h2 {
+  margin: 0;
+  color: var(--match-texto);
+  font-family: "Montserrat", sans-serif;
+  font-size: 23px;
+}
+
+.tabla-cabecera p {
+  margin: 5px 0 0;
+  color: var(--match-gris);
+  font-size: 13px;
+}
+
+.tabla-contenedor {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  min-width: 1040px;
+  border-collapse: collapse;
+}
+
+thead {
+  background: #faf7fc;
+}
+
+th {
+  padding: 15px 18px;
+  color: #756a7a;
+  font-family: "Montserrat", sans-serif;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.9px;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+td {
+  padding: 18px;
+  border-top: 1px solid #eee7f2;
+  color: var(--match-texto);
+  font-size: 13px;
+  vertical-align: middle;
+}
+
+tbody tr {
+  transition: background 0.2s ease;
+}
+
+tbody tr:hover {
+  background: #fdfaff;
+}
+
+.tabla-vacia {
+  padding: 48px 20px;
+  color: var(--match-gris);
+  text-align: center;
+}
+
+
+/* CLASES PARA ADMIN.JS */
+
+.participante-celda strong {
+  display: block;
+  color: var(--match-texto);
+  font-family: "Montserrat", sans-serif;
+  font-size: 13px;
+}
+
+.participante-celda small,
+.contacto-celda small {
+  display: block;
+  margin-top: 4px;
+  color: var(--match-gris);
+  font-size: 11px;
+}
+
+.estado-chip,
+.pago-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 11px;
+  border-radius: 999px;
+  font-family: "Montserrat", sans-serif;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  white-space: nowrap;
+  text-transform: uppercase;
+}
+
+.estado-pendiente,
+.pago-pendiente {
+  background: #f6eddc;
+  color: var(--match-alerta);
+}
+
+.estado-confirmada,
+.pago-confirmado {
+  background: #e6f3eb;
+  color: var(--match-exito);
+}
+
+.estado-cancelada,
+.pago-rechazado {
+  background: #f8e5ea;
+  color: var(--match-error);
+}
+
+.pago-comprobante_recibido {
+  background: #eee4f7;
+  color: #74449a;
+}
+
+.boton-tabla {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid #ddd0e6;
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--match-oscuro);
+  font-family: "Montserrat", sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.boton-tabla-principal {
+  border-color: transparent;
+  background: var(--match-oscuro);
+  color: #ffffff;
+}
+
+.acciones-tabla {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+
+/* ==========================================
+   MODAL COMPROBANTE
+========================================== */
+
+.modal-admin {
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px;
+}
+
+.modal-admin-fondo {
+  position: absolute;
+  inset: 0;
+  background: rgba(28, 19, 39, 0.6);
+  backdrop-filter: blur(5px);
+}
+
+.modal-admin-contenido {
+  position: relative;
+  z-index: 1;
+  width: min(900px, 100%);
+  max-height: calc(100vh - 56px);
+  overflow: auto;
+  padding: 26px;
+  border: 1px solid rgba(232, 222, 238, 0.9);
+  border-radius: 28px;
+  background: #ffffff;
+  box-shadow: 0 28px 80px rgba(28, 19, 39, 0.25);
+}
+
+.modal-admin-cabecera {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 22px;
+}
+
+.modal-admin-cabecera h2 {
+  margin: 7px 0 0;
+  font-family: "Montserrat", sans-serif;
+  font-size: 25px;
+}
+
+.cerrar-modal-admin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid #dfd3e6;
+  border-radius: 50%;
+  background: #ffffff;
+  color: var(--match-oscuro);
+  font-size: 25px;
+  cursor: pointer;
+}
+
+#visor-comprobante {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 320px;
+  overflow: hidden;
+  border: 1px solid #eadff0;
+  border-radius: 20px;
+  background: #faf7fc;
+}
+
+#visor-comprobante img {
+  display: block;
+  width: 100%;
+  max-height: 72vh;
+  object-fit: contain;
+}
+
+#visor-comprobante iframe {
+  width: 100%;
+  height: 72vh;
+  border: 0;
+}
+
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 1050px) {
+
+  .resumen-admin {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .filtros-admin {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .filtros-admin input {
+    grid-column: 1 / -1;
+  }
+
+}
+
+@media (max-width: 700px) {
+
+  .login-card {
+    padding: 30px 22px;
+    border-radius: 24px;
+  }
+
+  .login-card h1 {
+    font-size: 27px;
+  }
+
+  .admin-header {
+    padding: 12px 16px;
+  }
+
+  .admin-marca span {
+    display: none;
+  }
+
+  .boton-cerrar-sesion {
+    padding: 9px 13px;
+    font-size: 10px;
+  }
+
+  .admin-contenido {
+    width: min(100% - 28px, 1380px);
+    padding-top: 28px;
+  }
+
+  .admin-bienvenida {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-bienvenida .boton-admin {
+    width: 100%;
+  }
+
+  .selector-evento-card {
+    grid-template-columns: 1fr;
+  }
+
+  .resumen-admin {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .resumen-admin article {
+    min-height: 128px;
+    padding: 18px;
+  }
+
+  .resumen-admin strong {
+    font-size: 34px;
+  }
+
+  .filtros-admin {
+    grid-template-columns: 1fr;
+  }
+
+  .filtros-admin input {
+    grid-column: auto;
+  }
+
+  .tabla-cabecera {
+    padding: 20px;
+  }
+
+  .modal-admin {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .modal-admin-contenido {
+    width: 100%;
+    max-height: 92vh;
+    border-radius: 28px 28px 0 0;
+  }
+
+}

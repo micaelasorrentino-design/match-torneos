@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Panel administrador | MATCH</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <link
+    rel="stylesheet"
+    href="./admin.css?v=1"
+  >
+
+</head>
+
+<body>
+
+  <!-- ======================================
+       LOGIN
+  ======================================= -->
+
+  <main
+    id="pantalla-login"
+    class="pantalla-login"
+  >
+
+    <section class="login-card">
+
+      <img
+        src="./logo-match.png"
+        alt="Logo MATCH"
+        class="login-logo"
+      >
+
+      <span class="sobrelinea">
+        PANEL PRIVADO
+      </span>
+
+      <h1>
+        Administración MATCH
+      </h1>
+
+      <p>
+        Ingresá con tu cuenta de administradora.
+      </p>
+
+      <form id="formulario-login">
+
+        <label class="campo-admin">
+
+          <span>Email</span>
+
+          <input
+            type="email"
+            id="admin-email"
+            autocomplete="email"
+            required
+          >
+
+        </label>
+
+        <label class="campo-admin">
+
+          <span>Contraseña</span>
+
+          <input
+            type="password"
+            id="admin-password"
+            autocomplete="current-password"
+            required
+          >
+
+        </label>
+
+        <button
+          type="submit"
+          id="boton-login"
+          class="boton-admin boton-principal-admin"
+        >
+          Ingresar
+        </button>
+
+        <p
+          id="error-login"
+          class="mensaje-error"
+        ></p>
+
+      </form>
+
+    </section>
+
+  </main>
+
+
+  <!-- ======================================
+       PANEL
+  ======================================= -->
+
+  <div
+    id="panel-administrador"
+    class="panel-administrador oculto"
+  >
+
+    <header class="admin-header">
+
+      <div class="admin-marca">
+
+        <img
+          src="./logo-match.png"
+          alt="Logo MATCH"
+        >
+
+        <div>
+          <strong>MATCH</strong>
+          <span>Panel administrador</span>
+        </div>
+
+      </div>
+
+      <button
+        type="button"
+        id="boton-cerrar-sesion"
+        class="boton-cerrar-sesion"
+      >
+        Cerrar sesión
+      </button>
+
+    </header>
+
+
+    <main class="admin-contenido">
+
+      <section class="admin-bienvenida">
+
+        <div>
+
+          <span class="sobrelinea">
+            GESTIÓN DE EVENTOS
+          </span>
+
+          <h1>
+            Hola, Mica 💜
+          </h1>
+
+          <p>
+            Desde acá podés revisar inscripciones,
+            comprobantes y pagos.
+          </p>
+
+        </div>
+
+        <button
+          type="button"
+          id="boton-actualizar"
+          class="boton-admin boton-secundario-admin"
+        >
+          Actualizar datos
+        </button>
+
+      </section>
+
+
+      <!-- SELECCIÓN DE EVENTO -->
+
+      <section class="selector-evento-card">
+
+        <label for="selector-evento">
+          Evento
+        </label>
+
+        <select id="selector-evento">
+
+          <option value="">
+            Seleccioná un evento
+          </option>
+
+        </select>
+
+      </section>
+
+
+      <!-- RESUMEN -->
+
+      <section class="resumen-admin">
+
+        <article>
+
+          <span>Total</span>
+
+          <strong id="resumen-total">
+            0
+          </strong>
+
+          <small>inscripciones</small>
+
+        </article>
+
+        <article>
+
+          <span>Pendientes</span>
+
+          <strong id="resumen-pendientes">
+            0
+          </strong>
+
+          <small>por confirmar</small>
+
+        </article>
+
+        <article>
+
+          <span>Comprobantes</span>
+
+          <strong id="resumen-comprobantes">
+            0
+          </strong>
+
+          <small>recibidos</small>
+
+        </article>
+
+        <article>
+
+          <span>Confirmadas</span>
+
+          <strong id="resumen-confirmadas">
+            0
+          </strong>
+
+          <small>cupos confirmados</small>
+
+        </article>
+
+      </section>
+
+
+      <!-- FILTROS -->
+
+      <section class="filtros-admin">
+
+        <input
+          type="search"
+          id="buscador-inscripciones"
+          placeholder="Buscar por nombre, apellido o WhatsApp"
+        >
+
+        <select id="filtro-estado">
+
+          <option value="">
+            Todos los estados
+          </option>
+
+          <option value="pendiente">
+            Pendientes
+          </option>
+
+          <option value="confirmada">
+            Confirmadas
+          </option>
+
+          <option value="cancelada">
+            Canceladas
+          </option>
+
+        </select>
+
+        <select id="filtro-pago">
+
+          <option value="">
+            Todos los pagos
+          </option>
+
+          <option value="pendiente">
+            Pago pendiente
+          </option>
+
+          <option value="comprobante_recibido">
+            Comprobante recibido
+          </option>
+
+          <option value="confirmado">
+            Pago confirmado
+          </option>
+
+          <option value="rechazado">
+            Pago rechazado
+          </option>
+
+        </select>
+
+      </section>
+
+
+      <!-- TABLA -->
+
+      <section class="tabla-card">
+
+        <div class="tabla-cabecera">
+
+          <div>
+
+            <h2>
+              Inscripciones
+            </h2>
+
+            <p id="texto-cantidad-inscripciones">
+              Seleccioná un evento.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="tabla-contenedor">
+
+          <table>
+
+            <thead>
+
+              <tr>
+
+                <th>Participante</th>
+
+                <th>Contacto</th>
+
+                <th>Modalidad</th>
+
+                <th>Pago</th>
+
+                <th>Estado</th>
+
+                <th>Comprobante</th>
+
+                <th>Acciones</th>
+
+              </tr>
+
+            </thead>
+
+            <tbody id="tabla-inscripciones">
+
+              <tr>
+
+                <td
+                  colspan="7"
+                  class="tabla-vacia"
+                >
+                  Seleccioná un evento para ver sus inscripciones.
+                </td>
+
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+
+  <!-- ======================================
+       MODAL DE COMPROBANTE
+  ======================================= -->
+
+  <div
+    id="modal-comprobante"
+    class="modal-admin oculto"
+  >
+
+    <div
+      class="modal-admin-fondo"
+      data-cerrar-comprobante
+    ></div>
+
+    <section class="modal-admin-contenido">
+
+      <div class="modal-admin-cabecera">
+
+        <div>
+
+          <span class="sobrelinea">
+            COMPROBANTE
+          </span>
+
+          <h2 id="titulo-modal-comprobante">
+            Comprobante de pago
+          </h2>
+
+        </div>
+
+        <button
+          type="button"
+          id="cerrar-modal-comprobante"
+          class="cerrar-modal-admin"
+        >
+          ×
+        </button>
+
+      </div>
+
+      <div id="visor-comprobante">
+
+        <p>
+          Cargando comprobante...
+        </p>
+
+      </div>
+
+    </section>
+
+  </div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script src="./supabase.js"></script>
+
+  <script src="./admin.js?v=1"></script>
+
+</body>
+
+</html>
