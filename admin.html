@@ -163,13 +163,25 @@
 
         </div>
 
-        <button
-          type="button"
-          id="boton-actualizar"
-          class="boton-admin boton-secundario-admin"
-        >
-          Actualizar datos
-        </button>
+       <div class="acciones-bienvenida">
+
+  <button
+    type="button"
+    id="boton-nuevo-evento"
+    class="boton-admin boton-principal-admin"
+  >
+    + Nuevo evento
+  </button>
+
+  <button
+    type="button"
+    id="boton-actualizar"
+    class="boton-admin boton-secundario-admin"
+  >
+    Actualizar datos
+  </button>
+
+</div>
 
       </section>
 
@@ -376,7 +388,338 @@
     </main>
 
   </div>
+<!-- ======================================
+     MODAL NUEVO EVENTO
+======================================= -->
 
+<div
+  id="modal-nuevo-evento"
+  class="modal-admin oculto"
+>
+
+  <div
+    class="modal-admin-fondo"
+    data-cerrar-nuevo-evento
+  ></div>
+
+  <section class="modal-admin-contenido modal-evento-contenido">
+
+    <div class="modal-admin-cabecera">
+
+      <div>
+
+        <span class="sobrelinea">
+          GESTIÓN MATCH
+        </span>
+
+        <h2>
+          Crear nuevo evento
+        </h2>
+
+        <p>
+          Completá la información que aparecerá en la página.
+        </p>
+
+      </div>
+
+      <button
+        type="button"
+        id="cerrar-modal-nuevo-evento"
+        class="cerrar-modal-admin"
+        aria-label="Cerrar"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <form id="formulario-nuevo-evento">
+
+      <div class="campos-evento-dos">
+
+        <label class="campo-admin">
+
+          <span>Título del evento *</span>
+
+          <input
+            type="text"
+            id="evento-titulo"
+            placeholder="Ej: Cancha Abierta 8va Principiante"
+            required
+          >
+
+        </label>
+
+
+        <label class="campo-admin">
+
+          <span>Tipo de evento *</span>
+
+          <select
+            id="evento-tipo"
+            required
+          >
+
+            <option value="torneo">
+              Torneo
+            </option>
+
+            <option value="encuentro">
+              Encuentro
+            </option>
+
+            <option value="cancha_abierta">
+              Cancha abierta
+            </option>
+
+          </select>
+
+        </label>
+
+      </div>
+
+
+      <div class="campos-evento-dos">
+
+        <label class="campo-admin">
+
+          <span>Categoría *</span>
+
+          <select
+            id="evento-categoria"
+            required
+          >
+
+            <option value="">
+              Seleccioná una categoría
+            </option>
+
+            <option value="8va principiante">
+              8va principiante
+            </option>
+
+            <option value="8va">
+              8va
+            </option>
+
+            <option value="7ma">
+              7ma
+            </option>
+
+            <option value="6ta">
+              6ta
+            </option>
+
+            <option value="5ta">
+              5ta
+            </option>
+
+            <option value="4ta">
+              4ta
+            </option>
+
+            <option value="7ma y 8va">
+              7ma y 8va
+            </option>
+
+            <option value="6ta y 7ma">
+              6ta y 7ma
+            </option>
+
+            <option value="5ta y 6ta">
+              5ta y 6ta
+            </option>
+
+            <option value="4ta y 5ta">
+              4ta y 5ta
+            </option>
+
+          </select>
+
+        </label>
+
+
+        <label class="campo-admin">
+
+          <span>Cupos totales *</span>
+
+          <input
+            type="number"
+            id="evento-cupos"
+            min="1"
+            step="1"
+            placeholder="Ej: 12"
+            required
+          >
+
+        </label>
+
+      </div>
+
+
+      <div class="campos-evento-tres">
+
+        <label class="campo-admin">
+
+          <span>Fecha *</span>
+
+          <input
+            type="date"
+            id="evento-fecha"
+            required
+          >
+
+        </label>
+
+
+        <label class="campo-admin">
+
+          <span>Hora de inicio *</span>
+
+          <input
+            type="time"
+            id="evento-hora-inicio"
+            required
+          >
+
+        </label>
+
+
+        <label class="campo-admin">
+
+          <span>Hora de finalización</span>
+
+          <input
+            type="time"
+            id="evento-hora-fin"
+          >
+
+        </label>
+
+      </div>
+
+
+      <div class="campos-evento-dos">
+
+        <label class="campo-admin">
+
+          <span>Ciudad / sede *</span>
+
+          <select
+            id="evento-sede"
+            required
+          >
+
+            <option value="">
+              Seleccioná una ciudad
+            </option>
+
+          </select>
+
+        </label>
+
+
+        <label class="campo-admin">
+
+          <span>Complejo *</span>
+
+          <select
+            id="evento-complejo"
+            required
+            disabled
+          >
+
+            <option value="">
+              Primero seleccioná una ciudad
+            </option>
+
+          </select>
+
+        </label>
+
+      </div>
+
+
+      <div class="campos-evento-dos">
+
+        <label class="campo-admin">
+
+          <span>Precio por participante *</span>
+
+          <input
+            type="number"
+            id="evento-precio"
+            min="0"
+            step="1"
+            placeholder="Ej: 26000"
+            required
+          >
+
+        </label>
+
+
+        <label class="campo-check-evento">
+
+          <input
+            type="checkbox"
+            id="evento-inscripciones-abiertas"
+            checked
+          >
+
+          <span>
+            Publicar con inscripciones abiertas
+          </span>
+
+        </label>
+
+      </div>
+
+
+      <label class="campo-admin">
+
+        <span>Descripción</span>
+
+        <textarea
+          id="evento-descripcion"
+          rows="4"
+          placeholder="Ej: Encuentro recreativo para jugadoras principiantes."
+        ></textarea>
+
+      </label>
+
+
+      <div class="acciones-formulario-evento">
+
+        <button
+          type="button"
+          id="cancelar-nuevo-evento"
+          class="boton-admin boton-secundario-admin"
+        >
+          Cancelar
+        </button>
+
+        <button
+          type="submit"
+          id="guardar-nuevo-evento"
+          class="boton-admin boton-principal-admin"
+        >
+          Crear evento
+        </button>
+
+      </div>
+
+
+      <p
+        id="mensaje-nuevo-evento"
+        class="mensaje-formulario-evento"
+      ></p>
+
+    </form>
+
+  </section>
+
+</div>
 
   <!-- ======================================
        MODAL DE COMPROBANTE

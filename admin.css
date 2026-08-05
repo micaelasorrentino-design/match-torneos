@@ -796,3 +796,142 @@ tbody tr:hover {
   background: #e6f3eb;
   color: #4e8b68;
 }
+/* ==========================================
+   CREAR EVENTO
+========================================== */
+
+.acciones-bienvenida {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.acciones-bienvenida .boton-principal-admin {
+  width: auto;
+  margin-top: 0;
+}
+
+.modal-evento-contenido {
+  width: min(820px, 100%);
+}
+
+.modal-admin-cabecera p {
+  margin: 8px 0 0;
+  color: var(--match-gris);
+  font-size: 13px;
+}
+
+.campos-evento-dos,
+.campos-evento-tres {
+  display: grid;
+  gap: 16px;
+}
+
+.campos-evento-dos {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.campos-evento-tres {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.campo-admin select,
+.campo-admin textarea {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid #ded2e5;
+  border-radius: 16px;
+  outline: none;
+  background: #ffffff;
+  color: var(--match-texto);
+  font-family: "Poppins", sans-serif;
+}
+
+.campo-admin select {
+  min-height: 52px;
+}
+
+.campo-admin textarea {
+  resize: vertical;
+}
+
+.campo-admin select:focus,
+.campo-admin textarea:focus {
+  border-color: var(--match-principal);
+  box-shadow: 0 0 0 4px rgba(166, 108, 201, 0.12);
+}
+
+.campo-check-evento {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 52px;
+  margin-top: 27px;
+  padding: 0 16px;
+  border: 1px solid #ded2e5;
+  border-radius: 16px;
+  background: #faf7fc;
+  cursor: pointer;
+}
+
+.campo-check-evento input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--match-oscuro);
+}
+
+.campo-check-evento span {
+  color: var(--match-oscuro);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.acciones-formulario-evento {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.acciones-formulario-evento .boton-principal-admin {
+  width: auto;
+  margin-top: 0;
+}
+
+.mensaje-formulario-evento {
+  min-height: 20px;
+  margin: 14px 0 0;
+  color: var(--match-error);
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+}
+
+@media (max-width: 700px) {
+
+  .acciones-bienvenida {
+    flex-direction: column;
+  }
+
+  .acciones-bienvenida .boton-admin {
+    width: 100%;
+  }
+
+  .campos-evento-dos,
+  .campos-evento-tres {
+    grid-template-columns: 1fr;
+  }
+
+  .campo-check-evento {
+    margin-top: 0;
+  }
+
+  .acciones-formulario-evento {
+    flex-direction: column-reverse;
+  }
+
+  .acciones-formulario-evento .boton-admin {
+    width: 100%;
+  }
+
+}
