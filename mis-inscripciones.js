@@ -1533,15 +1533,18 @@ async function consultarInscripciones(
       }
     ),
 
-    window.db.rpc(
-      "consultar_resultados_por_telefono",
-      {
-        p_telefono:
-          telefono
-      }
-    )
+/* ==========================================
+   CONSULTAR INSCRIPCIONES
+========================================== */
 
-  ]);
+const respuestaInscripciones =
+  await window.db.rpc(
+    "consultar_inscripciones_por_telefono",
+    {
+      p_telefono:
+        telefono
+    }
+  );
 
 
 if (
@@ -1553,23 +1556,56 @@ if (
 }
 
 
-if (
-  respuestaResultados.error
-) {
-
-  throw respuestaResultados.error;
-
-}
-
-
 const inscripciones =
   respuestaInscripciones.data ||
   [];
 
 
-const resultados =
-  respuestaResultados.data ||
-  [];
+/* ==========================================
+   CONSULTAR RESULTADOS
+   Si falla, no bloquea las inscripciones
+========================================== */
+
+let resultados = [];
+
+
+try {
+
+  const respuestaResultados =
+    await window.db.rpc(
+      "consultar_resultados_por_telefono",
+      {
+        p_telefono:
+          telefono
+      }
+    );
+
+
+  if (
+    respuestaResultados.error
+  ) {
+
+    console.error(
+      "Error al consultar resultados:",
+      respuestaResultados.error
+    );
+
+  } else {
+
+    resultados =
+      respuestaResultados.data ||
+      [];
+
+  }
+
+} catch (errorResultados) {
+
+  console.error(
+    "No pudimos consultar los resultados:",
+    errorResultados
+  );
+
+}
 
 
     if (!inscripciones.length) {
