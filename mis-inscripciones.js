@@ -553,6 +553,12 @@ function crearTarjetaInscripcion(
     inscripcion.id ||
     "";
 
+    const tienePartidos =
+  resultados.length > 0;
+
+const cantidadPartidos =
+  resultados.length;
+
 
   const puedeSubirComprobante =
     inscripcion.estado !== "cancelada" &&
@@ -1009,13 +1015,6 @@ function prepararCargaComprobantes() {
     const inscripcionId =
       input.dataset
         .inputComprobante;
-    
-        const tienePartidos =
-  resultados.length > 0;
-
-const cantidadPartidos =
-  resultados.length;
-
 
     const boton =
       listaInscripciones.querySelector(
@@ -1519,93 +1518,68 @@ async function consultarInscripciones(
 
   try {
 
-    const [
-  respuestaInscripciones,
-  respuestaResultados
-] =
-  await Promise.all([
+    const respuestaInscripciones =
+      await window.db.rpc(
+        "consultar_inscripciones_por_telefono",
+        {
+          p_telefono:
+            telefono
+        }
+      );
 
-    window.db.rpc(
-      "consultar_inscripciones_por_telefono",
-      {
-        p_telefono:
-          telefono
-      }
-    ),
 
-/* ==========================================
-   CONSULTAR INSCRIPCIONES
-========================================== */
+    if (
+      respuestaInscripciones.error
+    ) {
 
-const respuestaInscripciones =
-  await window.db.rpc(
-    "consultar_inscripciones_por_telefono",
-    {
-      p_telefono:
-        telefono
+      throw respuestaInscripciones.error;
+
     }
-  );
 
 
-if (
-  respuestaInscripciones.error
-) {
-
-  throw respuestaInscripciones.error;
-
-}
+    const inscripciones =
+      respuestaInscripciones.data || [];
 
 
-const inscripciones =
-  respuestaInscripciones.data ||
-  [];
+    let resultados = [];
 
 
-/* ==========================================
-   CONSULTAR RESULTADOS
-   Si falla, no bloquea las inscripciones
-========================================== */
+    try {
 
-let resultados = [];
+      const respuestaResultados =
+        await window.db.rpc(
+          "consultar_resultados_por_telefono",
+          {
+            p_telefono:
+              telefono
+          }
+        );
 
 
-try {
+      if (
+        respuestaResultados.error
+      ) {
 
-  const respuestaResultados =
-    await window.db.rpc(
-      "consultar_resultados_por_telefono",
-      {
-        p_telefono:
-          telefono
+        console.error(
+          "Error al consultar resultados:",
+          respuestaResultados.error
+        );
+
+      } else {
+
+        resultados =
+          respuestaResultados.data || [];
+
       }
-    );
 
+    } catch (errorResultados) {
 
-  if (
-    respuestaResultados.error
-  ) {
+      console.error(
+        "No pudimos consultar los resultados:",
+        errorResultados
+      );
 
-    console.error(
-      "Error al consultar resultados:",
-      respuestaResultados.error
-    );
-
-  } else {
-
-    resultados =
-      respuestaResultados.data ||
-      [];
-
-  }
-
-} catch (errorResultados) {
-
-  console.error(
-    "No pudimos consultar los resultados:",
-    errorResultados
-  );
-
-}
+    }
 
 
     if (!inscripciones.length) {
@@ -1657,32 +1631,33 @@ try {
 
     if (listaInscripciones) {
 
-     listaInscripciones.innerHTML =
-  inscripciones
-    .map(
-      (inscripcion) => {
+      listaInscripciones.innerHTML =
+        inscripciones
+          .map(
+            (inscripcion) => {
 
-        const inscripcionId =
-          inscripcion.inscripcion_id ||
-          inscripcion.id;
-
-
-        const resultadosInscripcion =
-          resultados.filter(
-            (partido) =>
-              partido.inscripcion_id ===
-              inscripcionId
-          );
+              const inscripcionId =
+                inscripcion.inscripcion_id ||
+                inscripcion.id;
 
 
-        return crearTarjetaInscripcion(
-          inscripcion,
-          resultadosInscripcion
-        );
+              const resultadosInscripcion =
+                resultados.filter(
+                  (partido) =>
+                    partido.inscripcion_id ===
+                    inscripcionId
+                );
 
-      }
-    )
-    .join("");
+
+              return crearTarjetaInscripcion(
+                inscripcion,
+                resultadosInscripcion
+              );
+
+            }
+          )
+          .join("");
+
 
       prepararCargaComprobantes();
 
