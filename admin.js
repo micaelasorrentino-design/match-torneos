@@ -3281,7 +3281,7 @@ function cerrarVisorComprobante() {
    PARTE 4 DE 4
 ========================================== */
 /* ==========================================
-   PESTAÑAS DEL EVENTO
+   PESTAÑAS Y RESULTADOS DEL EVENTO
 ========================================== */
 
 const tabsEventoAdmin =
@@ -3319,9 +3319,13 @@ const cancelarPartido =
     "cancelar-partido"
   );
 
-  /* ==========================================
-   SELECTORES DE JUGADORAS
-========================================== */
+const formularioPartido =
+  document.getElementById(
+    "formulario-partido"
+  );
+
+
+/* SELECTORES DE JUGADORAS */
 
 const equipo1Jugadora1 =
   document.getElementById(
@@ -3350,6 +3354,9 @@ const selectoresJugadoras = [
   equipo2Jugadora2
 ];
 
+
+/* CAMBIAR DE PESTAÑA */
+
 function cambiarTabEvento(
   tabSeleccionada
 ) {
@@ -3366,12 +3373,14 @@ function cambiarTabEvento(
     }
   );
 
+
   panelTabInscripciones
     ?.classList.toggle(
       "oculto",
       tabSeleccionada !==
         "inscripciones"
     );
+
 
   panelTabResultados
     ?.classList.toggle(
@@ -3382,75 +3391,8 @@ function cambiarTabEvento(
 
 }
 
-/* ==========================================
-   CARGAR JUGADORAS DEL EVENTO
-========================================== */
 
-function cargarJugadorasEnPartido() {
-
-  const inscripcionesDisponibles =
-    inscripcionesActuales.filter(
-      (inscripcion) =>
-        inscripcion.estado !==
-        "cancelada"
-    );
-
-  const opciones =
-    inscripcionesDisponibles
-      .map(
-        (inscripcion) => {
-
-          const participante =
-            inscripcion.participantes ||
-            {};
-
-          const nombreCompleto =
-            [
-              participante.nombre,
-              participante.apellido
-            ]
-              .filter(Boolean)
-              .join(" ");
-
-          return `
-            <option value="${escaparHTML(
-              inscripcion.id
-            )}">
-              ${escaparHTML(
-                nombreCompleto ||
-                "Participante sin nombre"
-              )}
-            </option>
-          `;
-
-        }
-      )
-      .join("");
-
-
-  selectoresJugadoras.forEach(
-    (selector) => {
-
-      if (!selector) {
-        return;
-      }
-
-      selector.innerHTML = `
-        <option value="">
-          Seleccioná una jugadora
-        </option>
-
-        ${opciones}
-      `;
-
-    }
-  );
-
-}
-
-/* ==========================================
-   CARGAR JUGADORAS DEL EVENTO SELECCIONADO
-========================================== */
+/* CARGAR JUGADORAS DEL EVENTO */
 
 function cargarJugadorasEnPartido() {
 
@@ -3478,6 +3420,7 @@ function cargarJugadorasEnPartido() {
             ]
               .filter(Boolean)
               .join(" ");
+
 
           return `
             <option value="${escaparHTML(
@@ -3513,7 +3456,13 @@ function cargarJugadorasEnPartido() {
     }
   );
 
+
+  actualizarJugadorasDeshabilitadas();
+
 }
+
+
+/* ABRIR MODAL */
 
 function abrirModalPartido() {
 
@@ -3539,6 +3488,8 @@ function abrirModalPartido() {
   }
 
 
+  formularioPartido?.reset();
+
   cargarJugadorasEnPartido();
 
 
@@ -3551,6 +3502,155 @@ function abrirModalPartido() {
 
 }
 
+
+/* CERRAR MODAL */
+
+function cerrarPartido() {
+
+  modalPartido?.classList.add(
+    "oculto"
+  );
+
+  document.body.style.overflow =
+    "";
+
+  formularioPartido?.reset();
+
+}
+
+
+/* EVITAR JUGADORAS REPETIDAS */
+
+function actualizarJugadorasDeshabilitadas() {
+
+  const valoresSeleccionados =
+    selectoresJugadoras
+      .map(
+        (selector) =>
+          selector?.value
+      )
+      .filter(Boolean);
+
+
+  selectoresJugadoras.forEach(
+    (selectorActual) => {
+
+      if (!selectorActual) {
+        return;
+      }
+
+
+      Array.from(
+        selectorActual.options
+      ).forEach(
+        (opcion) => {
+
+          if (!opcion.value) {
+            return;
+          }
+
+
+          opcion.disabled =
+            valoresSeleccionados.includes(
+              opcion.value
+            ) &&
+            selectorActual.value !==
+              opcion.value;
+
+        }
+      );
+
+    }
+  );
+
+}
+
+
+/* LISTENERS DE LAS PESTAÑAS */
+
+tabsEventoAdmin.forEach(
+  (boton) => {
+
+    boton.addEventListener(
+      "click",
+      () => {
+
+        if (boton.disabled) {
+          return;
+        }
+
+        cambiarTabEvento(
+          boton.dataset.tabEvento
+        );
+
+      }
+    );
+
+  }
+);
+
+
+/* LISTENERS DEL MODAL */
+
+botonAgregarPartido?.addEventListener(
+  "click",
+  abrirModalPartido
+);
+
+cerrarModalPartido?.addEventListener(
+  "click",
+  cerrarPartido
+);
+
+cancelarPartido?.addEventListener(
+  "click",
+  cerrarPartido
+);
+
+document
+  .querySelectorAll(
+    "[data-cerrar-partido]"
+  )
+  .forEach(
+    (elemento) => {
+
+      elemento.addEventListener(
+        "click",
+        cerrarPartido
+      );
+
+    }
+  );
+
+
+/* CAMBIOS EN SELECTORES */
+
+selectoresJugadoras.forEach(
+  (selector) => {
+
+    selector?.addEventListener(
+      "change",
+      actualizarJugadorasDeshabilitadas
+    );
+
+  }
+);
+
+
+/* EVITAR QUE EL FORMULARIO RECARGUE LA WEB */
+
+formularioPartido?.addEventListener(
+  "submit",
+  (evento) => {
+
+    evento.preventDefault();
+
+    alert(
+      "Las jugadoras quedaron seleccionadas. Ahora falta conectar el guardado del resultado con Supabase."
+    );
+
+  }
+);
 /* ==========================================
    CLICS DINÁMICOS
 ========================================== */
@@ -3985,64 +4085,6 @@ document.addEventListener(
       cerrarNuevoEvento();
 
     }
-
-  }
-);
-
-/* ==========================================
-   EVITAR JUGADORAS REPETIDAS
-========================================== */
-
-function actualizarJugadorasDeshabilitadas() {
-
-  const valoresSeleccionados =
-    selectoresJugadoras
-      .map(
-        (selector) =>
-          selector?.value
-      )
-      .filter(Boolean);
-
-
-  selectoresJugadoras.forEach(
-    (selectorActual) => {
-
-      if (!selectorActual) {
-        return;
-      }
-
-      Array.from(
-        selectorActual.options
-      ).forEach(
-        (opcion) => {
-
-          if (!opcion.value) {
-            return;
-          }
-
-          opcion.disabled =
-            valoresSeleccionados.includes(
-              opcion.value
-            ) &&
-            selectorActual.value !==
-              opcion.value;
-
-        }
-      );
-
-    }
-  );
-
-}
-
-
-selectoresJugadoras.forEach(
-  (selector) => {
-
-    selector?.addEventListener(
-      "change",
-      actualizarJugadorasDeshabilitadas
-    );
 
   }
 );
