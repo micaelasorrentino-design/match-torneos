@@ -1209,57 +1209,186 @@ async function consultarInscripciones(
     .join("");
 
 
-prepararCargaComprobantes();
+function prepararCargaComprobantes() {
 
-    }
-
-
-    accesoPanel?.classList.add(
-      "oculto"
-    );
-
-    estadoVacio?.classList.add(
-      "oculto"
-    );
-
-    panelResultados?.classList.remove(
-      "oculto"
-    );
-
-
-    sessionStorage.setItem(
-      "match_telefono_consulta",
-      telefono
-    );
-
-
-  } catch (error) {
-
-    console.error(
-      "Error al consultar inscripciones:",
-      error
-    );
-
-
-    if (mensajeConsulta) {
-
-      mensajeConsulta.textContent =
-        "No pudimos consultar tus inscripciones. Intentá nuevamente.";
-
-    }
-
-
-  } finally {
-
-    botonConsultar.disabled = false;
-
-    botonConsultar.textContent =
-      "Buscar mis inscripciones";
-
+  if (!listaInscripciones) {
+    return;
   }
 
-}
 
+  listaInscripciones.onchange = (
+    evento
+  ) => {
+
+    const input =
+      evento.target.closest(
+        "[data-input-comprobante]"
+      );
+
+
+    if (!input) {
+      return;
+    }
+
+
+    const inscripcionId =
+      input.dataset
+        .inputComprobante;
+
+
+    const boton =
+      listaInscripciones.querySelector(
+        `[data-subir-comprobante="${inscripcionId}"]`
+      );
+
+
+    const nombreArchivo =
+      listaInscripciones.querySelector(
+        `[data-nombre-archivo="${inscripcionId}"]`
+      );
+
+
+    const mensaje =
+      listaInscripciones.querySelector(
+        `[data-mensaje-subida="${inscripcionId}"]`
+      );
+
+
+    const archivo =
+      input.files?.[0];
+
+
+    if (mensaje) {
+
+      mensaje.textContent = "";
+
+      mensaje.className =
+        "mensaje-subida-panel";
+
+    }
+
+
+    if (!archivo) {
+
+      if (nombreArchivo) {
+        nombreArchivo.textContent =
+          "Seleccionar archivo";
+      }
+
+
+      if (boton) {
+        boton.disabled = true;
+      }
+
+
+      return;
+
+    }
+
+
+    const validacion =
+      archivoComprobanteValido(
+        archivo
+      );
+
+
+    if (!validacion.valido) {
+
+      input.value = "";
+
+
+      if (nombreArchivo) {
+
+        nombreArchivo.textContent =
+          "Seleccionar archivo";
+
+      }
+
+
+      if (boton) {
+        boton.disabled = true;
+      }
+
+
+      if (mensaje) {
+
+        mensaje.textContent =
+          validacion.mensaje;
+
+        mensaje.classList.add(
+          "mensaje-error"
+        );
+
+      }
+
+
+      return;
+
+    }
+
+
+    if (nombreArchivo) {
+
+      nombreArchivo.textContent =
+        archivo.name;
+
+    }
+
+
+    if (boton) {
+      boton.disabled = false;
+    }
+
+  };
+
+
+  listaInscripciones.onclick = async (
+    evento
+  ) => {
+
+    const boton =
+      evento.target.closest(
+        "[data-subir-comprobante]"
+      );
+
+
+    if (!boton) {
+      return;
+    }
+
+
+    evento.preventDefault();
+
+
+    const inscripcionId =
+      boton.dataset
+        .subirComprobante;
+
+
+    console.log(
+      "Subiendo comprobante para:",
+      inscripcionId
+    );
+
+
+    if (!inscripcionId) {
+
+      alert(
+        "No encontramos el identificador de la inscripción."
+      );
+
+      return;
+
+    }
+
+
+    await subirComprobante(
+      inscripcionId
+    );
+
+  };
+
+}
 
 /* ==========================================
    EVENTOS
