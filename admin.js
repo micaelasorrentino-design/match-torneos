@@ -68,11 +68,6 @@ const botonNuevoEvento =
     "boton-nuevo-evento"
   );
 
-const botonNuevoEventoGrande =
-  document.getElementById(
-    "boton-nuevo-evento-grande"
-  );
-
 const listaEventosAdmin =
   document.getElementById(
     "lista-eventos-admin"
@@ -3219,12 +3214,6 @@ botonActualizar?.addEventListener(
 ========================================== */
 
 botonNuevoEvento?.addEventListener(
-  "click",
-  abrirModalNuevoEvento
-);
-
-
-botonNuevoEventoGrande?.addEventListener(
   "click",
   abrirModalNuevoEvento
 );
