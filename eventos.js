@@ -522,3 +522,60 @@ function cargarScriptPrincipal() {
 ========================================== */
 
 cargarEventos();
+
+
+/* ==========================================
+   CUPOS EN TIEMPO REAL
+========================================== */
+
+const canalInscripciones =
+  window.db
+    .channel(
+      "cupos-eventos-en-vivo"
+    )
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "inscripciones"
+      },
+      async (payload) => {
+
+        console.log(
+          "Cambio recibido en inscripciones:",
+          payload
+        );
+
+        await cargarEventos();
+
+      }
+    )
+    .subscribe(
+      (estado, error) => {
+
+        if (
+          estado === "SUBSCRIBED"
+        ) {
+
+          console.log(
+            "Cupos en tiempo real activados."
+          );
+
+        }
+
+        if (
+          estado === "CHANNEL_ERROR" ||
+          estado === "TIMED_OUT"
+        ) {
+
+          console.error(
+            "Error en Realtime:",
+            estado,
+            error
+          );
+
+        }
+
+      }
+    );
