@@ -45,117 +45,255 @@ a {
 }
 
 
-/* HEADER */
+/*==========================================
+HEADER
+==========================================*/
 
 .header {
+
   position: fixed;
   top: 0;
   left: 0;
   z-index: 9999;
 
   width: 100%;
-  background: rgba(238, 226, 247, 0.94);
-  border-bottom: 1px solid rgba(67, 34, 95, 0.08);
+
+  background: rgba(238,226,247,.94);
+
+  border-bottom: 1px solid rgba(67,34,95,.08);
 
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 
-  box-shadow: 0 5px 20px rgba(67, 34, 95, 0.06);
+  box-shadow: 0 5px 20px rgba(67,34,95,.06);
+
 }
 
-.header-contenido {
-  width: min(1180px, calc(100% - 48px));
-  height: 88px;
-  margin: 0 auto;
+.header-contenido{
 
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 30px;
-}
+  width:min(1180px,calc(100% - 48px));
 
-.marca {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  text-decoration: none;
-}
+  height:88px;
 
-.marca-logo {
-  display: block;
-  width: 64px;
-  height: 64px;
-  object-fit: contain;
-}
+  margin:0 auto;
 
-.marca-texto {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+  display:flex;
 
-.marca-texto strong {
-  color: var(--lila-oscuro);
-  font-size: 26px;
-  letter-spacing: -1px;
-}
+  align-items:center;
 
-.marca-texto > span {
-  width: 1px;
-  height: 26px;
-  background: #bda8d3;
-}
+  justify-content:space-between;
 
-.marca-texto small {
-  color: var(--lila-fuerte);
-  font-size: 19px;
-  font-weight: 500;
-}
+  gap:32px;
 
-.redes {
-  display: flex;
-  gap: 12px;
-}
-
-.red-social {
-  width: 44px;
-  height: 44px;
-  border: 1px solid var(--borde);
-  border-radius: 50%;
-
-  display: grid;
-  place-items: center;
-
-  color: var(--lila-oscuro);
-  background: var(--blanco);
-  box-shadow: 0 8px 20px rgba(67, 34, 95, 0.08);
-
-  text-decoration: none;
-  transition: 0.2s ease;
-}
-
-.red-social:hover {
-  transform: translateY(-2px);
-  color: var(--blanco);
-  background: var(--lila-oscuro);
-}
-
-.red-social svg {
-  width: 22px;
-  height: 22px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.8;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.red-social .relleno {
-  fill: currentColor;
-  stroke: none;
 }
 
 
+/*==========================================
+LOGO
+==========================================*/
+
+.marca{
+
+  display:flex;
+
+  align-items:center;
+
+  gap:14px;
+
+  text-decoration:none;
+
+}
+
+.marca-logo{
+
+  width:64px;
+
+  height:64px;
+
+  object-fit:contain;
+
+}
+
+.marca-texto{
+
+  display:flex;
+
+  align-items:center;
+
+  gap:10px;
+
+}
+
+.marca-texto strong{
+
+  color:var(--lila-oscuro);
+
+  font-size:26px;
+
+  letter-spacing:-1px;
+
+}
+
+.marca-texto > span{
+
+  width:1px;
+
+  height:26px;
+
+  background:#bda8d3;
+
+}
+
+.marca-texto small{
+
+  color:var(--lila-fuerte);
+
+  font-size:19px;
+
+  font-weight:500;
+
+}
+
+
+/*==========================================
+ACCIONES HEADER
+==========================================*/
+
+.redes{
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:flex-end;
+
+  gap:12px;
+
+}
+
+
+/*==========================================
+BOTÓN MIS INSCRIPCIONES
+==========================================*/
+
+.boton-mis-inscripciones{
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  flex-shrink:0;
+
+  white-space:nowrap;
+
+  height:44px;
+
+  padding:0 22px;
+
+  border-radius:999px;
+
+  background:#FFFFFF;
+
+  border:1px solid rgba(166,108,201,.18);
+
+  color:#3D255B;
+
+  font-family:'Poppins',sans-serif;
+
+  font-size:14px;
+
+  font-weight:600;
+
+  text-decoration:none;
+
+  box-shadow:0 8px 20px rgba(67,34,95,.08);
+
+  transition:.25s ease;
+
+}
+
+.boton-mis-inscripciones:hover{
+
+  background:#A66CC9;
+
+  color:#FFFFFF;
+
+  transform:translateY(-2px);
+
+  box-shadow:0 12px 28px rgba(166,108,201,.22);
+
+}
+
+
+/*==========================================
+ICONOS REDES
+==========================================*/
+
+.red-social{
+
+  width:44px;
+
+  height:44px;
+
+  flex-shrink:0;
+
+  border:1px solid var(--borde);
+
+  border-radius:50%;
+
+  display:grid;
+
+  place-items:center;
+
+  color:var(--lila-oscuro);
+
+  background:var(--blanco);
+
+  box-shadow:0 8px 20px rgba(67,34,95,.08);
+
+  text-decoration:none;
+
+  transition:.25s ease;
+
+}
+
+.red-social:hover{
+
+  transform:translateY(-2px);
+
+  color:#fff;
+
+  background:var(--lila-oscuro);
+
+}
+
+.red-social svg{
+
+  width:22px;
+
+  height:22px;
+
+  fill:none;
+
+  stroke:currentColor;
+
+  stroke-width:1.8;
+
+  stroke-linecap:round;
+
+  stroke-linejoin:round;
+
+}
+
+.red-social .relleno{
+
+  fill:currentColor;
+
+  stroke:none;
+
+}
 /* HERO */
 
 .hero {
@@ -2567,46 +2705,4 @@ footer {
 
 .footer-admin a:hover {
   color: #7c5aa7;
-}
-/*==========================================
-BOTÓN MIS INSCRIPCIONES
-==========================================*/
-
-.boton-mis-inscripciones{
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  height:44px;
-
-  padding:0 22px;
-
-  border-radius:999px;
-
-  background:#FFFFFF;
-
-  border:1px solid rgba(166,108,201,.18);
-
-  color:#3D255B;
-
-  font-family:'Poppins',sans-serif;
-  font-size:.92rem;
-  font-weight:600;
-
-  text-decoration:none;
-
-  transition:.25s ease;
-
-}
-
-.boton-mis-inscripciones:hover{
-
-  background:#A66CC9;
-  color:#FFFFFF;
-
-  transform:translateY(-2px);
-
-  box-shadow:0 12px 28px rgba(166,108,201,.20);
-
 }
