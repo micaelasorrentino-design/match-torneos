@@ -211,9 +211,46 @@ const eventoDescripcion =
   document.getElementById(
     "evento-descripcion"
   );
+  const botonNuevoEventoGrande =
+  document.getElementById(
+    "boton-nuevo-evento-grande"
+  );
+
+const listaEventosAdmin =
+  document.getElementById(
+    "lista-eventos-admin"
+  );
+
+const buscadorEventos =
+  document.getElementById(
+    "buscador-eventos"
+  );
+
+const filtrosEventosSidebar =
+  document.querySelectorAll(
+    "[data-filtro-eventos]"
+  );
+
+const tituloEventoAdministrado =
+  document.getElementById(
+    "titulo-evento-administrado"
+  );
+
+const descripcionEventoAdministrado =
+  document.getElementById(
+    "descripcion-evento-administrado"
+  );
+
+const botonEditarEvento =
+  document.getElementById(
+    "boton-editar-evento"
+  );
 
 let inscripcionesActuales = [];
+let eventoActual = "";let inscripcionesActuales = [];
+let eventosAdministrables = [];
 let eventoActual = "";
+let filtroEventosActual = "todos";
 let sedesDisponibles = [];
 let complejosDisponibles = [];
 
@@ -759,17 +796,300 @@ async function crearNuevoEvento(evento) {
   }
 
 }
+/* ==========================================
+   LISTADO LATERAL DE EVENTOS
+========================================== */
 
+function obtenerEstadoEvento(evento) {
+
+  if (evento.archivado) {
+    return {
+      texto: "Archivado",
+      clase: "estado-evento-archivado"
+    };
+  }
+
+  if (!evento.publicado) {
+    return {
+      texto: "Borrador",
+      clase: "estado-evento-borrador"
+    };
+  }
+
+  return {
+    texto:
+      evento.inscripciones_abiertas
+        ? "Publicado"
+        : "Inscripciones cerradas",
+
+    clase:
+      "estado-evento-publicado"
+  };
+
+}
+
+
+function formatearFechaAdmin(fecha) {
+
+  if (!fecha) {
+    return "Sin fecha";
+  }
+
+  const fechaLocal =
+    new Date(`${fecha}T12:00:00`);
+
+  return new Intl.DateTimeFormat(
+    "es-AR",
+    {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric"
+    }
+  ).format(fechaLocal);
+
+}
+
+
+function obtenerEventosFiltrados() {
+
+  const busqueda =
+    normalizarTexto(
+      buscadorEventos?.value || ""
+    );
+
+  return eventosAdministrables.filter(
+    (evento) => {
+
+      const coincideBusqueda =
+        !busqueda ||
+        normalizarTexto(
+          [
+            evento.titulo,
+            evento.categoria,
+            evento.fecha
+          ]
+            .filter(Boolean)
+            .join(" ")
+        ).includes(busqueda);
+
+      let coincideEstado = true;
+
+      if (
+        filtroEventosActual ===
+        "publicados"
+      ) {
+        coincideEstado =
+          Boolean(evento.publicado) &&
+          !evento.archivado;
+      }
+
+      if (
+        filtroEventosActual ===
+        "borradores"
+      ) {
+        coincideEstado =
+          !evento.publicado &&
+          !evento.archivado;
+      }
+
+      if (
+        filtroEventosActual ===
+        "archivados"
+      ) {
+        coincideEstado =
+          Boolean(evento.archivado);
+      }
+
+      return (
+        coincideBusqueda &&
+        coincideEstado
+      );
+
+    }
+  );
+
+}
+
+
+function renderizarListaEventos() {
+
+  if (!listaEventosAdmin) {
+    return;
+  }
+
+  const eventos =
+    obtenerEventosFiltrados();
+
+  if (!eventos.length) {
+
+    listaEventosAdmin.innerHTML = `
+      <p class="sidebar-vacio">
+        No hay eventos para mostrar.
+      </p>
+    `;
+
+    return;
+  }
+
+  listaEventosAdmin.innerHTML =
+    eventos
+      .map(
+        (evento) => {
+
+          const estado =
+            obtenerEstadoEvento(evento);
+
+          const activo =
+            evento.id === eventoActual;
+
+          return `
+            <button
+              type="button"
+              class="evento-sidebar-item ${
+                activo
+                  ? "activo"
+                  : ""
+              }"
+              data-seleccionar-evento="${evento.id}"
+            >
+
+              <strong>
+                ${escaparHTML(
+                  evento.titulo ||
+                  "Evento sin título"
+                )}
+              </strong>
+
+              <small>
+                ${escaparHTML(
+                  evento.categoria ||
+                  "Sin categoría"
+                )}
+                ·
+                ${escaparHTML(
+                  formatearFechaAdmin(
+                    evento.fecha
+                  )
+                )}
+              </small>
+
+              <span
+                class="estado-evento-sidebar ${estado.clase}"
+              >
+                ${estado.texto}
+              </span>
+
+            </button>
+          `;
+
+        }
+      )
+      .join("");
+
+}
+
+
+function actualizarCabeceraEvento() {
+
+  const evento =
+    eventosAdministrables.find(
+      (item) =>
+        item.id === eventoActual
+    );
+
+  if (!evento) {
+
+    if (tituloEventoAdministrado) {
+      tituloEventoAdministrado.textContent =
+        "Hola, Mica 💜";
+    }
+
+    if (
+      descripcionEventoAdministrado
+    ) {
+      descripcionEventoAdministrado.textContent =
+        "Seleccioná un evento para administrar sus inscripciones, pagos y configuración.";
+    }
+
+    if (botonEditarEvento) {
+      botonEditarEvento.disabled =
+        true;
+    }
+
+    return;
+  }
+
+  if (tituloEventoAdministrado) {
+    tituloEventoAdministrado.textContent =
+      evento.titulo;
+  }
+
+  if (
+    descripcionEventoAdministrado
+  ) {
+
+    const partes = [
+      evento.categoria,
+      formatearFechaAdmin(
+        evento.fecha
+      )
+    ].filter(Boolean);
+
+    descripcionEventoAdministrado.textContent =
+      partes.join(" · ");
+  }
+
+  if (botonEditarEvento) {
+    botonEditarEvento.disabled =
+      false;
+  }
+
+}
+
+
+async function seleccionarEventoAdmin(
+  eventoId
+) {
+
+  eventoActual =
+    eventoId;
+
+  selectorEvento.value =
+    eventoId;
+
+  renderizarListaEventos();
+
+  actualizarCabeceraEvento();
+
+  await cargarInscripciones();
+
+  if (
+    typeof actualizarControlesPublicacion ===
+    "function"
+  ) {
+    actualizarControlesPublicacion();
+  }
+
+}
 /* ==========================================
    EVENTOS
 ========================================== */
 
 async function cargarEventos() {
+
   selectorEvento.innerHTML = `
     <option value="">
       Seleccioná un evento
     </option>
   `;
+
+  if (listaEventosAdmin) {
+    listaEventosAdmin.innerHTML = `
+      <p class="sidebar-vacio">
+        Cargando eventos...
+      </p>
+    `;
+  }
 
   const {
     data,
@@ -781,7 +1101,11 @@ async function cargarEventos() {
         id,
         titulo,
         fecha,
-        categoria
+        categoria,
+        descripcion,
+        publicado,
+        archivado,
+        inscripciones_abiertas
       `)
       .order(
         "fecha",
@@ -791,48 +1115,73 @@ async function cargarEventos() {
       );
 
   if (error) {
+
     console.error(
       "Error al cargar eventos:",
       error
     );
 
-    alert(
-      "No pudimos cargar los eventos."
-    );
+    if (listaEventosAdmin) {
+      listaEventosAdmin.innerHTML = `
+        <p class="sidebar-vacio">
+          No pudimos cargar los eventos.
+        </p>
+      `;
+    }
 
     return;
   }
 
-  (data || []).forEach(
+  eventosAdministrables =
+    data || [];
+
+  eventosAdministrables.forEach(
     (evento) => {
-      const option =
+
+      const opcion =
         document.createElement(
           "option"
         );
 
-      option.value =
+      opcion.value =
         evento.id;
 
-      option.textContent =
+      opcion.textContent =
         `${evento.titulo} · ${evento.fecha}`;
 
       selectorEvento.appendChild(
-        option
+        opcion
       );
+
     }
   );
 
-  if (data?.length) {
-    selectorEvento.value =
-      data[0].id;
+  if (!eventosAdministrables.length) {
 
-    eventoActual =
-      data[0].id;
+    eventoActual = "";
 
-    await cargarInscripciones();
+    renderizarListaEventos();
+    actualizarCabeceraEvento();
+
+    return;
   }
-}
 
+  const eventoAnteriorExiste =
+    eventosAdministrables.some(
+      (evento) =>
+        evento.id === eventoActual
+    );
+
+  const eventoInicial =
+    eventoAnteriorExiste
+      ? eventoActual
+      : eventosAdministrables[0].id;
+
+  await seleccionarEventoAdmin(
+    eventoInicial
+  );
+
+}
 
 /* ==========================================
    INSCRIPCIONES
@@ -1548,6 +1897,22 @@ document.addEventListener(
   "click",
   (evento) => {
 
+    const botonEvento =
+      evento.target.closest(
+        "[data-seleccionar-evento]"
+      );
+
+    if (botonEvento) {
+
+      seleccionarEventoAdmin(
+        botonEvento.dataset
+          .seleccionarEvento
+      );
+
+      return;
+    }
+
+
     const botonConfirmar =
       evento.target.closest(
         "[data-confirmar]"
@@ -1556,7 +1921,8 @@ document.addEventListener(
     if (botonConfirmar) {
 
       confirmarInscripcion(
-        botonConfirmar.dataset.confirmar
+        botonConfirmar.dataset
+          .confirmar
       );
 
       return;
@@ -1571,7 +1937,8 @@ document.addEventListener(
     if (botonCancelar) {
 
       cancelarInscripcion(
-        botonCancelar.dataset.cancelar
+        botonCancelar.dataset
+          .cancelar
       );
 
       return;
@@ -1595,7 +1962,6 @@ document.addEventListener(
   }
 );
 
-
 /* ==========================================
    EVENTOS
 ========================================== */
@@ -1617,7 +1983,15 @@ botonActualizar?.addEventListener(
 
 selectorEvento?.addEventListener(
   "change",
-  cargarInscripciones
+  () => {
+
+    if (selectorEvento.value) {
+      seleccionarEventoAdmin(
+        selectorEvento.value
+      );
+    }
+
+  }
 );
 
 buscadorInscripciones?.addEventListener(
@@ -1693,6 +2067,46 @@ document
 
     }
   );
+  botonNuevoEventoGrande?.addEventListener(
+  "click",
+  abrirModalNuevoEvento
+);
+
+
+buscadorEventos?.addEventListener(
+  "input",
+  renderizarListaEventos
+);
+
+
+filtrosEventosSidebar.forEach(
+  (boton) => {
+
+    boton.addEventListener(
+      "click",
+      () => {
+
+        filtroEventosActual =
+          boton.dataset.filtroEventos;
+
+        filtrosEventosSidebar.forEach(
+          (item) =>
+            item.classList.remove(
+              "activo"
+            )
+        );
+
+        boton.classList.add(
+          "activo"
+        );
+
+        renderizarListaEventos();
+
+      }
+    );
+
+  }
+);
 
 
 /* ==========================================
