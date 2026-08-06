@@ -307,6 +307,8 @@ let inscripcionesActuales = [];
 
 let partidosActuales = [];
 
+let partidoEditandoId = "";
+
 let eventosAdministrables = [];
 
 let eventoActual = "";
@@ -4023,20 +4025,29 @@ function crearTarjetaPartido(
 
       <div class="partido-admin-acciones">
 
-        <span
-          class="estado-chip estado-${escaparHTML(
-            partido.estado
-          )}"
-        >
-          ${escaparHTML(
-            formatearEstadoPartido(
-              partido.estado
-            )
-          )}
-        </span>
+  <span
+    class="estado-chip estado-${escaparHTML(
+      partido.estado
+    )}"
+  >
+    ${escaparHTML(
+      formatearEstadoPartido(
+        partido.estado
+      )
+    )}
+  </span>
 
-      </div>
+  <button
+    type="button"
+    class="boton-tabla boton-editar-partido"
+    data-editar-partido="${escaparHTML(
+      partido.id
+    )}"
+  >
+    Editar
+  </button>
 
+</div>
     </article>
   `;
 
@@ -4116,6 +4127,8 @@ function formatearEstadoPartido(
 
 function abrirModalPartido() {
 
+    partidoEditandoId = "";
+
   if (!eventoActual) {
 
     alert(
@@ -4140,7 +4153,231 @@ function abrirModalPartido() {
 
   formularioPartido?.reset();
 
+  const guardarPartido =
+  document.getElementById(
+    "guardar-partido"
+  );
+
+if (guardarPartido) {
+
+  guardarPartido.textContent =
+  partidoEditandoId
+    ? "Guardar cambios"
+    : "Guardar partido";
+}
+
   cargarJugadorasEnPartido();
+
+
+  modalPartido?.classList.remove(
+    "oculto"
+  );
+
+  document.body.style.overflow =
+    "hidden";
+
+}
+
+/* ==========================================
+   EDITAR PARTIDO
+========================================== */
+
+function abrirModalEditarPartido(
+  partidoId
+) {
+
+  const partido =
+    partidosActuales.find(
+      (item) =>
+        item.id === partidoId
+    );
+
+
+  if (!partido) {
+
+    alert(
+      "No encontramos el partido seleccionado."
+    );
+
+    return;
+
+  }
+
+
+  partidoEditandoId =
+    partido.id;
+
+
+  cargarJugadorasEnPartido();
+
+
+  const partidoNumero =
+    document.getElementById(
+      "partido-numero"
+    );
+
+  const partidoCancha =
+    document.getElementById(
+      "partido-cancha"
+    );
+
+  const partidoHora =
+    document.getElementById(
+      "partido-hora"
+    );
+
+  const partidoInstancia =
+    document.getElementById(
+      "partido-instancia"
+    );
+
+  const equipo1Games =
+    document.getElementById(
+      "equipo-1-games"
+    );
+
+  const equipo2Games =
+    document.getElementById(
+      "equipo-2-games"
+    );
+
+  const partidoEstado =
+    document.getElementById(
+      "partido-estado"
+    );
+
+  const partidoObservaciones =
+    document.getElementById(
+      "partido-observaciones"
+    );
+
+  const guardarPartido =
+    document.getElementById(
+      "guardar-partido"
+    );
+
+
+  if (partidoNumero) {
+
+    partidoNumero.value =
+      partido.numero_partido ?? "";
+
+  }
+
+
+  if (partidoCancha) {
+
+    partidoCancha.value =
+      partido.cancha || "";
+
+  }
+
+
+  if (partidoHora) {
+
+    partidoHora.value =
+      partido.hora_programada
+        ? String(
+            partido.hora_programada
+          ).slice(0, 5)
+        : "";
+
+  }
+
+
+  if (partidoInstancia) {
+
+    partidoInstancia.value =
+      partido.instancia ||
+      "zona";
+
+  }
+
+
+  if (equipo1Games) {
+
+    equipo1Games.value =
+      partido.pareja_1_games ?? "";
+
+  }
+
+
+  if (equipo2Games) {
+
+    equipo2Games.value =
+      partido.pareja_2_games ?? "";
+
+  }
+
+
+  if (partidoEstado) {
+
+    partidoEstado.value =
+      partido.estado ||
+      "pendiente";
+
+  }
+
+
+  if (partidoObservaciones) {
+
+    partidoObservaciones.value =
+      partido.observaciones || "";
+
+  }
+
+
+  /*
+    Necesitamos que listar_partidos_evento también devuelva
+    los IDs de las cuatro inscripciones. Eso lo agregamos
+    en el SQL del siguiente paso.
+  */
+
+  if (equipo1Jugadora1) {
+
+    equipo1Jugadora1.value =
+      partido.equipo_1_jugadora_1 ||
+      "";
+
+  }
+
+
+  if (equipo1Jugadora2) {
+
+    equipo1Jugadora2.value =
+      partido.equipo_1_jugadora_2 ||
+      "";
+
+  }
+
+
+  if (equipo2Jugadora1) {
+
+    equipo2Jugadora1.value =
+      partido.equipo_2_jugadora_1 ||
+      "";
+
+  }
+
+
+  if (equipo2Jugadora2) {
+
+    equipo2Jugadora2.value =
+      partido.equipo_2_jugadora_2 ||
+      "";
+
+  }
+
+
+  actualizarJugadorasDeshabilitadas();
+
+
+  if (guardarPartido) {
+
+    guardarPartido.textContent =
+      "Guardar cambios";
+
+  }
 
 
   modalPartido?.classList.remove(
@@ -4165,6 +4402,8 @@ function cerrarPartido() {
     "";
 
   formularioPartido?.reset();
+
+  partidoEditandoId = "";
 
 }
 
@@ -4482,71 +4721,91 @@ formularioPartido?.addEventListener(
 
     try {
 
-      const {
-        data,
-        error
-      } =
-        await window.db.rpc(
-          "guardar_partido_evento",
-          {
-            p_evento_id:
-              eventoActual,
+    const nombreFuncion =
+  partidoEditandoId
+    ? "actualizar_partido_evento"
+    : "guardar_partido_evento";
 
-            p_numero_partido:
-              Number(
-                partidoNumero.value
-              ),
 
-            p_instancia:
-              partidoInstancia?.value ||
-              "zona",
+const parametros = {
 
-            p_cancha:
-              partidoCancha?.value
-                .trim() ||
-              null,
+  p_numero_partido:
+    Number(
+      partidoNumero.value
+    ),
 
-            p_hora_programada:
-              partidoHora?.value ||
-              null,
+  p_instancia:
+    partidoInstancia?.value ||
+    "zona",
 
-            p_equipo_1_jugadora_1:
-              equipo1Jugadora1.value,
+  p_cancha:
+    partidoCancha?.value
+      .trim() ||
+    null,
 
-            p_equipo_1_jugadora_2:
-              equipo1Jugadora2.value,
+  p_hora_programada:
+    partidoHora?.value ||
+    null,
 
-            p_equipo_2_jugadora_1:
-              equipo2Jugadora1.value,
+  p_equipo_1_jugadora_1:
+    equipo1Jugadora1.value,
 
-            p_equipo_2_jugadora_2:
-              equipo2Jugadora2.value,
+  p_equipo_1_jugadora_2:
+    equipo1Jugadora2.value,
 
-            p_equipo_1_games:
-              equipo1Games?.value !== ""
-                ? Number(
-                    equipo1Games.value
-                  )
-                : null,
+  p_equipo_2_jugadora_1:
+    equipo2Jugadora1.value,
 
-            p_equipo_2_games:
-              equipo2Games?.value !== ""
-                ? Number(
-                    equipo2Games.value
-                  )
-                : null,
+  p_equipo_2_jugadora_2:
+    equipo2Jugadora2.value,
 
-            p_estado:
-              partidoEstado?.value ||
-              "pendiente",
+  p_equipo_1_games:
+    equipo1Games?.value !== ""
+      ? Number(
+          equipo1Games.value
+        )
+      : null,
 
-            p_observaciones:
-              partidoObservaciones?.value
-                .trim() ||
-              null
-          }
-        );
+  p_equipo_2_games:
+    equipo2Games?.value !== ""
+      ? Number(
+          equipo2Games.value
+        )
+      : null,
 
+  p_estado:
+    partidoEstado?.value ||
+    "pendiente",
+
+  p_observaciones:
+    partidoObservaciones?.value
+      .trim() ||
+    null
+
+};
+
+
+if (partidoEditandoId) {
+
+  parametros.p_partido_id =
+    partidoEditandoId;
+
+} else {
+
+  parametros.p_evento_id =
+    eventoActual;
+
+}
+
+
+const {
+  data,
+  error
+} =
+  await window.db.rpc(
+    nombreFuncion,
+    parametros
+  );
 
       if (error) {
         throw error;
@@ -4556,7 +4815,9 @@ formularioPartido?.addEventListener(
       if (mensajePartido) {
 
         mensajePartido.textContent =
-          "✓ Partido guardado correctamente.";
+  partidoEditandoId
+    ? "✓ Partido actualizado correctamente."
+    : "✓ Partido guardado correctamente.";
 
         mensajePartido.style.color =
           "#4e8b68";
@@ -4570,6 +4831,7 @@ formularioPartido?.addEventListener(
       );
 
       await cargarPartidosEvento();
+      partidoEditandoId = "";
 
 
       window.setTimeout(
@@ -4704,6 +4966,29 @@ document.addEventListener(
       );
 
     }
+
+  }
+);
+
+document.addEventListener(
+  "click",
+  (evento) => {
+
+    const botonEditar =
+      evento.target.closest(
+        "[data-editar-partido]"
+      );
+
+
+    if (!botonEditar) {
+      return;
+    }
+
+
+    abrirModalEditarPartido(
+      botonEditar.dataset
+        .editarPartido
+    );
 
   }
 );
