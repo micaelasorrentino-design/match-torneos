@@ -1455,10 +1455,11 @@ function actualizarCabeceraEvento() {
   const evento =
     eventosAdministrables.find(
       (item) =>
-        item.id ===
-        eventoActual
+        item.id === eventoActual
     );
 
+
+  /* SIN EVENTO SELECCIONADO */
 
   if (!evento) {
 
@@ -1492,10 +1493,20 @@ function actualizarCabeceraEvento() {
     }
 
 
+    if (botonAgregarPartido) {
+
+      botonAgregarPartido.disabled =
+        true;
+
+    }
+
+
     return;
 
   }
 
+
+  /* EVENTO SELECCIONADO */
 
   if (
     tituloEventoAdministrado
@@ -1538,8 +1549,15 @@ function actualizarCabeceraEvento() {
 
   }
 
-}
 
+  if (botonAgregarPartido) {
+
+    botonAgregarPartido.disabled =
+      false;
+
+  }
+
+}
 
 /* ==========================================
    CONTROLES DE PUBLICACIÓN
@@ -3262,7 +3280,169 @@ function cerrarVisorComprobante() {
    MATCH — PANEL ADMINISTRADOR
    PARTE 4 DE 4
 ========================================== */
+/* ==========================================
+   PESTAÑAS DEL EVENTO
+========================================== */
 
+const tabsEventoAdmin =
+  document.querySelectorAll(
+    "[data-tab-evento]"
+  );
+
+const panelTabInscripciones =
+  document.getElementById(
+    "panel-tab-inscripciones"
+  );
+
+const panelTabResultados =
+  document.getElementById(
+    "panel-tab-resultados"
+  );
+
+const botonAgregarPartido =
+  document.getElementById(
+    "boton-agregar-partido"
+  );
+
+const modalPartido =
+  document.getElementById(
+    "modal-partido"
+  );
+
+const cerrarModalPartido =
+  document.getElementById(
+    "cerrar-modal-partido"
+  );
+
+const cancelarPartido =
+  document.getElementById(
+    "cancelar-partido"
+  );
+
+
+function cambiarTabEvento(
+  tabSeleccionada
+) {
+
+  tabsEventoAdmin.forEach(
+    (boton) => {
+
+      boton.classList.toggle(
+        "activo",
+        boton.dataset.tabEvento ===
+          tabSeleccionada
+      );
+
+    }
+  );
+
+  panelTabInscripciones
+    ?.classList.toggle(
+      "oculto",
+      tabSeleccionada !==
+        "inscripciones"
+    );
+
+  panelTabResultados
+    ?.classList.toggle(
+      "oculto",
+      tabSeleccionada !==
+        "resultados"
+    );
+
+}
+
+
+function abrirModalPartido() {
+
+  if (!eventoActual) {
+
+    alert(
+      "Seleccioná un evento primero."
+    );
+
+    return;
+
+  }
+
+  modalPartido?.classList.remove(
+    "oculto"
+  );
+
+  document.body.style.overflow =
+    "hidden";
+
+}
+
+
+function cerrarPartido() {
+
+  modalPartido?.classList.add(
+    "oculto"
+  );
+
+  document.body.style.overflow =
+    "";
+
+}
+
+
+tabsEventoAdmin.forEach(
+  (boton) => {
+
+    boton.addEventListener(
+      "click",
+      () => {
+
+        if (boton.disabled) {
+          return;
+        }
+
+        cambiarTabEvento(
+          boton.dataset.tabEvento
+        );
+
+      }
+    );
+
+  }
+);
+
+
+botonAgregarPartido?.addEventListener(
+  "click",
+  abrirModalPartido
+);
+
+
+cerrarModalPartido?.addEventListener(
+  "click",
+  cerrarPartido
+);
+
+
+cancelarPartido?.addEventListener(
+  "click",
+  cerrarPartido
+);
+
+
+document.addEventListener(
+  "click",
+  (evento) => {
+
+    if (
+      evento.target.matches(
+        "[data-cerrar-partido]"
+      )
+    ) {
+
+      cerrarPartido();
+
+    }
+
+  }
+);
 
 /* ==========================================
    CLICS DINÁMICOS
