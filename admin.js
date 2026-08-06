@@ -5011,20 +5011,6 @@ botonCerrarSesion?.addEventListener(
 
 
 /* ==========================================
-   ACTUALIZAR DATOS
-========================================== */
-
-botonActualizar?.addEventListener(
-  "click",
-  async () => {
-
-    await cargarEventos();
-
-  }
-);
-
-
-/* ==========================================
    CREAR EVENTO
 ========================================== */
 
