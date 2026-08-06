@@ -490,7 +490,6 @@
         type="button"
         class="tab-evento-admin"
         data-tab-evento="resultados"
-        disabled
       >
         Resultados
       </button>
@@ -631,6 +630,68 @@
       </section>
 
     </section>
+    <!-- ======================================
+     RESULTADOS DEL EVENTO
+======================================= -->
+
+<section
+  id="panel-tab-resultados"
+  class="contenido-tab-evento oculto"
+>
+
+  <section class="resultados-admin-card">
+
+    <div class="resultados-admin-cabecera">
+
+      <div>
+
+        <span class="sobrelinea">
+          PARTIDOS DEL EVENTO
+        </span>
+
+        <h2>
+          Resultados
+        </h2>
+
+        <p id="texto-cantidad-partidos">
+          Seleccioná un evento para cargar sus partidos.
+        </p>
+
+      </div>
+
+      <button
+        type="button"
+        id="boton-agregar-partido"
+        class="boton-admin boton-principal-admin"
+        disabled
+      >
+        + Agregar partido
+      </button>
+
+    </div>
+
+    <div
+      id="lista-partidos-admin"
+      class="lista-partidos-admin"
+    >
+
+      <div class="estado-resultados-vacio">
+
+        <strong>
+          Todavía no hay partidos cargados
+        </strong>
+
+        <p>
+          Seleccioná un evento y agregá el primer partido.
+        </p>
+
+      </div>
+
+    </div>
+
+  </section>
+
+</section>
 
   </section>
 
@@ -1021,6 +1082,332 @@
     </section>
 
   </div>
+  <!-- ======================================
+     MODAL AGREGAR / EDITAR PARTIDO
+======================================= -->
+
+<div
+  id="modal-partido"
+  class="modal-admin oculto"
+>
+
+  <div
+    class="modal-admin-fondo"
+    data-cerrar-partido
+  ></div>
+
+  <section class="modal-admin-contenido modal-partido-contenido">
+
+    <div class="modal-admin-cabecera">
+
+      <div>
+
+        <span class="sobrelinea">
+          RESULTADOS MATCH
+        </span>
+
+        <h2 id="titulo-modal-partido">
+          Agregar partido
+        </h2>
+
+        <p>
+          Seleccioná las jugadoras y cargá el resultado.
+        </p>
+
+      </div>
+
+      <button
+        type="button"
+        id="cerrar-modal-partido"
+        class="cerrar-modal-admin"
+        aria-label="Cerrar"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <form id="formulario-partido">
+
+      <input
+        type="hidden"
+        id="partido-id"
+      >
+
+
+      <div class="campos-evento-tres">
+
+        <label class="campo-admin">
+
+          <span>Número de partido *</span>
+
+          <input
+            type="number"
+            id="partido-numero"
+            min="1"
+            step="1"
+            required
+          >
+
+        </label>
+
+
+        <label class="campo-admin">
+
+          <span>Cancha</span>
+
+          <input
+            type="text"
+            id="partido-cancha"
+            placeholder="Ej: Cancha 1"
+          >
+
+        </label>
+
+
+        <label class="campo-admin">
+
+          <span>Horario</span>
+
+          <input
+            type="time"
+            id="partido-hora"
+          >
+
+        </label>
+
+      </div>
+
+
+      <label class="campo-admin">
+
+        <span>Instancia</span>
+
+        <select id="partido-instancia">
+
+          <option value="zona">
+            Zona
+          </option>
+
+          <option value="cuartos">
+            Cuartos de final
+          </option>
+
+          <option value="semifinal">
+            Semifinal
+          </option>
+
+          <option value="final">
+            Final
+          </option>
+
+          <option value="desempate">
+            Desempate
+          </option>
+
+          <option value="amistoso">
+            Partido recreativo
+          </option>
+
+        </select>
+
+      </label>
+
+
+      <div class="equipos-partido-admin">
+
+        <!-- EQUIPO 1 -->
+
+        <section class="equipo-partido-card">
+
+          <span class="equipo-partido-titulo">
+            Pareja 1
+          </span>
+
+          <label class="campo-admin">
+
+            <span>Jugadora 1 *</span>
+
+            <select
+              id="equipo-1-jugadora-1"
+              required
+            >
+              <option value="">
+                Seleccioná una jugadora
+              </option>
+            </select>
+
+          </label>
+
+
+          <label class="campo-admin">
+
+            <span>Jugadora 2 *</span>
+
+            <select
+              id="equipo-1-jugadora-2"
+              required
+            >
+              <option value="">
+                Seleccioná una jugadora
+              </option>
+            </select>
+
+          </label>
+
+
+          <label class="campo-admin">
+
+            <span>Games</span>
+
+            <input
+              type="number"
+              id="equipo-1-games"
+              min="0"
+              step="1"
+              placeholder="Ej: 6"
+            >
+
+          </label>
+
+        </section>
+
+
+        <!-- EQUIPO 2 -->
+
+        <section class="equipo-partido-card">
+
+          <span class="equipo-partido-titulo">
+            Pareja 2
+          </span>
+
+          <label class="campo-admin">
+
+            <span>Jugadora 1 *</span>
+
+            <select
+              id="equipo-2-jugadora-1"
+              required
+            >
+              <option value="">
+                Seleccioná una jugadora
+              </option>
+            </select>
+
+          </label>
+
+
+          <label class="campo-admin">
+
+            <span>Jugadora 2 *</span>
+
+            <select
+              id="equipo-2-jugadora-2"
+              required
+            >
+              <option value="">
+                Seleccioná una jugadora
+              </option>
+            </select>
+
+          </label>
+
+
+          <label class="campo-admin">
+
+            <span>Games</span>
+
+            <input
+              type="number"
+              id="equipo-2-games"
+              min="0"
+              step="1"
+              placeholder="Ej: 3"
+            >
+
+          </label>
+
+        </section>
+
+      </div>
+
+
+      <div class="campos-evento-dos">
+
+        <label class="campo-admin">
+
+          <span>Estado</span>
+
+          <select id="partido-estado">
+
+            <option value="pendiente">
+              Pendiente
+            </option>
+
+            <option value="en_juego">
+              En juego
+            </option>
+
+            <option value="finalizado">
+              Finalizado
+            </option>
+
+            <option value="cancelado">
+              Cancelado
+            </option>
+
+          </select>
+
+        </label>
+
+
+        <label class="campo-admin">
+
+          <span>Observaciones</span>
+
+          <input
+            type="text"
+            id="partido-observaciones"
+            placeholder="Ej: desempate por punto de oro"
+          >
+
+        </label>
+
+      </div>
+
+
+      <div class="acciones-formulario-evento">
+
+        <button
+          type="button"
+          id="cancelar-partido"
+          class="boton-admin boton-secundario-admin"
+        >
+          Cancelar
+        </button>
+
+        <button
+          type="submit"
+          id="guardar-partido"
+          class="boton-admin boton-principal-admin"
+        >
+          Guardar partido
+        </button>
+
+      </div>
+
+
+      <p
+        id="mensaje-partido"
+        class="mensaje-formulario-evento"
+      ></p>
+
+    </form>
+
+  </section>
+
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="./supabase.js"></script>
