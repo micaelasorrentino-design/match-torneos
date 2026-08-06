@@ -2568,3 +2568,45 @@ footer {
 .footer-admin a:hover {
   color: #7c5aa7;
 }
+/*==========================================
+BOTÓN MIS INSCRIPCIONES
+==========================================*/
+
+.boton-mis-inscripciones{
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  height:44px;
+
+  padding:0 22px;
+
+  border-radius:999px;
+
+  background:#FFFFFF;
+
+  border:1px solid rgba(166,108,201,.18);
+
+  color:#3D255B;
+
+  font-family:'Poppins',sans-serif;
+  font-size:.92rem;
+  font-weight:600;
+
+  text-decoration:none;
+
+  transition:.25s ease;
+
+}
+
+.boton-mis-inscripciones:hover{
+
+  background:#A66CC9;
+  color:#FFFFFF;
+
+  transform:translateY(-2px);
+
+  box-shadow:0 12px 28px rgba(166,108,201,.20);
+
+}
