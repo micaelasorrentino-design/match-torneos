@@ -385,23 +385,31 @@ async function cargarEventos() {
   ] = await Promise.all([
 
     window.db
-      .from("eventos")
-      .select(`
-        *,
-        sedes (
-          nombre
-        ),
-        complejos (
-          nombre,
-          maps_url
-        )
-      `)
-      .order(
-        "fecha",
-        {
-          ascending: true
-        }
-      ),
+  .from("eventos")
+  .select(`
+    *,
+    sedes (
+      nombre
+    ),
+    complejos (
+      nombre,
+      maps_url
+    )
+  `)
+  .eq(
+    "publicado",
+    true
+  )
+  .eq(
+    "archivado",
+    false
+  )
+  .order(
+    "fecha",
+    {
+      ascending: true
+    }
+  ),
 
     window.db.rpc(
       "obtener_ocupacion_eventos"
@@ -446,19 +454,24 @@ async function cargarEventos() {
       )
     );
 
-  const eventos =
-    (
-      respuestaEventos.data || []
-    ).map(
-      (evento) => ({
-        ...evento,
-
-        ocupados:
-          ocupacionPorEvento.get(
-            evento.id
-          ) || 0
-      })
-    );
+const eventos =
+(
+  respuestaEventos.data || []
+)
+.filter(
+  evento =>
+    evento.publicado &&
+    !evento.archivado
+)
+.map(
+  (evento) => ({
+    ...evento,
+    ocupados:
+      ocupacionPorEvento.get(
+        evento.id
+      ) || 0
+  })
+);
 
   if (eventos.length === 0) {
 
