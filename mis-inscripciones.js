@@ -1,5 +1,10 @@
 /* ==========================================
-   MI MATCH
+   MI MATCH — MIS INSCRIPCIONES
+========================================== */
+
+
+/* ==========================================
+   ELEMENTOS
 ========================================== */
 
 const formularioConsulta =
@@ -86,18 +91,13 @@ function normalizarTelefono(valor = "") {
       .replace(/\D/g, "");
 
   if (numero.startsWith("549")) {
-    numero =
-      numero.slice(3);
+    numero = numero.slice(3);
   } else if (numero.startsWith("54")) {
-    numero =
-      numero.slice(2);
+    numero = numero.slice(2);
   }
 
-  if (
-    numero.startsWith("0")
-  ) {
-    numero =
-      numero.slice(1);
+  if (numero.startsWith("0")) {
+    numero = numero.slice(1);
   }
 
   return numero;
@@ -170,7 +170,8 @@ function formatearHora(hora) {
     return "";
   }
 
-  return hora.slice(0, 5);
+  return String(hora).slice(0, 5);
+
 }
 
 
@@ -192,19 +193,14 @@ function formatearPrecio(precio) {
 
 function textoEstado(estado) {
 
-  const textos = {
-    pendiente:
-      "Pendiente",
-
-    confirmada:
-      "Confirmada",
-
-    cancelada:
-      "Cancelada"
+  const estados = {
+    pendiente: "Pendiente",
+    confirmada: "Confirmada",
+    cancelada: "Cancelada"
   };
 
   return (
-    textos[estado] ||
+    estados[estado] ||
     estado ||
     "Pendiente"
   );
@@ -214,22 +210,16 @@ function textoEstado(estado) {
 
 function textoPago(estadoPago) {
 
-  const textos = {
-    pendiente:
-      "Pago pendiente",
-
+  const pagos = {
+    pendiente: "Pago pendiente",
     comprobante_recibido:
       "Comprobante recibido",
-
-    confirmado:
-      "Pago confirmado",
-
-    rechazado:
-      "Pago rechazado"
+    confirmado: "Pago confirmado",
+    rechazado: "Pago rechazado"
   };
 
   return (
-    textos[estadoPago] ||
+    pagos[estadoPago] ||
     estadoPago ||
     "Pago pendiente"
   );
@@ -240,14 +230,9 @@ function textoPago(estadoPago) {
 function textoTipo(tipo) {
 
   const tipos = {
-    torneo:
-      "Torneo MATCH",
-
-    encuentro:
-      "Encuentro MATCH",
-
-    cancha_abierta:
-      "Cancha abierta"
+    torneo: "Torneo MATCH",
+    encuentro: "Encuentro MATCH",
+    cancha_abierta: "Cancha abierta"
   };
 
   return (
@@ -259,7 +244,7 @@ function textoTipo(tipo) {
 
 
 /* ==========================================
-   TARJETA
+   CREAR TARJETA
 ========================================== */
 
 function crearTarjetaInscripcion(
@@ -273,9 +258,12 @@ function crearTarjetaInscripcion(
         )} a ${formatearHora(
           inscripcion.evento_hora_fin
         )}`
-      : formatearHora(
-          inscripcion.evento_hora_inicio
-        ) || "A confirmar";
+      : (
+          formatearHora(
+            inscripcion.evento_hora_inicio
+          ) ||
+          "A confirmar"
+        );
 
 
   const modalidad =
@@ -303,6 +291,16 @@ function crearTarjetaInscripcion(
     inscripcion.comprobante_enviado
       ? "Comprobante recibido"
       : "Todavía no enviado";
+
+
+  const claseEstado =
+    inscripcion.estado ||
+    "pendiente";
+
+
+  const clasePago =
+    inscripcion.estado_pago ||
+    "pendiente";
 
 
   return `
@@ -341,8 +339,7 @@ function crearTarjetaInscripcion(
 
           <span
             class="estado-chip estado-${escaparHTML(
-              inscripcion.estado ||
-              "pendiente"
+              claseEstado
             )}"
           >
             ${escaparHTML(
@@ -354,8 +351,7 @@ function crearTarjetaInscripcion(
 
           <span
             class="estado-chip pago-${escaparHTML(
-              inscripcion.estado_pago ||
-              "pendiente"
+              clasePago
             )}"
           >
             ${escaparHTML(
@@ -478,6 +474,7 @@ function crearTarjetaInscripcion(
         <span class="comprobante-indicador">
 
           Estado actual:
+
           <strong>
             ${escaparHTML(
               textoEstado(
@@ -501,7 +498,7 @@ function crearTarjetaInscripcion(
 
 
 /* ==========================================
-   MOSTRAR PANTALLAS
+   CAMBIAR PANTALLAS
 ========================================== */
 
 function mostrarAcceso() {
@@ -518,15 +515,16 @@ function mostrarAcceso() {
     "oculto"
   );
 
-  mensajeConsulta.textContent =
-    "";
+  if (mensajeConsulta) {
+    mensajeConsulta.textContent = "";
+  }
 
   campoTelefono?.focus();
 
 }
 
 
-function mostrarVacio() {
+function mostrarEstadoVacio() {
 
   accesoPanel?.classList.add(
     "oculto"
@@ -544,7 +542,7 @@ function mostrarVacio() {
 
 
 /* ==========================================
-   CONSULTAR
+   CONSULTAR SUPABASE
 ========================================== */
 
 async function consultarInscripciones(
@@ -553,32 +551,33 @@ async function consultarInscripciones(
 
   evento.preventDefault();
 
+
   const telefono =
     normalizarTelefono(
-      campoTelefono.value
+      campoTelefono?.value || ""
     );
 
 
-  mensajeConsulta.textContent =
-    "";
+  if (mensajeConsulta) {
+    mensajeConsulta.textContent = "";
+  }
 
 
-  if (
-    telefono.length < 8
-  ) {
+  if (telefono.length < 8) {
 
-    mensajeConsulta.textContent =
-      "Ingresá un número de WhatsApp válido.";
+    if (mensajeConsulta) {
+      mensajeConsulta.textContent =
+        "Ingresá un número de WhatsApp válido.";
+    }
 
-    campoTelefono.focus();
+    campoTelefono?.focus();
 
     return;
 
   }
 
 
-  botonConsultar.disabled =
-    true;
+  botonConsultar.disabled = true;
 
   botonConsultar.textContent =
     "Buscando...";
@@ -593,8 +592,7 @@ async function consultarInscripciones(
       await window.db.rpc(
         "consultar_inscripciones_por_telefono",
         {
-          p_telefono:
-            telefono
+          p_telefono: telefono
         }
       );
 
@@ -610,48 +608,61 @@ async function consultarInscripciones(
 
     if (!inscripciones.length) {
 
-      mostrarVacio();
+      mostrarEstadoVacio();
 
       return;
 
     }
 
 
-    const primera =
+    const primeraInscripcion =
       inscripciones[0];
 
 
     const nombre =
-      primera.participante_nombre ||
+      primeraInscripcion
+        .participante_nombre ||
       "";
 
 
-    saludoParticipante.textContent =
-      nombre
-        ? `Hola, ${nombre} 💜`
-        : "Hola 💜";
+    if (saludoParticipante) {
+
+      saludoParticipante.textContent =
+        nombre
+          ? `Hola, ${nombre} 💜`
+          : "Hola 💜";
+
+    }
 
 
-    cantidadInscripciones.textContent =
-      `Encontramos ${
-        inscripciones.length
-      } inscripción${
-        inscripciones.length === 1
-          ? ""
-          : "es"
-      } asociada${
-        inscripciones.length === 1
-          ? ""
-          : "s"
-      } a tu número.`;
+    if (cantidadInscripciones) {
+
+      cantidadInscripciones.textContent =
+        `Encontramos ${
+          inscripciones.length
+        } inscripción${
+          inscripciones.length === 1
+            ? ""
+            : "es"
+        } asociada${
+          inscripciones.length === 1
+            ? ""
+            : "s"
+        } a tu número.`;
+
+    }
 
 
-    listaInscripciones.innerHTML =
-      inscripciones
-        .map(
-          crearTarjetaInscripcion
-        )
-        .join("");
+    if (listaInscripciones) {
+
+      listaInscripciones.innerHTML =
+        inscripciones
+          .map(
+            crearTarjetaInscripcion
+          )
+          .join("");
+
+    }
 
 
     accesoPanel?.classList.add(
@@ -672,6 +683,7 @@ async function consultarInscripciones(
       telefono
     );
 
+
   } catch (error) {
 
     console.error(
@@ -680,13 +692,17 @@ async function consultarInscripciones(
     );
 
 
-    mensajeConsulta.textContent =
-      "No pudimos consultar tus inscripciones. Intentá nuevamente.";
+    if (mensajeConsulta) {
+
+      mensajeConsulta.textContent =
+        "No pudimos consultar tus inscripciones. Intentá nuevamente.";
+
+    }
+
 
   } finally {
 
-    botonConsultar.disabled =
-      false;
+    botonConsultar.disabled = false;
 
     botonConsultar.textContent =
       "Buscar mis inscripciones";
@@ -723,8 +739,7 @@ botonCambiarNumero?.addEventListener(
   "click",
   () => {
 
-    campoTelefono.value =
-      "";
+    campoTelefono.value = "";
 
     sessionStorage.removeItem(
       "match_telefono_consulta"
@@ -740,8 +755,7 @@ botonIntentarNuevamente?.addEventListener(
   "click",
   () => {
 
-    campoTelefono.value =
-      "";
+    campoTelefono.value = "";
 
     mostrarAcceso();
 
@@ -750,7 +764,7 @@ botonIntentarNuevamente?.addEventListener(
 
 
 /* ==========================================
-   RECUPERAR ÚLTIMA CONSULTA
+   RECUPERAR ÚLTIMO NÚMERO
 ========================================== */
 
 const telefonoGuardado =
@@ -759,7 +773,10 @@ const telefonoGuardado =
   );
 
 
-if (telefonoGuardado) {
+if (
+  telefonoGuardado &&
+  campoTelefono
+) {
 
   campoTelefono.value =
     formatearTelefonoVisual(
