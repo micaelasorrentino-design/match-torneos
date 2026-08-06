@@ -3319,6 +3319,33 @@ const cancelarPartido =
     "cancelar-partido"
   );
 
+  const equipo1Jugadora1 =
+  document.getElementById(
+    "equipo-1-jugadora-1"
+  );
+
+const equipo1Jugadora2 =
+  document.getElementById(
+    "equipo-1-jugadora-2"
+  );
+
+const equipo2Jugadora1 =
+  document.getElementById(
+    "equipo-2-jugadora-1"
+  );
+
+const equipo2Jugadora2 =
+  document.getElementById(
+    "equipo-2-jugadora-2"
+  );
+
+const selectoresJugadoras = [
+  equipo1Jugadora1,
+  equipo1Jugadora2,
+  equipo2Jugadora1,
+  equipo2Jugadora2
+];
+
 
 function cambiarTabEvento(
   tabSeleccionada
@@ -3352,6 +3379,71 @@ function cambiarTabEvento(
 
 }
 
+/* ==========================================
+   CARGAR JUGADORAS DEL EVENTO
+========================================== */
+
+function cargarJugadorasEnPartido() {
+
+  const inscripcionesDisponibles =
+    inscripcionesActuales.filter(
+      (inscripcion) =>
+        inscripcion.estado !==
+        "cancelada"
+    );
+
+  const opciones =
+    inscripcionesDisponibles
+      .map(
+        (inscripcion) => {
+
+          const participante =
+            inscripcion.participantes ||
+            {};
+
+          const nombreCompleto =
+            [
+              participante.nombre,
+              participante.apellido
+            ]
+              .filter(Boolean)
+              .join(" ");
+
+          return `
+            <option value="${escaparHTML(
+              inscripcion.id
+            )}">
+              ${escaparHTML(
+                nombreCompleto ||
+                "Participante sin nombre"
+              )}
+            </option>
+          `;
+
+        }
+      )
+      .join("");
+
+
+  selectoresJugadoras.forEach(
+    (selector) => {
+
+      if (!selector) {
+        return;
+      }
+
+      selector.innerHTML = `
+        <option value="">
+          Seleccioná una jugadora
+        </option>
+
+        ${opciones}
+      `;
+
+    }
+  );
+
+}
 
 function abrirModalPartido() {
 
@@ -3364,6 +3456,21 @@ function abrirModalPartido() {
     return;
 
   }
+
+
+  if (!inscripcionesActuales.length) {
+
+    alert(
+      "Este evento todavía no tiene participantes cargadas."
+    );
+
+    return;
+
+  }
+
+
+  cargarJugadorasEnPartido();
+
 
   modalPartido?.classList.remove(
     "oculto"
