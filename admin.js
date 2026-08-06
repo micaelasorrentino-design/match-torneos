@@ -3319,6 +3319,37 @@ const cancelarPartido =
     "cancelar-partido"
   );
 
+  /* ==========================================
+   SELECTORES DE JUGADORAS
+========================================== */
+
+const equipo1Jugadora1 =
+  document.getElementById(
+    "equipo-1-jugadora-1"
+  );
+
+const equipo1Jugadora2 =
+  document.getElementById(
+    "equipo-1-jugadora-2"
+  );
+
+const equipo2Jugadora1 =
+  document.getElementById(
+    "equipo-2-jugadora-1"
+  );
+
+const equipo2Jugadora2 =
+  document.getElementById(
+    "equipo-2-jugadora-2"
+  );
+
+const selectoresJugadoras = [
+  equipo1Jugadora1,
+  equipo1Jugadora2,
+  equipo2Jugadora1,
+  equipo2Jugadora2
+];
+
   const equipo1Jugadora1 =
   document.getElementById(
     "equipo-1-jugadora-1"
@@ -3445,6 +3476,73 @@ function cargarJugadorasEnPartido() {
 
 }
 
+/* ==========================================
+   CARGAR JUGADORAS DEL EVENTO SELECCIONADO
+========================================== */
+
+function cargarJugadorasEnPartido() {
+
+  const jugadorasDisponibles =
+    inscripcionesActuales.filter(
+      (inscripcion) =>
+        inscripcion.estado !==
+        "cancelada"
+    );
+
+
+  const opciones =
+    jugadorasDisponibles
+      .map(
+        (inscripcion) => {
+
+          const participante =
+            inscripcion.participantes ||
+            {};
+
+          const nombreCompleto =
+            [
+              participante.nombre,
+              participante.apellido
+            ]
+              .filter(Boolean)
+              .join(" ");
+
+          return `
+            <option value="${escaparHTML(
+              inscripcion.id
+            )}">
+              ${escaparHTML(
+                nombreCompleto ||
+                "Jugadora sin nombre"
+              )}
+            </option>
+          `;
+
+        }
+      )
+      .join("");
+
+
+  selectoresJugadoras.forEach(
+    (selector) => {
+
+      if (!selector) {
+        return;
+      }
+
+      selector.innerHTML = `
+        <option value="">
+          Seleccioná una jugadora
+        </option>
+
+        ${opciones}
+      `;
+
+    }
+  );
+
+}
+
 function abrirModalPartido() {
 
   if (!eventoActual) {
@@ -3461,7 +3559,7 @@ function abrirModalPartido() {
   if (!inscripcionesActuales.length) {
 
     alert(
-      "Este evento todavía no tiene participantes cargadas."
+      "Este evento no tiene jugadoras cargadas."
     );
 
     return;
@@ -3480,76 +3578,6 @@ function abrirModalPartido() {
     "hidden";
 
 }
-
-
-function cerrarPartido() {
-
-  modalPartido?.classList.add(
-    "oculto"
-  );
-
-  document.body.style.overflow =
-    "";
-
-}
-
-
-tabsEventoAdmin.forEach(
-  (boton) => {
-
-    boton.addEventListener(
-      "click",
-      () => {
-
-        if (boton.disabled) {
-          return;
-        }
-
-        cambiarTabEvento(
-          boton.dataset.tabEvento
-        );
-
-      }
-    );
-
-  }
-);
-
-
-botonAgregarPartido?.addEventListener(
-  "click",
-  abrirModalPartido
-);
-
-
-cerrarModalPartido?.addEventListener(
-  "click",
-  cerrarPartido
-);
-
-
-cancelarPartido?.addEventListener(
-  "click",
-  cerrarPartido
-);
-
-
-document.addEventListener(
-  "click",
-  (evento) => {
-
-    if (
-      evento.target.matches(
-        "[data-cerrar-partido]"
-      )
-    ) {
-
-      cerrarPartido();
-
-    }
-
-  }
-);
 
 /* ==========================================
    CLICS DINÁMICOS
@@ -3985,6 +4013,64 @@ document.addEventListener(
       cerrarNuevoEvento();
 
     }
+
+  }
+);
+
+/* ==========================================
+   EVITAR JUGADORAS REPETIDAS
+========================================== */
+
+function actualizarJugadorasDeshabilitadas() {
+
+  const valoresSeleccionados =
+    selectoresJugadoras
+      .map(
+        (selector) =>
+          selector?.value
+      )
+      .filter(Boolean);
+
+
+  selectoresJugadoras.forEach(
+    (selectorActual) => {
+
+      if (!selectorActual) {
+        return;
+      }
+
+      Array.from(
+        selectorActual.options
+      ).forEach(
+        (opcion) => {
+
+          if (!opcion.value) {
+            return;
+          }
+
+          opcion.disabled =
+            valoresSeleccionados.includes(
+              opcion.value
+            ) &&
+            selectorActual.value !==
+              opcion.value;
+
+        }
+      );
+
+    }
+  );
+
+}
+
+
+selectoresJugadoras.forEach(
+  (selector) => {
+
+    selector?.addEventListener(
+      "change",
+      actualizarJugadorasDeshabilitadas
+    );
 
   }
 );
