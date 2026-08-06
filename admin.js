@@ -1,5 +1,11 @@
 /* ==========================================
    MATCH — PANEL ADMINISTRADOR
+   PARTE 1 DE 4
+========================================== */
+
+
+/* ==========================================
+   ELEMENTOS GENERALES
 ========================================== */
 
 const pantallaLogin =
@@ -47,10 +53,95 @@ const botonActualizar =
     "boton-actualizar"
   );
 
+
+/* ==========================================
+   EVENTOS — LISTADO Y SIDEBAR
+========================================== */
+
 const selectorEvento =
   document.getElementById(
     "selector-evento"
   );
+
+const botonNuevoEvento =
+  document.getElementById(
+    "boton-nuevo-evento"
+  );
+
+const botonNuevoEventoGrande =
+  document.getElementById(
+    "boton-nuevo-evento-grande"
+  );
+
+const listaEventosAdmin =
+  document.getElementById(
+    "lista-eventos-admin"
+  );
+
+const buscadorEventos =
+  document.getElementById(
+    "buscador-eventos"
+  );
+
+const filtrosEventosSidebar =
+  document.querySelectorAll(
+    "[data-filtro-eventos]"
+  );
+
+const tituloEventoAdministrado =
+  document.getElementById(
+    "titulo-evento-administrado"
+  );
+
+const descripcionEventoAdministrado =
+  document.getElementById(
+    "descripcion-evento-administrado"
+  );
+
+const botonEditarEvento =
+  document.getElementById(
+    "boton-editar-evento"
+  );
+
+
+/* ==========================================
+   ESTADO DEL EVENTO
+========================================== */
+
+const adminEventoPublicado =
+  document.getElementById(
+    "admin-evento-publicado"
+  );
+
+const adminInscripcionesAbiertas =
+  document.getElementById(
+    "admin-inscripciones-abiertas"
+  );
+
+const adminEventoArchivado =
+  document.getElementById(
+    "admin-evento-archivado"
+  );
+
+const guardarEstadoEvento =
+  document.getElementById(
+    "guardar-estado-evento"
+  );
+
+const botonEliminarEvento =
+  document.getElementById(
+    "eliminar-evento"
+  );
+
+const textoEstadoPublicacion =
+  document.getElementById(
+    "texto-estado-publicacion"
+  );
+
+
+/* ==========================================
+   INSCRIPCIONES
+========================================== */
 
 const buscadorInscripciones =
   document.getElementById(
@@ -97,6 +188,11 @@ const resumenConfirmadas =
     "resumen-confirmadas"
   );
 
+
+/* ==========================================
+   MODAL DE COMPROBANTE
+========================================== */
+
 const modalComprobante =
   document.getElementById(
     "modal-comprobante"
@@ -117,10 +213,10 @@ const tituloModalComprobante =
     "titulo-modal-comprobante"
   );
 
-const botonNuevoEvento =
-  document.getElementById(
-    "boton-nuevo-evento"
-  );
+
+/* ==========================================
+   MODAL NUEVO EVENTO
+========================================== */
 
 const modalNuevoEvento =
   document.getElementById(
@@ -202,6 +298,11 @@ const eventoPrecio =
     "evento-precio"
   );
 
+const eventoPublicado =
+  document.getElementById(
+    "evento-publicado"
+  );
+
 const eventoInscripcionesAbiertas =
   document.getElementById(
     "evento-inscripciones-abiertas"
@@ -211,47 +312,22 @@ const eventoDescripcion =
   document.getElementById(
     "evento-descripcion"
   );
-  const botonNuevoEventoGrande =
-  document.getElementById(
-    "boton-nuevo-evento-grande"
-  );
 
-const listaEventosAdmin =
-  document.getElementById(
-    "lista-eventos-admin"
-  );
 
-const buscadorEventos =
-  document.getElementById(
-    "buscador-eventos"
-  );
-
-const filtrosEventosSidebar =
-  document.querySelectorAll(
-    "[data-filtro-eventos]"
-  );
-
-const tituloEventoAdministrado =
-  document.getElementById(
-    "titulo-evento-administrado"
-  );
-
-const descripcionEventoAdministrado =
-  document.getElementById(
-    "descripcion-evento-administrado"
-  );
-
-const botonEditarEvento =
-  document.getElementById(
-    "boton-editar-evento"
-  );
+/* ==========================================
+   VARIABLES GENERALES
+========================================== */
 
 let inscripcionesActuales = [];
-let eventoActual = "";let inscripcionesActuales = [];
+
 let eventosAdministrables = [];
+
 let eventoActual = "";
+
 let filtroEventosActual = "todos";
+
 let sedesDisponibles = [];
+
 let complejosDisponibles = [];
 
 
@@ -259,44 +335,116 @@ let complejosDisponibles = [];
    UTILIDADES
 ========================================== */
 
-function escaparHTML(valor = "") {
+function escaparHTML(
+  valor = ""
+) {
+
   return String(valor)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
+    .replaceAll(
+      "&",
+      "&amp;"
+    )
+    .replaceAll(
+      "<",
+      "&lt;"
+    )
+    .replaceAll(
+      ">",
+      "&gt;"
+    )
+    .replaceAll(
+      '"',
+      "&quot;"
+    )
+    .replaceAll(
+      "'",
+      "&#039;"
+    );
+
 }
 
 
-function normalizarTexto(valor = "") {
+function normalizarTexto(
+  valor = ""
+) {
+
   return String(valor)
     .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
+    .replace(
+      /[\u0300-\u036f]/g,
+      ""
+    )
     .toLowerCase()
     .trim();
+
 }
 
 
-function textoEstado(estado) {
+function formatearFechaAdmin(
+  fecha
+) {
+
+  if (!fecha) {
+    return "Sin fecha";
+  }
+
+  const fechaLocal =
+    new Date(
+      `${fecha}T12:00:00`
+    );
+
+  return new Intl.DateTimeFormat(
+    "es-AR",
+    {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric"
+    }
+  ).format(
+    fechaLocal
+  );
+
+}
+
+
+function textoEstado(
+  estado
+) {
+
   const textos = {
-    pendiente: "Pendiente",
-    confirmada: "Confirmada",
-    cancelada: "Cancelada"
+    pendiente:
+      "Pendiente",
+
+    confirmada:
+      "Confirmada",
+
+    cancelada:
+      "Cancelada"
   };
 
-  return textos[estado] || estado || "Sin estado";
+  return (
+    textos[estado] ||
+    estado ||
+    "Sin estado"
+  );
+
 }
 
 
-function textoPago(estadoPago) {
+function textoPago(
+  estadoPago
+) {
 
   const textos = {
-    pendiente: "Pago pendiente",
+    pendiente:
+      "Pago pendiente",
+
     comprobante_recibido:
       "Comprobante recibido",
+
     confirmado:
       "Pago confirmado",
+
     rechazado:
       "Pago rechazado"
   };
@@ -311,20 +459,51 @@ function textoPago(estadoPago) {
 
 
 /* ==========================================
-   SESIÓN Y ACCESO
+   LOGIN Y SESIÓN
 ========================================== */
 
+function mostrarLogin() {
+
+  pantallaLogin?.classList.remove(
+    "oculto"
+  );
+
+  panelAdministrador?.classList.add(
+    "oculto"
+  );
+
+}
+
+
+function mostrarPanel() {
+
+  pantallaLogin?.classList.add(
+    "oculto"
+  );
+
+  panelAdministrador?.classList.remove(
+    "oculto"
+  );
+
+}
+
+
 async function verificarAccesoAdministrador() {
+
   const {
     data: {
       session
     }
   } =
-    await window.db.auth.getSession();
+    await window.db.auth
+      .getSession();
 
   if (!session) {
+
     mostrarLogin();
+
     return;
+
   }
 
   const {
@@ -335,61 +514,52 @@ async function verificarAccesoAdministrador() {
       "es_administrador"
     );
 
-  if (error || !esAdmin) {
-    await window.db.auth.signOut();
+  if (
+    error ||
+    !esAdmin
+  ) {
+
+    await window.db.auth
+      .signOut();
+
     mostrarLogin();
 
     if (errorLogin) {
+
       errorLogin.textContent =
         "Esta cuenta no tiene acceso al panel.";
+
     }
 
     return;
+
   }
 
   mostrarPanel();
+
   await cargarEventos();
+
 }
 
 
-function mostrarLogin() {
-  pantallaLogin?.classList.remove(
-    "oculto"
-  );
+async function iniciarSesion(
+  evento
+) {
 
-  panelAdministrador?.classList.add(
-    "oculto"
-  );
-}
-
-
-function mostrarPanel() {
-  pantallaLogin?.classList.add(
-    "oculto"
-  );
-
-  panelAdministrador?.classList.remove(
-    "oculto"
-  );
-}
-
-
-/* ==========================================
-   LOGIN
-========================================== */
-
-async function iniciarSesion(evento) {
   evento.preventDefault();
 
   if (errorLogin) {
     errorLogin.textContent = "";
   }
 
-  botonLogin.disabled = true;
+  botonLogin.disabled =
+    true;
+
   botonLogin.textContent =
     "Ingresando...";
 
   try {
+
     const {
       error
     } =
@@ -409,34 +579,50 @@ async function iniciarSesion(evento) {
     await verificarAccesoAdministrador();
 
   } catch (error) {
+
     console.error(
       "Error al iniciar sesión:",
       error
     );
 
     if (errorLogin) {
+
       errorLogin.textContent =
         "Email o contraseña incorrectos.";
+
     }
 
   } finally {
-    botonLogin.disabled = false;
+
+    botonLogin.disabled =
+      false;
+
     botonLogin.textContent =
       "Ingresar";
+
   }
+
 }
 
 
 async function cerrarSesion() {
-  await window.db.auth.signOut();
+
+  await window.db.auth
+    .signOut();
 
   inscripcionesActuales = [];
+
+  eventosAdministrables = [];
+
   eventoActual = "";
 
   mostrarLogin();
+
 }
+
+
 /* ==========================================
-   CREAR NUEVO EVENTO
+   CARGAR SEDES Y COMPLEJOS
 ========================================== */
 
 async function cargarSedesYComplejos() {
@@ -444,29 +630,40 @@ async function cargarSedesYComplejos() {
   const [
     respuestaSedes,
     respuestaComplejos
-  ] = await Promise.all([
+  ] =
+    await Promise.all([
 
-    window.db
-      .from("sedes")
-      .select(`
-        id,
-        nombre
-      `)
-      .eq("activa", true)
-      .order("nombre"),
+      window.db
+        .from("sedes")
+        .select(`
+          id,
+          nombre
+        `)
+        .eq(
+          "activa",
+          true
+        )
+        .order(
+          "nombre"
+        ),
 
-    window.db
-      .from("complejos")
-      .select(`
-        id,
-        sede_id,
-        nombre
-      `)
-      .order("nombre")
+      window.db
+        .from("complejos")
+        .select(`
+          id,
+          sede_id,
+          nombre
+        `)
+        .order(
+          "nombre"
+        )
 
-  ]);
+    ]);
 
-  if (respuestaSedes.error) {
+  if (
+    respuestaSedes.error
+  ) {
+
     console.error(
       "Error al cargar sedes:",
       respuestaSedes.error
@@ -475,9 +672,13 @@ async function cargarSedesYComplejos() {
     throw new Error(
       "No pudimos cargar las ciudades."
     );
+
   }
 
-  if (respuestaComplejos.error) {
+  if (
+    respuestaComplejos.error
+  ) {
+
     console.error(
       "Error al cargar complejos:",
       respuestaComplejos.error
@@ -486,6 +687,7 @@ async function cargarSedesYComplejos() {
     throw new Error(
       "No pudimos cargar los complejos."
     );
+
   }
 
   sedesDisponibles =
@@ -493,6 +695,10 @@ async function cargarSedesYComplejos() {
 
   complejosDisponibles =
     respuestaComplejos.data || [];
+
+  if (!eventoSede) {
+    return;
+  }
 
   eventoSede.innerHTML = `
     <option value="">
@@ -508,8 +714,11 @@ async function cargarSedesYComplejos() {
           "option"
         );
 
-      opcion.value = sede.id;
-      opcion.textContent = sede.nombre;
+      opcion.value =
+        sede.id;
+
+      opcion.textContent =
+        sede.nombre;
 
       eventoSede.appendChild(
         opcion
@@ -523,14 +732,23 @@ async function cargarSedesYComplejos() {
 
 function cargarComplejosPorSede() {
 
+  if (
+    !eventoSede ||
+    !eventoComplejo
+  ) {
+    return;
+  }
+
   const sedeId =
     eventoSede.value;
 
-  eventoComplejo.innerHTML = "";
+  eventoComplejo.innerHTML =
+    "";
 
   if (!sedeId) {
 
-    eventoComplejo.disabled = true;
+    eventoComplejo.disabled =
+      true;
 
     eventoComplejo.innerHTML = `
       <option value="">
@@ -539,15 +757,18 @@ function cargarComplejosPorSede() {
     `;
 
     return;
+
   }
 
   const complejosFiltrados =
     complejosDisponibles.filter(
       (complejo) =>
-        complejo.sede_id === sedeId
+        complejo.sede_id ===
+        sedeId
     );
 
-  eventoComplejo.disabled = false;
+  eventoComplejo.disabled =
+    false;
 
   eventoComplejo.innerHTML = `
     <option value="">
@@ -579,25 +800,55 @@ function cargarComplejosPorSede() {
 }
 
 
+/* ==========================================
+   ABRIR Y CERRAR NUEVO EVENTO
+========================================== */
+
 async function abrirModalNuevoEvento() {
 
   if (mensajeNuevoEvento) {
-    mensajeNuevoEvento.textContent = "";
+
+    mensajeNuevoEvento.textContent =
+      "";
+
+    mensajeNuevoEvento.style.color =
+      "";
+
   }
 
   formularioNuevoEvento?.reset();
 
-  eventoInscripcionesAbiertas.checked =
-    true;
+  if (eventoPublicado) {
 
-  eventoComplejo.disabled =
-    true;
+    eventoPublicado.checked =
+      false;
 
-  eventoComplejo.innerHTML = `
-    <option value="">
-      Primero seleccioná una ciudad
-    </option>
-  `;
+  }
+
+  if (
+    eventoInscripcionesAbiertas
+  ) {
+
+    eventoInscripcionesAbiertas.checked =
+      false;
+
+    eventoInscripcionesAbiertas.disabled =
+      Boolean(eventoPublicado);
+
+  }
+
+  if (eventoComplejo) {
+
+    eventoComplejo.disabled =
+      true;
+
+    eventoComplejo.innerHTML = `
+      <option value="">
+        Primero seleccioná una ciudad
+      </option>
+    `;
+
+  }
 
   try {
 
@@ -639,31 +890,84 @@ function cerrarNuevoEvento() {
   formularioNuevoEvento?.reset();
 
   if (mensajeNuevoEvento) {
-    mensajeNuevoEvento.textContent = "";
+
+    mensajeNuevoEvento.textContent =
+      "";
+
+    mensajeNuevoEvento.style.color =
+      "";
+
   }
 
 }
+/* ==========================================
+   MATCH — PANEL ADMINISTRADOR
+   PARTE 2 DE 4
+========================================== */
 
 
-async function crearNuevoEvento(evento) {
+/* ==========================================
+   CREAR NUEVO EVENTO
+========================================== */
+
+async function crearNuevoEvento(
+  evento
+) {
 
   evento.preventDefault();
 
   if (mensajeNuevoEvento) {
-    mensajeNuevoEvento.textContent = "";
+
+    mensajeNuevoEvento.textContent =
+      "";
+
+    mensajeNuevoEvento.style.color =
+      "";
+
   }
 
+
   if (
-    eventoHoraFin.value &&
+    !eventoTitulo?.value.trim() ||
+    !eventoTipo?.value ||
+    !eventoCategoria?.value ||
+    !eventoFecha?.value ||
+    !eventoHoraInicio?.value ||
+    !eventoSede?.value ||
+    !eventoComplejo?.value ||
+    !eventoPrecio?.value ||
+    !eventoCupos?.value
+  ) {
+
+    if (mensajeNuevoEvento) {
+
+      mensajeNuevoEvento.textContent =
+        "Completá todos los campos obligatorios.";
+
+    }
+
+    return;
+
+  }
+
+
+  if (
+    eventoHoraFin?.value &&
     eventoHoraFin.value <=
       eventoHoraInicio.value
   ) {
 
-    mensajeNuevoEvento.textContent =
-      "La hora de finalización debe ser posterior a la hora de inicio.";
+    if (mensajeNuevoEvento) {
+
+      mensajeNuevoEvento.textContent =
+        "La hora de finalización debe ser posterior a la hora de inicio.";
+
+    }
 
     return;
+
   }
+
 
   const complejoSeleccionado =
     complejosDisponibles.find(
@@ -672,13 +976,34 @@ async function crearNuevoEvento(evento) {
         eventoComplejo.value
     );
 
+
   if (!complejoSeleccionado) {
 
-    mensajeNuevoEvento.textContent =
-      "Seleccioná un complejo.";
+    if (mensajeNuevoEvento) {
+
+      mensajeNuevoEvento.textContent =
+        "Seleccioná un complejo.";
+
+    }
 
     return;
+
   }
+
+
+  const publicado =
+    Boolean(
+      eventoPublicado?.checked
+    );
+
+
+  const inscripcionesAbiertas =
+    publicado &&
+    Boolean(
+      eventoInscripcionesAbiertas
+        ?.checked
+    );
+
 
   const registro = {
 
@@ -698,22 +1023,34 @@ async function crearNuevoEvento(evento) {
       eventoHoraInicio.value,
 
     hora_fin:
-      eventoHoraFin.value || null,
+      eventoHoraFin.value ||
+      null,
 
     lugar:
       complejoSeleccionado.nombre,
 
     precio:
-      Number(eventoPrecio.value),
+      Number(
+        eventoPrecio.value
+      ),
 
     cupos_totales:
-      Number(eventoCupos.value),
+      Number(
+        eventoCupos.value
+      ),
+
+    publicado:
+      publicado,
+
+    archivado:
+      false,
 
     inscripciones_abiertas:
-      eventoInscripcionesAbiertas.checked,
+      inscripcionesAbiertas,
 
     descripcion:
-      eventoDescripcion.value.trim() ||
+      eventoDescripcion?.value
+        .trim() ||
       null,
 
     sede_id:
@@ -724,11 +1061,49 @@ async function crearNuevoEvento(evento) {
 
   };
 
-  guardarNuevoEvento.disabled =
-    true;
 
-  guardarNuevoEvento.textContent =
-    "Creando evento...";
+  if (
+    registro.cupos_totales < 1
+  ) {
+
+    if (mensajeNuevoEvento) {
+
+      mensajeNuevoEvento.textContent =
+        "Los cupos deben ser mayores que cero.";
+
+    }
+
+    return;
+
+  }
+
+
+  if (
+    registro.precio < 0
+  ) {
+
+    if (mensajeNuevoEvento) {
+
+      mensajeNuevoEvento.textContent =
+        "El precio no puede ser negativo.";
+
+    }
+
+    return;
+
+  }
+
+
+  if (guardarNuevoEvento) {
+
+    guardarNuevoEvento.disabled =
+      true;
+
+    guardarNuevoEvento.textContent =
+      "Creando evento...";
+
+  }
+
 
   try {
 
@@ -738,37 +1113,45 @@ async function crearNuevoEvento(evento) {
     } =
       await window.db
         .from("eventos")
-        .insert(registro)
-        .select("id")
+        .insert(
+          registro
+        )
+        .select(
+          "id"
+        )
         .single();
+
 
     if (error) {
       throw error;
     }
 
-    mensajeNuevoEvento.textContent =
-      "✓ Evento creado correctamente.";
 
-    mensajeNuevoEvento.style.color =
-      "#4e8b68";
+    if (mensajeNuevoEvento) {
 
-    await cargarEventos();
+      mensajeNuevoEvento.textContent =
+        "✓ Evento creado correctamente.";
 
-    if (data?.id) {
-
-      selectorEvento.value =
-        data.id;
-
-      eventoActual =
-        data.id;
-
-      await cargarInscripciones();
+      mensajeNuevoEvento.style.color =
+        "#4e8b68";
 
     }
 
+
+    eventoActual =
+      data?.id || "";
+
+
+    await cargarEventos();
+
+
     window.setTimeout(
-      cerrarNuevoEvento,
-      900
+      () => {
+
+        cerrarNuevoEvento();
+
+      },
+      800
     );
 
   } catch (error) {
@@ -778,127 +1161,185 @@ async function crearNuevoEvento(evento) {
       error
     );
 
-    mensajeNuevoEvento.style.color =
-      "";
 
-    mensajeNuevoEvento.textContent =
-      error.message ||
-      "No pudimos crear el evento.";
+    if (mensajeNuevoEvento) {
+
+      mensajeNuevoEvento.style.color =
+        "";
+
+      mensajeNuevoEvento.textContent =
+        error.message ||
+        "No pudimos crear el evento.";
+
+    }
 
   } finally {
 
-    guardarNuevoEvento.disabled =
-      false;
+    if (guardarNuevoEvento) {
 
-    guardarNuevoEvento.textContent =
-      "Crear evento";
+      guardarNuevoEvento.disabled =
+        false;
+
+      guardarNuevoEvento.textContent =
+        "Crear evento";
+
+    }
 
   }
 
 }
+
+
 /* ==========================================
-   LISTADO LATERAL DE EVENTOS
+   ESTADO VISUAL DE LOS EVENTOS
 ========================================== */
 
-function obtenerEstadoEvento(evento) {
+function obtenerEstadoEvento(
+  evento
+) {
 
-  if (evento.archivado) {
+  if (
+    evento.archivado
+  ) {
+
     return {
-      texto: "Archivado",
-      clase: "estado-evento-archivado"
+
+      texto:
+        "Archivado",
+
+      clase:
+        "estado-evento-archivado"
+
     };
+
   }
 
-  if (!evento.publicado) {
+
+  if (
+    !evento.publicado
+  ) {
+
     return {
-      texto: "Borrador",
-      clase: "estado-evento-borrador"
+
+      texto:
+        "Borrador",
+
+      clase:
+        "estado-evento-borrador"
+
     };
+
   }
+
+
+  if (
+    evento.inscripciones_abiertas
+  ) {
+
+    return {
+
+      texto:
+        "Publicado",
+
+      clase:
+        "estado-evento-publicado"
+
+    };
+
+  }
+
 
   return {
+
     texto:
-      evento.inscripciones_abiertas
-        ? "Publicado"
-        : "Inscripciones cerradas",
+      "Inscripciones cerradas",
 
     clase:
       "estado-evento-publicado"
+
   };
 
 }
 
 
-function formatearFechaAdmin(fecha) {
-
-  if (!fecha) {
-    return "Sin fecha";
-  }
-
-  const fechaLocal =
-    new Date(`${fecha}T12:00:00`);
-
-  return new Intl.DateTimeFormat(
-    "es-AR",
-    {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric"
-    }
-  ).format(fechaLocal);
-
-}
-
+/* ==========================================
+   FILTRAR EVENTOS DEL SIDEBAR
+========================================== */
 
 function obtenerEventosFiltrados() {
 
   const busqueda =
     normalizarTexto(
-      buscadorEventos?.value || ""
+      buscadorEventos?.value ||
+      ""
     );
+
 
   return eventosAdministrables.filter(
     (evento) => {
 
-      const coincideBusqueda =
-        !busqueda ||
+      const textoEvento =
         normalizarTexto(
           [
             evento.titulo,
             evento.categoria,
-            evento.fecha
+            evento.fecha,
+            evento.descripcion
           ]
             .filter(Boolean)
             .join(" ")
-        ).includes(busqueda);
+        );
 
-      let coincideEstado = true;
+
+      const coincideBusqueda =
+        !busqueda ||
+        textoEvento.includes(
+          busqueda
+        );
+
+
+      let coincideEstado =
+        true;
+
 
       if (
         filtroEventosActual ===
         "publicados"
       ) {
+
         coincideEstado =
-          Boolean(evento.publicado) &&
+          Boolean(
+            evento.publicado
+          ) &&
           !evento.archivado;
+
       }
+
 
       if (
         filtroEventosActual ===
         "borradores"
       ) {
+
         coincideEstado =
           !evento.publicado &&
           !evento.archivado;
+
       }
+
 
       if (
         filtroEventosActual ===
         "archivados"
       ) {
+
         coincideEstado =
-          Boolean(evento.archivado);
+          Boolean(
+            evento.archivado
+          );
+
       }
+
 
       return (
         coincideBusqueda &&
@@ -911,14 +1352,20 @@ function obtenerEventosFiltrados() {
 }
 
 
+/* ==========================================
+   RENDERIZAR SIDEBAR DE EVENTOS
+========================================== */
+
 function renderizarListaEventos() {
 
   if (!listaEventosAdmin) {
     return;
   }
 
+
   const eventos =
     obtenerEventosFiltrados();
+
 
   if (!eventos.length) {
 
@@ -929,7 +1376,9 @@ function renderizarListaEventos() {
     `;
 
     return;
+
   }
+
 
   listaEventosAdmin.innerHTML =
     eventos
@@ -937,20 +1386,27 @@ function renderizarListaEventos() {
         (evento) => {
 
           const estado =
-            obtenerEstadoEvento(evento);
+            obtenerEstadoEvento(
+              evento
+            );
 
-          const activo =
-            evento.id === eventoActual;
+
+          const seleccionado =
+            evento.id ===
+            eventoActual;
+
 
           return `
             <button
               type="button"
               class="evento-sidebar-item ${
-                activo
+                seleccionado
                   ? "activo"
                   : ""
               }"
-              data-seleccionar-evento="${evento.id}"
+              data-seleccionar-evento="${
+                evento.id
+              }"
             >
 
               <strong>
@@ -965,7 +1421,9 @@ function renderizarListaEventos() {
                   evento.categoria ||
                   "Sin categoría"
                 )}
+
                 ·
+
                 ${escaparHTML(
                   formatearFechaAdmin(
                     evento.fecha
@@ -974,9 +1432,13 @@ function renderizarListaEventos() {
               </small>
 
               <span
-                class="estado-evento-sidebar ${estado.clase}"
+                class="estado-evento-sidebar ${
+                  estado.clase
+                }"
               >
-                ${estado.texto}
+                ${escaparHTML(
+                  estado.texto
+                )}
               </span>
 
             </button>
@@ -989,107 +1451,348 @@ function renderizarListaEventos() {
 }
 
 
+/* ==========================================
+   CABECERA DEL EVENTO SELECCIONADO
+========================================== */
+
 function actualizarCabeceraEvento() {
 
   const evento =
     eventosAdministrables.find(
       (item) =>
-        item.id === eventoActual
+        item.id ===
+        eventoActual
     );
+
 
   if (!evento) {
 
-    if (tituloEventoAdministrado) {
-      tituloEventoAdministrado.textContent =
+    if (
+      tituloEventoAdministrado
+    ) {
+
+      tituloEventoAdministrado
+        .textContent =
         "Hola, Mica 💜";
+
     }
+
 
     if (
       descripcionEventoAdministrado
     ) {
-      descripcionEventoAdministrado.textContent =
+
+      descripcionEventoAdministrado
+        .textContent =
         "Seleccioná un evento para administrar sus inscripciones, pagos y configuración.";
+
     }
+
 
     if (botonEditarEvento) {
+
       botonEditarEvento.disabled =
         true;
+
     }
 
+
     return;
+
   }
 
-  if (tituloEventoAdministrado) {
-    tituloEventoAdministrado.textContent =
-      evento.titulo;
+
+  if (
+    tituloEventoAdministrado
+  ) {
+
+    tituloEventoAdministrado
+      .textContent =
+      evento.titulo ||
+      "Evento MATCH";
+
   }
+
 
   if (
     descripcionEventoAdministrado
   ) {
 
     const partes = [
+
       evento.categoria,
+
       formatearFechaAdmin(
         evento.fecha
       )
+
     ].filter(Boolean);
 
-    descripcionEventoAdministrado.textContent =
+
+    descripcionEventoAdministrado
+      .textContent =
       partes.join(" · ");
+
   }
 
+
   if (botonEditarEvento) {
+
     botonEditarEvento.disabled =
       false;
+
   }
 
 }
 
+
+/* ==========================================
+   CONTROLES DE PUBLICACIÓN
+========================================== */
+
+function actualizarControlesPublicacion() {
+
+  const evento =
+    eventosAdministrables.find(
+      (item) =>
+        item.id ===
+        eventoActual
+    );
+
+
+  if (!evento) {
+
+    if (adminEventoPublicado) {
+
+      adminEventoPublicado.checked =
+        false;
+
+      adminEventoPublicado.disabled =
+        true;
+
+    }
+
+
+    if (
+      adminInscripcionesAbiertas
+    ) {
+
+      adminInscripcionesAbiertas.checked =
+        false;
+
+      adminInscripcionesAbiertas.disabled =
+        true;
+
+    }
+
+
+    if (adminEventoArchivado) {
+
+      adminEventoArchivado.checked =
+        false;
+
+      adminEventoArchivado.disabled =
+        true;
+
+    }
+
+
+    if (guardarEstadoEvento) {
+
+      guardarEstadoEvento.disabled =
+        true;
+
+    }
+
+
+    if (botonEliminarEvento) {
+
+      botonEliminarEvento.disabled =
+        true;
+
+    }
+
+
+    if (
+      textoEstadoPublicacion
+    ) {
+
+      textoEstadoPublicacion.textContent =
+        "Seleccioná un evento.";
+
+    }
+
+
+    return;
+
+  }
+
+
+  if (adminEventoPublicado) {
+
+    adminEventoPublicado.disabled =
+      false;
+
+    adminEventoPublicado.checked =
+      Boolean(
+        evento.publicado
+      );
+
+  }
+
+
+  if (adminEventoArchivado) {
+
+    adminEventoArchivado.disabled =
+      false;
+
+    adminEventoArchivado.checked =
+      Boolean(
+        evento.archivado
+      );
+
+  }
+
+
+  if (
+    adminInscripcionesAbiertas
+  ) {
+
+    adminInscripcionesAbiertas.checked =
+      Boolean(
+        evento.inscripciones_abiertas
+      );
+
+    adminInscripcionesAbiertas.disabled =
+      !evento.publicado ||
+      evento.archivado;
+
+  }
+
+
+  if (guardarEstadoEvento) {
+
+    guardarEstadoEvento.disabled =
+      false;
+
+  }
+
+
+  if (botonEliminarEvento) {
+
+    botonEliminarEvento.disabled =
+      false;
+
+  }
+
+
+  if (
+    textoEstadoPublicacion
+  ) {
+
+    if (evento.archivado) {
+
+      textoEstadoPublicacion.textContent =
+        "Evento archivado: no aparece en la web, pero continúa guardado en el panel.";
+
+    } else if (
+      !evento.publicado
+    ) {
+
+      textoEstadoPublicacion.textContent =
+        "Borrador privado: solo aparece en el administrador.";
+
+    } else if (
+      evento.inscripciones_abiertas
+    ) {
+
+      textoEstadoPublicacion.textContent =
+        "Publicado y aceptando inscripciones.";
+
+    } else {
+
+      textoEstadoPublicacion.textContent =
+        "Publicado con las inscripciones cerradas.";
+
+    }
+
+  }
+
+}
+
+
+/* ==========================================
+   SELECCIONAR EVENTO
+========================================== */
 
 async function seleccionarEventoAdmin(
   eventoId
 ) {
 
+  const existe =
+    eventosAdministrables.some(
+      (evento) =>
+        evento.id ===
+        eventoId
+    );
+
+
+  if (!existe) {
+    return;
+  }
+
+
   eventoActual =
     eventoId;
 
-  selectorEvento.value =
-    eventoId;
+
+  if (selectorEvento) {
+
+    selectorEvento.value =
+      eventoId;
+
+  }
+
 
   renderizarListaEventos();
 
   actualizarCabeceraEvento();
 
+  actualizarControlesPublicacion();
+
+
   await cargarInscripciones();
 
-  if (
-    typeof actualizarControlesPublicacion ===
-    "function"
-  ) {
-    actualizarControlesPublicacion();
-  }
-
 }
+
+
 /* ==========================================
-   EVENTOS
+   CARGAR EVENTOS
 ========================================== */
 
 async function cargarEventos() {
 
-  selectorEvento.innerHTML = `
-    <option value="">
-      Seleccioná un evento
-    </option>
-  `;
+  if (selectorEvento) {
+
+    selectorEvento.innerHTML = `
+      <option value="">
+        Seleccioná un evento
+      </option>
+    `;
+
+  }
+
 
   if (listaEventosAdmin) {
+
     listaEventosAdmin.innerHTML = `
       <p class="sidebar-vacio">
         Cargando eventos...
       </p>
     `;
+
   }
+
 
   const {
     data,
@@ -1100,9 +1803,17 @@ async function cargarEventos() {
       .select(`
         id,
         titulo,
-        fecha,
+        tipo,
         categoria,
         descripcion,
+        fecha,
+        hora_inicio,
+        hora_fin,
+        precio,
+        cupos_totales,
+        lugar,
+        sede_id,
+        complejo_id,
         publicado,
         archivado,
         inscripciones_abiertas
@@ -1110,9 +1821,11 @@ async function cargarEventos() {
       .order(
         "fecha",
         {
-          ascending: false
+          ascending:
+            false
         }
       );
+
 
   if (error) {
 
@@ -1121,33 +1834,53 @@ async function cargarEventos() {
       error
     );
 
+
     if (listaEventosAdmin) {
+
       listaEventosAdmin.innerHTML = `
         <p class="sidebar-vacio">
           No pudimos cargar los eventos.
         </p>
       `;
+
     }
 
+
+    alert(
+      "No pudimos cargar los eventos."
+    );
+
+
     return;
+
   }
+
 
   eventosAdministrables =
     data || [];
 
+
   eventosAdministrables.forEach(
     (evento) => {
+
+      if (!selectorEvento) {
+        return;
+      }
+
 
       const opcion =
         document.createElement(
           "option"
         );
 
+
       opcion.value =
         evento.id;
 
+
       opcion.textContent =
         `${evento.titulo} · ${evento.fecha}`;
+
 
       selectorEvento.appendChild(
         opcion
@@ -1156,26 +1889,45 @@ async function cargarEventos() {
     }
   );
 
-  if (!eventosAdministrables.length) {
 
-    eventoActual = "";
+  if (
+    !eventosAdministrables.length
+  ) {
+
+    eventoActual =
+      "";
+
+    inscripcionesActuales =
+      [];
 
     renderizarListaEventos();
+
     actualizarCabeceraEvento();
 
+    actualizarControlesPublicacion();
+
+    renderizarTabla();
+
+    actualizarResumen();
+
     return;
+
   }
+
 
   const eventoAnteriorExiste =
     eventosAdministrables.some(
       (evento) =>
-        evento.id === eventoActual
+        evento.id ===
+        eventoActual
     );
+
 
   const eventoInicial =
     eventoAnteriorExiste
       ? eventoActual
       : eventosAdministrables[0].id;
+
 
   await seleccionarEventoAdmin(
     eventoInicial
@@ -1183,31 +1935,408 @@ async function cargarEventos() {
 
 }
 
+
 /* ==========================================
-   INSCRIPCIONES
+   GUARDAR PUBLICACIÓN / ARCHIVO
 ========================================== */
 
-async function cargarInscripciones() {
-  eventoActual =
-    selectorEvento.value;
+async function guardarEstadoPublicacion() {
 
   if (!eventoActual) {
-    inscripcionesActuales = [];
-    renderizarTabla();
-    actualizarResumen();
+
+    alert(
+      "Seleccioná un evento."
+    );
+
+    return;
+
+  }
+
+
+  const archivado =
+    Boolean(
+      adminEventoArchivado
+        ?.checked
+    );
+
+
+  const publicado =
+    archivado
+      ? false
+      : Boolean(
+          adminEventoPublicado
+            ?.checked
+        );
+
+
+  const inscripcionesAbiertas =
+    archivado
+      ? false
+      : (
+          publicado &&
+          Boolean(
+            adminInscripcionesAbiertas
+              ?.checked
+          )
+        );
+
+
+  if (guardarEstadoEvento) {
+
+    guardarEstadoEvento.disabled =
+      true;
+
+    guardarEstadoEvento.textContent =
+      "Guardando...";
+
+  }
+
+
+  try {
+
+    const {
+      error
+    } =
+      await window.db
+        .from("eventos")
+        .update({
+
+          publicado:
+            publicado,
+
+          archivado:
+            archivado,
+
+          inscripciones_abiertas:
+            inscripcionesAbiertas
+
+        })
+        .eq(
+          "id",
+          eventoActual
+        );
+
+
+    if (error) {
+      throw error;
+    }
+
+
+    const eventoId =
+      eventoActual;
+
+
+    await cargarEventos();
+
+
+    if (
+      eventosAdministrables.some(
+        (evento) =>
+          evento.id ===
+          eventoId
+      )
+    ) {
+
+      await seleccionarEventoAdmin(
+        eventoId
+      );
+
+    }
+
+
+    if (archivado) {
+
+      alert(
+        "Evento ocultado y archivado."
+      );
+
+    } else if (!publicado) {
+
+      alert(
+        "Evento guardado como borrador."
+      );
+
+    } else if (
+      inscripcionesAbiertas
+    ) {
+
+      alert(
+        "Evento publicado con inscripciones abiertas."
+      );
+
+    } else {
+
+      alert(
+        "Evento publicado con inscripciones cerradas."
+      );
+
+    }
+
+  } catch (error) {
+
+    console.error(
+      "Error al guardar estado:",
+      error
+    );
+
+
+    alert(
+      "No pudimos actualizar el estado del evento."
+    );
+
+  } finally {
+
+    if (guardarEstadoEvento) {
+
+      guardarEstadoEvento.disabled =
+        false;
+
+      guardarEstadoEvento.textContent =
+        "Guardar estado";
+
+    }
+
+  }
+
+}
+
+
+/* ==========================================
+   ELIMINAR EVENTO
+========================================== */
+
+async function eliminarEventoSeleccionado() {
+
+  if (!eventoActual) {
+
+    alert(
+      "Seleccioná un evento."
+    );
+
+    return;
+
+  }
+
+
+  const evento =
+    eventosAdministrables.find(
+      (item) =>
+        item.id ===
+        eventoActual
+    );
+
+
+  if (!evento) {
+
+    alert(
+      "No encontramos el evento."
+    );
+
+    return;
+
+  }
+
+
+  const {
+    count,
+    error: errorConteo
+  } =
+    await window.db
+      .from("inscripciones")
+      .select(
+        "id",
+        {
+          count:
+            "exact",
+
+          head:
+            true
+        }
+      )
+      .eq(
+        "evento_id",
+        eventoActual
+      );
+
+
+  if (errorConteo) {
+
+    console.error(
+      "Error al verificar inscripciones:",
+      errorConteo
+    );
+
+
+    alert(
+      "No pudimos verificar si el evento tiene inscripciones."
+    );
+
+    return;
+
+  }
+
+
+  if (
+    Number(count) > 0
+  ) {
+
+    alert(
+      `Este evento tiene ${count} inscripción${
+        Number(count) === 1
+          ? ""
+          : "es"
+      } y no se puede eliminar.\n\nUsá “Archivado” para ocultarlo sin perder los datos.`
+    );
+
+    return;
+
+  }
+
+
+  const primeraConfirmacion =
+    window.confirm(
+      `¿Eliminar definitivamente "${evento.titulo}"?\n\nEsta acción no se puede deshacer.`
+    );
+
+
+  if (!primeraConfirmacion) {
     return;
   }
 
-  tablaInscripciones.innerHTML = `
-    <tr>
-      <td
-        colspan="7"
-        class="tabla-vacia"
-      >
-        Cargando inscripciones...
-      </td>
-    </tr>
-  `;
+
+  const textoConfirmacion =
+    window.prompt(
+      "Para confirmar, escribí ELIMINAR"
+    );
+
+
+  if (
+    textoConfirmacion
+      ?.trim()
+      .toUpperCase() !==
+    "ELIMINAR"
+  ) {
+
+    alert(
+      "El evento no fue eliminado."
+    );
+
+    return;
+
+  }
+
+
+  if (botonEliminarEvento) {
+
+    botonEliminarEvento.disabled =
+      true;
+
+    botonEliminarEvento.textContent =
+      "Eliminando...";
+
+  }
+
+
+  try {
+
+    const {
+      error
+    } =
+      await window.db
+        .from("eventos")
+        .delete()
+        .eq(
+          "id",
+          eventoActual
+        );
+
+
+    if (error) {
+      throw error;
+    }
+
+
+    eventoActual =
+      "";
+
+    inscripcionesActuales =
+      [];
+
+
+    alert(
+      "Evento eliminado correctamente."
+    );
+
+
+    await cargarEventos();
+
+  } catch (error) {
+
+    console.error(
+      "Error al eliminar evento:",
+      error
+    );
+
+
+    alert(
+      "No pudimos eliminar el evento."
+    );
+
+  } finally {
+
+    if (botonEliminarEvento) {
+
+      botonEliminarEvento.disabled =
+        false;
+
+      botonEliminarEvento.textContent =
+        "Eliminar";
+
+    }
+
+  }
+
+}
+/* ==========================================
+   MATCH — PANEL ADMINISTRADOR
+   PARTE 3 DE 4
+========================================== */
+
+
+/* ==========================================
+   CARGAR INSCRIPCIONES
+========================================== */
+
+async function cargarInscripciones() {
+
+  if (!eventoActual) {
+
+    inscripcionesActuales = [];
+
+    renderizarTabla();
+
+    actualizarResumen();
+
+    return;
+
+  }
+
+
+  if (tablaInscripciones) {
+
+    tablaInscripciones.innerHTML = `
+      <tr>
+        <td
+          colspan="7"
+          class="tabla-vacia"
+        >
+          Cargando inscripciones...
+        </td>
+      </tr>
+    `;
+
+  }
+
 
   const {
     data,
@@ -1242,53 +2371,85 @@ async function cargarInscripciones() {
       .order(
         "created_at",
         {
-          ascending: true
+          ascending:
+            true
         }
       );
 
+
   if (error) {
+
     console.error(
       "Error al cargar inscripciones:",
       error
     );
 
-    tablaInscripciones.innerHTML = `
-      <tr>
-        <td
-          colspan="7"
-          class="tabla-vacia"
-        >
-          No pudimos cargar las inscripciones.
-        </td>
-      </tr>
-    `;
+
+    if (tablaInscripciones) {
+
+      tablaInscripciones.innerHTML = `
+        <tr>
+          <td
+            colspan="7"
+            class="tabla-vacia"
+          >
+            No pudimos cargar las inscripciones.
+          </td>
+        </tr>
+      `;
+
+    }
+
+
+    if (
+      textoCantidadInscripciones
+    ) {
+
+      textoCantidadInscripciones.textContent =
+        "Error al cargar inscripciones";
+
+    }
+
 
     return;
+
   }
+
 
   inscripcionesActuales =
     data || [];
 
+
   aplicarFiltros();
+
   actualizarResumen();
+
 }
 
 
 /* ==========================================
-   FILTROS
+   FILTRAR INSCRIPCIONES
 ========================================== */
 
 function obtenerInscripcionesFiltradas() {
+
   const busqueda =
     normalizarTexto(
-      buscadorInscripciones.value
+      buscadorInscripciones
+        ?.value ||
+      ""
     );
 
+
   const estado =
-    filtroEstado.value;
+    filtroEstado?.value ||
+    "";
+
 
   const pago =
-    filtroPago.value;
+    filtroPago?.value ||
+    "";
+
 
   return inscripcionesActuales.filter(
     (inscripcion) => {
@@ -1297,19 +2458,26 @@ function obtenerInscripcionesFiltradas() {
         inscripcion.participantes ||
         {};
 
+
       const textoBusqueda =
         normalizarTexto(
           [
             participante.nombre,
             participante.apellido,
             participante.telefono,
+            participante
+              .telefono_normalizado,
             participante.email,
-            inscripcion.nombre_companera,
-            inscripcion.telefono_companera
+            inscripcion
+              .nombre_companera,
+            inscripcion
+              .telefono_companera,
+            inscripcion.posicion
           ]
             .filter(Boolean)
             .join(" ")
         );
+
 
       const coincideBusqueda =
         !busqueda ||
@@ -1317,42 +2485,85 @@ function obtenerInscripcionesFiltradas() {
           busqueda
         );
 
+
       const coincideEstado =
         !estado ||
         inscripcion.estado ===
           estado;
+
 
       const coincidePago =
         !pago ||
         inscripcion.estado_pago ===
           pago;
 
+
       return (
         coincideBusqueda &&
         coincideEstado &&
         coincidePago
       );
+
     }
   );
+
 }
 
 
 function aplicarFiltros() {
+
   renderizarTabla(
     obtenerInscripcionesFiltradas()
   );
+
 }
 
 
 /* ==========================================
-   TABLA
+   RENDERIZAR TABLA
 ========================================== */
 
 function renderizarTabla(
   inscripciones =
     inscripcionesActuales
 ) {
+
+  if (!tablaInscripciones) {
+    return;
+  }
+
+
+  if (!eventoActual) {
+
+    tablaInscripciones.innerHTML = `
+      <tr>
+        <td
+          colspan="7"
+          class="tabla-vacia"
+        >
+          Seleccioná un evento para ver sus inscripciones.
+        </td>
+      </tr>
+    `;
+
+
+    if (
+      textoCantidadInscripciones
+    ) {
+
+      textoCantidadInscripciones.textContent =
+        "Seleccioná un evento.";
+
+    }
+
+
+    return;
+
+  }
+
+
   if (!inscripciones.length) {
+
     tablaInscripciones.innerHTML = `
       <tr>
         <td
@@ -1364,28 +2575,58 @@ function renderizarTabla(
       </tr>
     `;
 
-    textoCantidadInscripciones.textContent =
-      "0 inscripciones";
+
+    if (
+      textoCantidadInscripciones
+    ) {
+
+      textoCantidadInscripciones.textContent =
+        "0 inscripciones";
+
+    }
+
 
     return;
+
   }
 
-  textoCantidadInscripciones.textContent =
-    `${inscripciones.length} inscripciones`;
+
+  if (
+    textoCantidadInscripciones
+  ) {
+
+    textoCantidadInscripciones.textContent =
+      `${inscripciones.length} inscripción${
+        inscripciones.length === 1
+          ? ""
+          : "es"
+      }`;
+
+  }
+
 
   tablaInscripciones.innerHTML =
     inscripciones
-      .map(crearFilaInscripcion)
+      .map(
+        crearFilaInscripcion
+      )
       .join("");
+
 }
 
+
+/* ==========================================
+   CREAR FILA DE INSCRIPCIÓN
+========================================== */
 
 function crearFilaInscripcion(
   inscripcion
 ) {
+
   const participante =
     inscripcion.participantes ||
     {};
+
 
   const nombreCompleto =
     [
@@ -1395,8 +2636,10 @@ function crearFilaInscripcion(
       .filter(Boolean)
       .join(" ");
 
+
   const modalidadTexto =
-    inscripcion.modalidad === "pareja"
+    inscripcion.modalidad ===
+    "pareja"
       ? (
           inscripcion.nombre_companera
             ? `Con ${inscripcion.nombre_companera}`
@@ -1408,13 +2651,16 @@ function crearFilaInscripcion(
             : "Individual"
         );
 
+
   const botonComprobante =
     inscripcion.comprobante_path
       ? `
         <button
           type="button"
           class="boton-tabla"
-          data-ver-comprobante="${inscripcion.id}"
+          data-ver-comprobante="${
+            inscripcion.id
+          }"
         >
           Ver archivo
         </button>
@@ -1425,10 +2671,71 @@ function crearFilaInscripcion(
         </span>
       `;
 
+
+  const accionesConfirmacion =
+    inscripcion.estado !==
+    "confirmada"
+      ? `
+        <button
+          type="button"
+          class="boton-tabla boton-tabla-principal"
+          data-confirmar="${
+            inscripcion.id
+          }"
+        >
+          Confirmar pago
+        </button>
+      `
+      : `
+        <span
+          class="estado-chip estado-confirmada"
+        >
+          Confirmada
+        </span>
+      `;
+
+
+  const accionCancelar =
+    inscripcion.estado !==
+    "cancelada"
+      ? `
+        <button
+          type="button"
+          class="boton-tabla boton-cancelar"
+          data-cancelar="${
+            inscripcion.id
+          }"
+        >
+          Cancelar
+        </button>
+      `
+      : "";
+
+
+  const botonWhatsapp =
+    participante
+      .telefono_normalizado
+      ? `
+        <a
+          href="https://wa.me/54${escaparHTML(
+            participante
+              .telefono_normalizado
+          )}"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="boton-tabla"
+        >
+          WhatsApp
+        </a>
+      `
+      : "";
+
+
   return `
     <tr>
 
       <td>
+
         <div class="participante-celda">
 
           <strong>
@@ -1446,9 +2753,12 @@ function crearFilaInscripcion(
           </small>
 
         </div>
+
       </td>
 
+
       <td>
+
         <div class="contacto-celda">
 
           <strong>
@@ -1460,13 +2770,16 @@ function crearFilaInscripcion(
 
           <small>
             ${escaparHTML(
-              participante.telefono_normalizado ||
+              participante
+                .telefono_normalizado ||
               ""
             )}
           </small>
 
         </div>
+
       </td>
+
 
       <td>
         ${escaparHTML(
@@ -1474,7 +2787,9 @@ function crearFilaInscripcion(
         )}
       </td>
 
+
       <td>
+
         <span
           class="pago-chip pago-${escaparHTML(
             inscripcion.estado_pago
@@ -1486,9 +2801,12 @@ function crearFilaInscripcion(
             )
           )}
         </span>
+
       </td>
 
+
       <td>
+
         <span
           class="estado-chip estado-${escaparHTML(
             inscripcion.estado
@@ -1500,64 +2818,24 @@ function crearFilaInscripcion(
             )
           )}
         </span>
+
       </td>
+
 
       <td>
         ${botonComprobante}
       </td>
 
+
       <td>
 
         <div class="acciones-tabla">
 
-          ${
-  inscripcion.estado !== "confirmada"
-    ? `
-      <button
-        type="button"
-        class="boton-tabla boton-tabla-principal"
-        data-confirmar="${inscripcion.id}"
-      >
-        Confirmar pago
-      </button>
-    `
-    : `
-      <span class="estado-chip estado-confirmada">
-        Confirmada
-      </span>
-    `
-}
+          ${accionesConfirmacion}
 
-${
-  inscripcion.estado !== "cancelada"
-    ? `
-      <button
-        type="button"
-        class="boton-tabla boton-cancelar"
-        data-cancelar="${inscripcion.id}"
-      >
-        Cancelar
-      </button>
-    `
-    : ""
-}
+          ${accionCancelar}
 
-          ${
-            participante.telefono_normalizado
-              ? `
-                <a
-                  href="https://wa.me/54${escaparHTML(
-                    participante.telefono_normalizado
-                  )}"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="boton-tabla"
-                >
-                  WhatsApp
-                </a>
-              `
-              : ""
-          }
+          ${botonWhatsapp}
 
         </div>
 
@@ -1565,6 +2843,7 @@ ${
 
     </tr>
   `;
+
 }
 
 
@@ -1573,8 +2852,10 @@ ${
 ========================================== */
 
 function actualizarResumen() {
+
   const total =
     inscripcionesActuales.length;
+
 
   const pendientes =
     inscripcionesActuales.filter(
@@ -1583,11 +2864,15 @@ function actualizarResumen() {
         "pendiente"
     ).length;
 
+
   const comprobantes =
     inscripcionesActuales.filter(
       (item) =>
-        item.comprobante_path
+        Boolean(
+          item.comprobante_path
+        )
     ).length;
+
 
   const confirmadas =
     inscripcionesActuales.filter(
@@ -1596,60 +2881,92 @@ function actualizarResumen() {
         "confirmada"
     ).length;
 
-  resumenTotal.textContent =
-    total;
 
-  resumenPendientes.textContent =
-    pendientes;
+  if (resumenTotal) {
 
-  resumenComprobantes.textContent =
-    comprobantes;
+    resumenTotal.textContent =
+      total;
 
-  resumenConfirmadas.textContent =
-    confirmadas;
+  }
+
+
+  if (resumenPendientes) {
+
+    resumenPendientes.textContent =
+      pendientes;
+
+  }
+
+
+  if (resumenComprobantes) {
+
+    resumenComprobantes.textContent =
+      comprobantes;
+
+  }
+
+
+  if (resumenConfirmadas) {
+
+    resumenConfirmadas.textContent =
+      confirmadas;
+
+  }
+
 }
 
 
 /* ==========================================
-   ACTUALIZAR ESTADOS
+   ACTUALIZAR INSCRIPCIÓN
 ========================================== */
 
 async function actualizarInscripcion(
   inscripcionId,
   cambios
 ) {
+
   const {
     error
   } =
     await window.db
       .from("inscripciones")
-      .update(cambios)
+      .update(
+        cambios
+      )
       .eq(
         "id",
         inscripcionId
       );
 
+
   if (error) {
+
     console.error(
       "Error al actualizar inscripción:",
       error
     );
 
+
     alert(
       "No pudimos actualizar la inscripción."
     );
 
+
     return false;
+
   }
+
 
   await cargarInscripciones();
 
+
   return true;
+
 }
 
 
 /* ==========================================
-   CONFIRMAR Y CANCELAR INSCRIPCIONES
+   CONFIRMAR INSCRIPCIÓN
 ========================================== */
 
 async function confirmarInscripcion(
@@ -1659,30 +2976,42 @@ async function confirmarInscripcion(
   const inscripcion =
     inscripcionesActuales.find(
       (item) =>
-        item.id === inscripcionId
+        item.id ===
+        inscripcionId
     );
 
+
   if (!inscripcion) {
+
     alert(
       "No encontramos la inscripción."
     );
 
     return;
+
   }
 
+
   if (
-    inscripcion.estado === "confirmada" &&
-    inscripcion.estado_pago === "confirmado"
+    inscripcion.estado ===
+      "confirmada" &&
+    inscripcion.estado_pago ===
+      "confirmado"
   ) {
+
     alert(
       "Esta inscripción ya está confirmada."
     );
 
     return;
+
   }
 
+
   const participante =
-    inscripcion.participantes || {};
+    inscripcion.participantes ||
+    {};
+
 
   const nombreCompleto =
     [
@@ -1692,32 +3021,48 @@ async function confirmarInscripcion(
       .filter(Boolean)
       .join(" ");
 
+
   const confirmar =
     window.confirm(
-      `¿Confirmar la inscripción y el pago de ${nombreCompleto || "esta participante"}?`
+      `¿Confirmar la inscripción y el pago de ${
+        nombreCompleto ||
+        "esta participante"
+      }?`
     );
+
 
   if (!confirmar) {
     return;
   }
 
+
   const actualizado =
     await actualizarInscripcion(
       inscripcionId,
       {
-        estado: "confirmada",
-        estado_pago: "confirmado"
+        estado:
+          "confirmada",
+
+        estado_pago:
+          "confirmado"
       }
     );
 
+
   if (actualizado) {
+
     alert(
       "Inscripción y pago confirmados."
     );
+
   }
 
 }
 
+
+/* ==========================================
+   CANCELAR INSCRIPCIÓN
+========================================== */
 
 async function cancelarInscripcion(
   inscripcionId
@@ -1726,29 +3071,40 @@ async function cancelarInscripcion(
   const inscripcion =
     inscripcionesActuales.find(
       (item) =>
-        item.id === inscripcionId
+        item.id ===
+        inscripcionId
     );
 
+
   if (!inscripcion) {
+
     alert(
       "No encontramos la inscripción."
     );
 
     return;
+
   }
 
+
   if (
-    inscripcion.estado === "cancelada"
+    inscripcion.estado ===
+    "cancelada"
   ) {
+
     alert(
       "Esta inscripción ya está cancelada."
     );
 
     return;
+
   }
 
+
   const participante =
-    inscripcion.participantes || {};
+    inscripcion.participantes ||
+    {};
+
 
   const nombreCompleto =
     [
@@ -1758,39 +3114,50 @@ async function cancelarInscripcion(
       .filter(Boolean)
       .join(" ");
 
+
   const confirmar =
     window.confirm(
-      `¿Cancelar la inscripción de ${nombreCompleto || "esta participante"}?\n\nEl cupo volverá a quedar disponible.`
+      `¿Cancelar la inscripción de ${
+        nombreCompleto ||
+        "esta participante"
+      }?\n\nEl cupo volverá a quedar disponible.`
     );
+
 
   if (!confirmar) {
     return;
   }
 
+
   const actualizado =
     await actualizarInscripcion(
       inscripcionId,
       {
-        estado: "cancelada"
+        estado:
+          "cancelada"
       }
     );
 
+
   if (actualizado) {
+
     alert(
       "Inscripción cancelada. El cupo quedó liberado."
     );
+
   }
 
 }
 
 
 /* ==========================================
-   COMPROBANTE
+   VER COMPROBANTE
 ========================================== */
 
 async function verComprobante(
   inscripcionId
 ) {
+
   const inscripcion =
     inscripcionesActuales.find(
       (item) =>
@@ -1798,26 +3165,37 @@ async function verComprobante(
         inscripcionId
     );
 
+
   if (
     !inscripcion ||
     !inscripcion.comprobante_path
   ) {
+
     alert(
       "Esta inscripción no tiene comprobante."
     );
 
     return;
+
   }
 
-  visorComprobante.innerHTML = `
-    <p>
-      Cargando comprobante...
-    </p>
-  `;
 
-  modalComprobante.classList.remove(
-    "oculto"
-  );
+  if (visorComprobante) {
+
+    visorComprobante.innerHTML = `
+      <p>
+        Cargando comprobante...
+      </p>
+    `;
+
+  }
+
+
+  modalComprobante
+    ?.classList.remove(
+      "oculto"
+    );
+
 
   const {
     data,
@@ -1826,67 +3204,112 @@ async function verComprobante(
     await window.db.storage
       .from("comprobantes")
       .createSignedUrl(
-        inscripcion.comprobante_path,
+        inscripcion
+          .comprobante_path,
         120
       );
+
 
   if (
     error ||
     !data?.signedUrl
   ) {
+
     console.error(
       "Error al abrir comprobante:",
       error
     );
 
-    visorComprobante.innerHTML = `
-      <p>
-        No pudimos abrir el comprobante.
-      </p>
-    `;
+
+    if (visorComprobante) {
+
+      visorComprobante.innerHTML = `
+        <p>
+          No pudimos abrir el comprobante.
+        </p>
+      `;
+
+    }
+
 
     return;
+
   }
+
 
   const url =
     data.signedUrl;
 
+
   const esPdf =
-    inscripcion.comprobante_path
+    inscripcion
+      .comprobante_path
       .toLowerCase()
-      .endsWith(".pdf");
-
-  tituloModalComprobante.textContent =
-    "Comprobante de pago";
-
-  visorComprobante.innerHTML =
-    esPdf
-      ? `
-        <iframe
-          src="${escaparHTML(url)}"
-          title="Comprobante de pago"
-        ></iframe>
-      `
-      : `
-        <img
-          src="${escaparHTML(url)}"
-          alt="Comprobante de pago"
-        >
-      `;
-}
+      .endsWith(
+        ".pdf"
+      );
 
 
-function cerrarVisorComprobante() {
+  if (
+    tituloModalComprobante
+  ) {
 
-  modalComprobante?.classList.add(
-    "oculto"
-  );
+    tituloModalComprobante.textContent =
+      "Comprobante de pago";
+
+  }
+
 
   if (visorComprobante) {
-    visorComprobante.innerHTML = "";
+
+    visorComprobante.innerHTML =
+      esPdf
+        ? `
+          <iframe
+            src="${escaparHTML(
+              url
+            )}"
+            title="Comprobante de pago"
+          ></iframe>
+        `
+        : `
+          <img
+            src="${escaparHTML(
+              url
+            )}"
+            alt="Comprobante de pago"
+          >
+        `;
+
   }
 
 }
+
+
+/* ==========================================
+   CERRAR COMPROBANTE
+========================================== */
+
+function cerrarVisorComprobante() {
+
+  modalComprobante
+    ?.classList.add(
+      "oculto"
+    );
+
+
+  if (visorComprobante) {
+
+    visorComprobante.innerHTML =
+      "";
+
+  }
+
+}
+/* ==========================================
+   MATCH — PANEL ADMINISTRADOR
+   PARTE 4 DE 4
+========================================== */
 
 
 /* ==========================================
@@ -1910,6 +3333,7 @@ document.addEventListener(
       );
 
       return;
+
     }
 
 
@@ -1926,6 +3350,7 @@ document.addEventListener(
       );
 
       return;
+
     }
 
 
@@ -1942,6 +3367,7 @@ document.addEventListener(
       );
 
       return;
+
     }
 
 
@@ -1962,8 +3388,9 @@ document.addEventListener(
   }
 );
 
+
 /* ==========================================
-   EVENTOS
+   LOGIN Y SESIÓN
 ========================================== */
 
 formularioLogin?.addEventListener(
@@ -1971,87 +3398,66 @@ formularioLogin?.addEventListener(
   iniciarSesion
 );
 
+
 botonCerrarSesion?.addEventListener(
   "click",
   cerrarSesion
 );
 
+
+/* ==========================================
+   ACTUALIZAR DATOS
+========================================== */
+
 botonActualizar?.addEventListener(
   "click",
-  cargarInscripciones
-);
+  async () => {
 
-selectorEvento?.addEventListener(
-  "change",
-  () => {
-
-    if (selectorEvento.value) {
-      seleccionarEventoAdmin(
-        selectorEvento.value
-      );
-    }
+    await cargarEventos();
 
   }
 );
 
-buscadorInscripciones?.addEventListener(
-  "input",
-  aplicarFiltros
-);
 
-filtroEstado?.addEventListener(
-  "change",
-  aplicarFiltros
-);
+/* ==========================================
+   CREAR EVENTO
+========================================== */
 
-filtroPago?.addEventListener(
-  "change",
-  aplicarFiltros
-);
-
-cerrarModalComprobante?.addEventListener(
-  "click",
-  cerrarVisorComprobante
-);
-
-document
-  .querySelectorAll(
-    "[data-cerrar-comprobante]"
-  )
-  .forEach(
-    (elemento) => {
-
-      elemento.addEventListener(
-        "click",
-        cerrarVisorComprobante
-      );
-
-    }
-  );
-  botonNuevoEvento?.addEventListener(
+botonNuevoEvento?.addEventListener(
   "click",
   abrirModalNuevoEvento
 );
+
+
+botonNuevoEventoGrande?.addEventListener(
+  "click",
+  abrirModalNuevoEvento
+);
+
 
 cerrarModalNuevoEvento?.addEventListener(
   "click",
   cerrarNuevoEvento
 );
 
+
 cancelarNuevoEvento?.addEventListener(
   "click",
   cerrarNuevoEvento
 );
+
+
+formularioNuevoEvento?.addEventListener(
+  "submit",
+  crearNuevoEvento
+);
+
 
 eventoSede?.addEventListener(
   "change",
   cargarComplejosPorSede
 );
 
-formularioNuevoEvento?.addEventListener(
-  "submit",
-  crearNuevoEvento
-);
 
 document
   .querySelectorAll(
@@ -2067,11 +3473,138 @@ document
 
     }
   );
-  botonNuevoEventoGrande?.addEventListener(
+
+
+/* ==========================================
+   PUBLICACIÓN, ARCHIVO Y ELIMINACIÓN
+========================================== */
+
+guardarEstadoEvento?.addEventListener(
   "click",
-  abrirModalNuevoEvento
+  guardarEstadoPublicacion
 );
 
+
+botonEliminarEvento?.addEventListener(
+  "click",
+  eliminarEventoSeleccionado
+);
+
+
+adminEventoPublicado?.addEventListener(
+  "change",
+  () => {
+
+    if (
+      adminEventoPublicado.checked
+    ) {
+
+      if (adminEventoArchivado) {
+
+        adminEventoArchivado.checked =
+          false;
+
+      }
+
+
+      if (
+        adminInscripcionesAbiertas
+      ) {
+
+        adminInscripcionesAbiertas.disabled =
+          false;
+
+      }
+
+    } else {
+
+      if (
+        adminInscripcionesAbiertas
+      ) {
+
+        adminInscripcionesAbiertas.checked =
+          false;
+
+        adminInscripcionesAbiertas.disabled =
+          true;
+
+      }
+
+    }
+
+  }
+);
+
+
+adminEventoArchivado?.addEventListener(
+  "change",
+  () => {
+
+    if (
+      adminEventoArchivado.checked
+    ) {
+
+      if (adminEventoPublicado) {
+
+        adminEventoPublicado.checked =
+          false;
+
+      }
+
+
+      if (
+        adminInscripcionesAbiertas
+      ) {
+
+        adminInscripcionesAbiertas.checked =
+          false;
+
+        adminInscripcionesAbiertas.disabled =
+          true;
+
+      }
+
+    } else {
+
+      if (
+        adminInscripcionesAbiertas
+      ) {
+
+        adminInscripcionesAbiertas.disabled =
+          !adminEventoPublicado
+            ?.checked;
+
+      }
+
+    }
+
+  }
+);
+
+
+eventoPublicado?.addEventListener(
+  "change",
+  () => {
+
+    if (
+      eventoInscripcionesAbiertas
+    ) {
+
+      eventoInscripcionesAbiertas.checked =
+        false;
+
+      eventoInscripcionesAbiertas.disabled =
+        !eventoPublicado.checked;
+
+    }
+
+  }
+);
+
+
+/* ==========================================
+   SIDEBAR DE EVENTOS
+========================================== */
 
 buscadorEventos?.addEventListener(
   "input",
@@ -2087,23 +3620,138 @@ filtrosEventosSidebar.forEach(
       () => {
 
         filtroEventosActual =
-          boton.dataset.filtroEventos;
+          boton.dataset
+            .filtroEventos ||
+          "todos";
+
 
         filtrosEventosSidebar.forEach(
-          (item) =>
+          (item) => {
+
             item.classList.remove(
               "activo"
-            )
+            );
+
+          }
         );
+
 
         boton.classList.add(
           "activo"
         );
 
+
         renderizarListaEventos();
 
       }
     );
+
+  }
+);
+
+
+selectorEvento?.addEventListener(
+  "change",
+  () => {
+
+    if (
+      selectorEvento.value
+    ) {
+
+      seleccionarEventoAdmin(
+        selectorEvento.value
+      );
+
+    }
+
+  }
+);
+
+
+/* ==========================================
+   FILTROS DE INSCRIPCIONES
+========================================== */
+
+buscadorInscripciones?.addEventListener(
+  "input",
+  aplicarFiltros
+);
+
+
+filtroEstado?.addEventListener(
+  "change",
+  aplicarFiltros
+);
+
+
+filtroPago?.addEventListener(
+  "change",
+  aplicarFiltros
+);
+
+
+/* ==========================================
+   MODAL DE COMPROBANTE
+========================================== */
+
+cerrarModalComprobante?.addEventListener(
+  "click",
+  cerrarVisorComprobante
+);
+
+
+document
+  .querySelectorAll(
+    "[data-cerrar-comprobante]"
+  )
+  .forEach(
+    (elemento) => {
+
+      elemento.addEventListener(
+        "click",
+        cerrarVisorComprobante
+      );
+
+    }
+  );
+
+
+/* ==========================================
+   ATAJOS DE TECLADO
+========================================== */
+
+document.addEventListener(
+  "keydown",
+  (evento) => {
+
+    if (
+      evento.key !==
+      "Escape"
+    ) {
+      return;
+    }
+
+
+    if (
+      modalComprobante &&
+      !modalComprobante.classList
+        .contains("oculto")
+    ) {
+
+      cerrarVisorComprobante();
+
+    }
+
+
+    if (
+      modalNuevoEvento &&
+      !modalNuevoEvento.classList
+        .contains("oculto")
+    ) {
+
+      cerrarNuevoEvento();
+
+    }
 
   }
 );
