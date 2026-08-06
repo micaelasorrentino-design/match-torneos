@@ -1772,334 +1772,129 @@ async function seleccionarEventoAdmin(
 
 async function cargarEventos() {
 
-  if (selectorEvento) {
+  const contenedor =
+    document.getElementById(
+      "lista-torneos"
+    );
 
-    selectorEvento.innerHTML = `
-      <option value="">
-        Seleccioná un evento
-      </option>
-    `;
-
+  if (!contenedor) {
+    return;
   }
 
+  const [
+    respuestaEventos,
+    respuestaOcupacion
+  ] = await Promise.all([
 
-  if (listaEventosAdmin) {
-
-    listaEventosAdmin.innerHTML = `
-      <p class="sidebar-vacio">
-        Cargando eventos...
-      </p>
-    `;
-
-  }
-
-
-  const {
-    data,
-    error
-  } =
-    await window.db
+    window.db
       .from("eventos")
       .select(`
-        id,
-        titulo,
-        tipo,
-        categoria,
-        descripcion,
-        fecha,
-        hora_inicio,
-        hora_fin,
-        precio,
-        cupos_totales,
-        lugar,
-        sede_id,
-        complejo_id,
-        publicado,
-        archivado,
-        inscripciones_abiertas
+        *,
+        sedes (
+          nombre
+        ),
+        complejos (
+          nombre,
+          maps_url
+        )
       `)
+      .eq(
+        "publicado",
+        true
+      )
+      .eq(
+        "archivado",
+        false
+      )
       .order(
         "fecha",
         {
-          ascending:
-            false
+          ascending: true
         }
-      );
+      ),
 
+    window.db.rpc(
+      "obtener_ocupacion_eventos"
+    )
 
-  if (error) {
+  ]);
+
+  if (respuestaEventos.error) {
 
     console.error(
       "Error al cargar eventos:",
-      error
+      respuestaEventos.error
     );
 
-
-    if (listaEventosAdmin) {
-
-      listaEventosAdmin.innerHTML = `
-        <p class="sidebar-vacio">
-          No pudimos cargar los eventos.
-        </p>
-      `;
-
-    }
-
-
-    alert(
-      "No pudimos cargar los eventos."
-    );
-
+    contenedor.innerHTML = `
+      <p>
+        No pudimos cargar los encuentros.
+      </p>
+    `;
 
     return;
 
   }
 
-
-  eventosAdministrables =
-    data || [];
-
-
-  eventosAdministrables.forEach(
-    (evento) => {
-
-      if (!selectorEvento) {
-        return;
-      }
-
-
-      const opcion =
-        document.createElement(
-          "option"
-        );
-
-
-      opcion.value =
-        evento.id;
-
-
-      opcion.textContent =
-        `${evento.titulo} · ${evento.fecha}`;
-
-
-      selectorEvento.appendChild(
-        opcion
-      );
-
-    }
-  );
-
-
-  if (
-    !eventosAdministrables.length
-  ) {
-
-    eventoActual =
-      "";
-
-    inscripcionesActuales =
-      [];
-
-    renderizarListaEventos();
-
-    actualizarCabeceraEvento();
-
-    actualizarControlesPublicacion();
-
-    renderizarTabla();
-
-    actualizarResumen();
-
-    return;
-
-  }
-
-
-  const eventoAnteriorExiste =
-    eventosAdministrables.some(
-      (evento) =>
-        evento.id ===
-        eventoActual
-    );
-
-
-  const eventoInicial =
-    eventoAnteriorExiste
-      ? eventoActual
-      : eventosAdministrables[0].id;
-
-
-  await seleccionarEventoAdmin(
-    eventoInicial
-  );
-
-}
-
-
-/* ==========================================
-   GUARDAR PUBLICACIÓN / ARCHIVO
-========================================== */
-
-async function guardarEstadoPublicacion() {
-
-  if (!eventoActual) {
-
-    alert(
-      "Seleccioná un evento."
-    );
-
-    return;
-
-  }
-
-
-  const archivado =
-    Boolean(
-      adminEventoArchivado
-        ?.checked
-    );
-
-
-  const publicado =
-    archivado
-      ? false
-      : Boolean(
-          adminEventoPublicado
-            ?.checked
-        );
-
-
-  const inscripcionesAbiertas =
-    archivado
-      ? false
-      : (
-          publicado &&
-          Boolean(
-            adminInscripcionesAbiertas
-              ?.checked
-          )
-        );
-
-
-  if (guardarEstadoEvento) {
-
-    guardarEstadoEvento.disabled =
-      true;
-
-    guardarEstadoEvento.textContent =
-      "Guardando...";
-
-  }
-
-
-  try {
-
-    const {
-      error
-    } =
-      await window.db
-        .from("eventos")
-        .update({
-
-          publicado:
-            publicado,
-
-          archivado:
-            archivado,
-
-          inscripciones_abiertas:
-            inscripcionesAbiertas
-
-        })
-        .eq(
-          "id",
-          eventoActual
-        );
-
-
-    if (error) {
-      throw error;
-    }
-
-
-    const eventoId =
-      eventoActual;
-
-
-    await cargarEventos();
-
-
-    if (
-      eventosAdministrables.some(
-        (evento) =>
-          evento.id ===
-          eventoId
-      )
-    ) {
-
-      await seleccionarEventoAdmin(
-        eventoId
-      );
-
-    }
-
-
-    if (archivado) {
-
-      alert(
-        "Evento ocultado y archivado."
-      );
-
-    } else if (!publicado) {
-
-      alert(
-        "Evento guardado como borrador."
-      );
-
-    } else if (
-      inscripcionesAbiertas
-    ) {
-
-      alert(
-        "Evento publicado con inscripciones abiertas."
-      );
-
-    } else {
-
-      alert(
-        "Evento publicado con inscripciones cerradas."
-      );
-
-    }
-
-  } catch (error) {
+  if (respuestaOcupacion.error) {
 
     console.error(
-      "Error al guardar estado:",
-      error
+      "Error al cargar la ocupación:",
+      respuestaOcupacion.error
     );
-
-
-    alert(
-      "No pudimos actualizar el estado del evento."
-    );
-
-  } finally {
-
-    if (guardarEstadoEvento) {
-
-      guardarEstadoEvento.disabled =
-        false;
-
-      guardarEstadoEvento.textContent =
-        "Guardar estado";
-
-    }
 
   }
 
-}
+  const ocupacionPorEvento =
+    new Map(
+      (
+        respuestaOcupacion.data || []
+      ).map(
+        (registro) => [
+          registro.evento_id,
+          Number(registro.ocupados) || 0
+        ]
+      )
+    );
 
+  const eventos =
+    (
+      respuestaEventos.data || []
+    ).map(
+      (evento) => ({
+
+        ...evento,
+
+        ocupados:
+          ocupacionPorEvento.get(
+            evento.id
+          ) || 0
+
+      })
+    );
+
+  if (eventos.length === 0) {
+
+    contenedor.innerHTML = `
+      <p>
+        Próximamente publicaremos nuevos encuentros 💜
+      </p>
+    `;
+
+    return;
+
+  }
+
+  contenedor.innerHTML =
+    eventos
+      .map(
+        crearTarjetaEvento
+      )
+      .join("");
+
+  cargarScriptPrincipal();
+
+}
 
 /* ==========================================
    ELIMINAR EVENTO
