@@ -1762,132 +1762,294 @@ async function seleccionarEventoAdmin(
 
 
 /* ==========================================
-   CARGAR EVENTOS
+   CARGAR EVENTOS DEL ADMINISTRADOR
 ========================================== */
 
 async function cargarEventos() {
 
-  const contenedor =
-    document.getElementById(
-      "lista-torneos"
-    );
-
-  if (!contenedor) {
-    return;
+  if (selectorEvento) {
+    selectorEvento.innerHTML = `
+      <option value="">
+        Seleccioná un evento
+      </option>
+    `;
   }
 
-  const [
-    respuestaEventos,
-    respuestaOcupacion
-  ] = await Promise.all([
+  if (listaEventosAdmin) {
+    listaEventosAdmin.innerHTML = `
+      <p class="sidebar-vacio">
+        Cargando eventos...
+      </p>
+    `;
+  }
 
-    window.db
-      .from("eventos")
-      .select(`
-        *,
-        sedes (
-          nombre
-        ),
-        complejos (
-          nombre,
-          maps_url
-        )
-      `)
-      .eq(
-        "publicado",
-        true
-      )
-      .eq(
-        "archivado",
-        false
-      )
-      .order(
-        "fecha",
-        {
-          ascending: true
+  try {
+
+    const {
+      data,
+      error
+    } =
+      await window.db
+        .from("eventos")
+        .select(`
+          id,
+          titulo,
+          tipo,
+          categoria,
+          descripcion,
+          fecha,
+          hora_inicio,
+          hora_fin,
+          precio,
+          cupos_totales,
+          lugar,
+          sede_id,
+          complejo_id,
+          publicado,
+          archivado,
+          inscripciones_abiertas
+        `)
+        .order(
+          "fecha",
+          {
+            ascending: false
+          }
+        );
+
+    if (error) {
+      throw error;
+    }
+
+    eventosAdministrables =
+      data || [];
+
+    if (!eventosAdministrables.length) {
+
+      eventoActual = "";
+      inscripcionesActuales = [];
+
+      renderizarListaEventos();
+      actualizarCabeceraEvento();
+      actualizarControlesPublicacion();
+      renderizarTabla([]);
+      actualizarResumen();
+
+      return;
+    }
+
+    eventosAdministrables.forEach(
+      (evento) => {
+
+        if (!selectorEvento) {
+          return;
         }
-      ),
 
-    window.db.rpc(
-      "obtener_ocupacion_eventos"
-    )
+        const opcion =
+          document.createElement(
+            "option"
+          );
 
-  ]);
+        opcion.value =
+          evento.id;
 
-  if (respuestaEventos.error) {
+        opcion.textContent =
+          `${evento.titulo} · ${formatearFechaAdmin(
+            evento.fecha
+          )}`;
 
-    console.error(
-      "Error al cargar eventos:",
-      respuestaEventos.error
+        selectorEvento.appendChild(
+          opcion
+        );
+
+      }
     );
 
-    contenedor.innerHTML = `
-      <p>
-        No pudimos cargar los encuentros.
-      </p>
-    `;
+    const eventoAnteriorExiste =
+      eventosAdministrables.some(
+        (evento) =>
+          evento.id === eventoActual
+      );
+
+    const eventoInicial =
+      eventoAnteriorExiste
+        ? eventoActual
+        : eventosAdministrables[0].id;
+
+    renderizarListaEventos();
+
+    await seleccionarEventoAdmin(
+      eventoInicial
+    );
+
+  } catch (error) {
+
+    console.error(
+      "Error al cargar eventos del administrador:",
+      error
+    );
+
+    eventosAdministrables = [];
+    eventoActual = "";
+
+    if (listaEventosAdmin) {
+      listaEventosAdmin.innerHTML = `
+        <p class="sidebar-vacio">
+          No pudimos cargar los eventos.
+        </p>
+      `;
+    }
+
+    actualizarCabeceraEvento();
+    actualizarControlesPublicacion();
+    renderizarTabla([]);
+    actualizarResumen();
+
+  }
+
+}
+
+/* ==========================================
+   GUARDAR ESTADO DEL EVENTO
+========================================== */
+
+async function guardarEstadoPublicacion() {
+
+  if (!eventoActual) {
+
+    alert(
+      "Seleccioná un evento."
+    );
 
     return;
 
   }
 
-  if (respuestaOcupacion.error) {
+  const archivado =
+    Boolean(
+      adminEventoArchivado?.checked
+    );
+
+  const publicado =
+    archivado
+      ? false
+      : Boolean(
+          adminEventoPublicado?.checked
+        );
+
+  const inscripcionesAbiertas =
+    !archivado &&
+    publicado &&
+    Boolean(
+      adminInscripcionesAbiertas?.checked
+    );
+
+  if (guardarEstadoEvento) {
+
+    guardarEstadoEvento.disabled =
+      true;
+
+    guardarEstadoEvento.textContent =
+      "Guardando...";
+
+  }
+
+  try {
+
+    const {
+      error
+    } =
+      await window.db
+        .from("eventos")
+        .update({
+          publicado:
+            publicado,
+
+          archivado:
+            archivado,
+
+          inscripciones_abiertas:
+            inscripcionesAbiertas
+        })
+        .eq(
+          "id",
+          eventoActual
+        );
+
+    if (error) {
+      throw error;
+    }
+
+    const eventoSeleccionado =
+      eventoActual;
+
+    await cargarEventos();
+
+    if (
+      eventosAdministrables.some(
+        (evento) =>
+          evento.id ===
+          eventoSeleccionado
+      )
+    ) {
+
+      await seleccionarEventoAdmin(
+        eventoSeleccionado
+      );
+
+    }
+
+    if (archivado) {
+
+      alert(
+        "Evento archivado y ocultado de la web."
+      );
+
+    } else if (!publicado) {
+
+      alert(
+        "Evento guardado como borrador."
+      );
+
+    } else if (
+      inscripcionesAbiertas
+    ) {
+
+      alert(
+        "Evento publicado con inscripciones abiertas."
+      );
+
+    } else {
+
+      alert(
+        "Evento publicado con inscripciones cerradas."
+      );
+
+    }
+
+  } catch (error) {
 
     console.error(
-      "Error al cargar la ocupación:",
-      respuestaOcupacion.error
+      "Error al guardar estado del evento:",
+      error
     );
+
+    alert(
+      "No pudimos actualizar el evento."
+    );
+
+  } finally {
+
+    if (guardarEstadoEvento) {
+
+      guardarEstadoEvento.disabled =
+        false;
+
+      guardarEstadoEvento.textContent =
+        "Guardar estado";
+
+    }
 
   }
-
-  const ocupacionPorEvento =
-    new Map(
-      (
-        respuestaOcupacion.data || []
-      ).map(
-        (registro) => [
-          registro.evento_id,
-          Number(registro.ocupados) || 0
-        ]
-      )
-    );
-
-  const eventos =
-    (
-      respuestaEventos.data || []
-    ).map(
-      (evento) => ({
-
-        ...evento,
-
-        ocupados:
-          ocupacionPorEvento.get(
-            evento.id
-          ) || 0
-
-      })
-    );
-
-  if (eventos.length === 0) {
-
-    contenedor.innerHTML = `
-      <p>
-        Próximamente publicaremos nuevos encuentros 💜
-      </p>
-    `;
-
-    return;
-
-  }
-
-  contenedor.innerHTML =
-    eventos
-      .map(
-        crearTarjetaEvento
-      )
-      .join("");
-
-  cargarScriptPrincipal();
 
 }
 
