@@ -3636,18 +3636,309 @@ selectoresJugadoras.forEach(
   }
 );
 
-
-/* EVITAR QUE EL FORMULARIO RECARGUE LA WEB */
+/* ==========================================
+   GUARDAR PARTIDO EN SUPABASE
+========================================== */
 
 formularioPartido?.addEventListener(
   "submit",
-  (evento) => {
+  async (evento) => {
 
     evento.preventDefault();
 
-    alert(
-      "Las jugadoras quedaron seleccionadas. Ahora falta conectar el guardado del resultado con Supabase."
-    );
+
+    if (!eventoActual) {
+
+      alert(
+        "Seleccioná un evento."
+      );
+
+      return;
+
+    }
+
+
+    const partidoNumero =
+      document.getElementById(
+        "partido-numero"
+      );
+
+    const partidoCancha =
+      document.getElementById(
+        "partido-cancha"
+      );
+
+    const partidoHora =
+      document.getElementById(
+        "partido-hora"
+      );
+
+    const partidoInstancia =
+      document.getElementById(
+        "partido-instancia"
+      );
+
+    const equipo1Games =
+      document.getElementById(
+        "equipo-1-games"
+      );
+
+    const equipo2Games =
+      document.getElementById(
+        "equipo-2-games"
+      );
+
+    const partidoEstado =
+      document.getElementById(
+        "partido-estado"
+      );
+
+    const partidoObservaciones =
+      document.getElementById(
+        "partido-observaciones"
+      );
+
+    const guardarPartido =
+      document.getElementById(
+        "guardar-partido"
+      );
+
+    const mensajePartido =
+      document.getElementById(
+        "mensaje-partido"
+      );
+
+
+    const jugadorasSeleccionadas = [
+      equipo1Jugadora1?.value,
+      equipo1Jugadora2?.value,
+      equipo2Jugadora1?.value,
+      equipo2Jugadora2?.value
+    ];
+
+
+    if (
+      jugadorasSeleccionadas.some(
+        (valor) => !valor
+      )
+    ) {
+
+      if (mensajePartido) {
+
+        mensajePartido.textContent =
+          "Seleccioná las cuatro jugadoras.";
+
+      }
+
+      return;
+
+    }
+
+
+    if (
+      new Set(
+        jugadorasSeleccionadas
+      ).size !== 4
+    ) {
+
+      if (mensajePartido) {
+
+        mensajePartido.textContent =
+          "No podés repetir una jugadora.";
+
+      }
+
+      return;
+
+    }
+
+
+    if (
+      !partidoNumero?.value ||
+      Number(partidoNumero.value) < 1
+    ) {
+
+      if (mensajePartido) {
+
+        mensajePartido.textContent =
+          "Ingresá un número de partido válido.";
+
+      }
+
+      return;
+
+    }
+
+
+    if (mensajePartido) {
+
+      mensajePartido.textContent =
+        "";
+
+      mensajePartido.style.color =
+        "";
+
+    }
+
+
+    if (guardarPartido) {
+
+      guardarPartido.disabled =
+        true;
+
+      guardarPartido.textContent =
+        "Guardando...";
+
+    }
+
+
+    try {
+
+      const {
+        data,
+        error
+      } =
+        await window.db.rpc(
+          "guardar_partido_evento",
+          {
+            p_evento_id:
+              eventoActual,
+
+            p_numero_partido:
+              Number(
+                partidoNumero.value
+              ),
+
+            p_instancia:
+              partidoInstancia?.value ||
+              "zona",
+
+            p_cancha:
+              partidoCancha?.value
+                .trim() ||
+              null,
+
+            p_hora_programada:
+              partidoHora?.value ||
+              null,
+
+            p_equipo_1_jugadora_1:
+              equipo1Jugadora1.value,
+
+            p_equipo_1_jugadora_2:
+              equipo1Jugadora2.value,
+
+            p_equipo_2_jugadora_1:
+              equipo2Jugadora1.value,
+
+            p_equipo_2_jugadora_2:
+              equipo2Jugadora2.value,
+
+            p_equipo_1_games:
+              equipo1Games?.value !== ""
+                ? Number(
+                    equipo1Games.value
+                  )
+                : null,
+
+            p_equipo_2_games:
+              equipo2Games?.value !== ""
+                ? Number(
+                    equipo2Games.value
+                  )
+                : null,
+
+            p_estado:
+              partidoEstado?.value ||
+              "pendiente",
+
+            p_observaciones:
+              partidoObservaciones?.value
+                .trim() ||
+              null
+          }
+        );
+
+
+      if (error) {
+        throw error;
+      }
+
+
+      if (mensajePartido) {
+
+        mensajePartido.textContent =
+          "✓ Partido guardado correctamente.";
+
+        mensajePartido.style.color =
+          "#4e8b68";
+
+      }
+
+
+      console.log(
+        "Partido guardado:",
+        data
+      );
+
+
+      window.setTimeout(
+        () => {
+
+          cerrarPartido();
+
+        },
+        700
+      );
+
+    } catch (error) {
+
+      console.error(
+        "Error al guardar partido:",
+        error
+      );
+
+
+      if (mensajePartido) {
+
+        mensajePartido.style.color =
+          "#b42318";
+
+        if (
+          error.message?.includes(
+            "partidos_evento_evento_id_numero_partido_key"
+          ) ||
+          error.message?.includes(
+            "duplicate key"
+          )
+        ) {
+
+          mensajePartido.textContent =
+            "Ya existe un partido con ese número.";
+
+        } else {
+
+          mensajePartido.textContent =
+            error.message ||
+            "No pudimos guardar el partido.";
+
+        }
+
+      }
+
+    } finally {
+
+      if (guardarPartido) {
+
+        guardarPartido.disabled =
+          false;
+
+        guardarPartido.textContent =
+          "Guardar partido";
+
+      }
+
+    }
 
   }
 );
