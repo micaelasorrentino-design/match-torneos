@@ -3350,34 +3350,6 @@ const selectoresJugadoras = [
   equipo2Jugadora2
 ];
 
-  const equipo1Jugadora1 =
-  document.getElementById(
-    "equipo-1-jugadora-1"
-  );
-
-const equipo1Jugadora2 =
-  document.getElementById(
-    "equipo-1-jugadora-2"
-  );
-
-const equipo2Jugadora1 =
-  document.getElementById(
-    "equipo-2-jugadora-1"
-  );
-
-const equipo2Jugadora2 =
-  document.getElementById(
-    "equipo-2-jugadora-2"
-  );
-
-const selectoresJugadoras = [
-  equipo1Jugadora1,
-  equipo1Jugadora2,
-  equipo2Jugadora1,
-  equipo2Jugadora2
-];
-
-
 function cambiarTabEvento(
   tabSeleccionada
 ) {
