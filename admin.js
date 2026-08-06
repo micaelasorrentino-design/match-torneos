@@ -1747,8 +1747,7 @@ async function seleccionarEventoAdmin(
   const existe =
     eventosAdministrables.some(
       (evento) =>
-        evento.id ===
-        eventoId
+        evento.id === eventoId
     );
 
 
@@ -1777,6 +1776,8 @@ async function seleccionarEventoAdmin(
 
 
   await cargarInscripciones();
+
+  await cargarPartidosEvento();
 
 }
 
