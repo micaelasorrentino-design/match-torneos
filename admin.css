@@ -1535,117 +1535,205 @@ tbody tr:hover {
 }
 
 /* ==========================================
-   FIXTURE ADMIN
+   FIXTURE
 ========================================== */
 
+.fixture-admin-card {
+  padding: 28px;
+
+  border: 1px solid var(--match-borde);
+  border-radius: 26px;
+
+  background: rgba(255, 255, 255, 0.96);
+
+  box-shadow:
+    0 16px 40px rgba(61, 37, 91, 0.07);
+}
+
 .fixture-admin-cabecera {
-  margin-top: 20px;
-  padding: 28px 30px;
+  margin-bottom: 25px;
 
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
-  gap: 24px;
-
-  border: 1px solid #eadff0;
-  border-radius: 24px;
-
-  background: rgba(255, 255, 255, 0.94);
+  gap: 20px;
 }
 
 .fixture-admin-cabecera h2 {
-  margin: 4px 0 8px;
+  margin: 7px 0 5px;
 
-  color: #1c1327;
+  color: var(--match-texto);
 
   font-family: "Montserrat", sans-serif;
-  font-size: 27px;
+  font-size: 28px;
 }
 
 .fixture-admin-cabecera p {
   margin: 0;
 
-  color: #746c79;
+  color: var(--match-gris);
   font-size: 13px;
 }
 
-.fixture-admin-cabecera .boton-principal-admin {
-  min-height: 48px;
-  padding: 0 24px;
-
-  border: 0;
-  border-radius: 999px;
-
-  background: linear-gradient(
-    100deg,
-    #3d255b,
-    #7e3fa8
-  );
-
-  color: #ffffff;
-
-  font-family: "Montserrat", sans-serif;
-  font-size: 12px;
-  font-weight: 700;
-
-  cursor: pointer;
+.fixture-admin-cabecera .boton-admin {
+  width: auto;
+  margin: 0;
 }
 
-.fixture-admin-vacio {
-  margin-top: 18px;
-  padding: 55px 30px;
-
-  border: 1px dashed #d7c5e2;
-  border-radius: 24px;
-
-  background: rgba(255, 255, 255, 0.72);
-
-  text-align: center;
+.lista-fixture-admin {
+  display: grid;
+  gap: 13px;
 }
 
-.fixture-admin-icono {
-  width: 58px;
-  height: 58px;
-  margin: 0 auto 18px;
+.fixture-partido-item {
+  padding: 17px 20px;
 
   display: grid;
-  place-items: center;
+  grid-template-columns:
+    110px
+    minmax(0, 1fr)
+    auto;
+  align-items: center;
+  gap: 20px;
 
-  border-radius: 50%;
+  border: 1px solid #eadff0;
+  border-radius: 18px;
 
-  background: #f0e9f7;
-  color: #a66cc9;
-
-  font-family: "Montserrat", sans-serif;
-  font-size: 12px;
-  font-weight: 800;
+  background: #ffffff;
 }
 
-.fixture-admin-vacio h3 {
-  margin: 0 0 8px;
+.fixture-horario {
+  padding-right: 18px;
 
-  color: #1c1327;
+  border-right: 1px solid #eadff0;
+}
+
+.fixture-horario strong {
+  display: block;
+
+  color: var(--match-oscuro);
 
   font-family: "Montserrat", sans-serif;
   font-size: 19px;
 }
 
-.fixture-admin-vacio p {
-  margin: 0;
+.fixture-horario span {
+  display: block;
+  margin-top: 4px;
 
-  color: #746c79;
-  font-size: 13px;
+  color: var(--match-gris);
+  font-size: 11px;
 }
 
-@media (max-width: 700px) {
+.fixture-instancia {
+  margin-bottom: 9px;
+
+  color: var(--match-principal);
+
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+}
+
+.fixture-enfrentamiento {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1fr)
+    65px
+    minmax(0, 1fr);
+  align-items: center;
+  gap: 15px;
+}
+
+.fixture-pareja {
+  color: var(--match-oscuro);
+
+  font-family: "Montserrat", sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.fixture-pareja:last-child {
+  text-align: right;
+}
+
+.fixture-marcador {
+  color: var(--match-principal);
+
+  font-family: "Montserrat", sans-serif;
+  font-size: 18px;
+  text-align: center;
+}
+
+@media (max-width: 750px) {
 
   .fixture-admin-cabecera {
     display: block;
   }
 
-  .fixture-admin-cabecera .boton-principal-admin {
+  .fixture-admin-cabecera .boton-admin {
     width: 100%;
-    margin-top: 20px;
+    margin-top: 18px;
+  }
+
+  .fixture-partido-item {
+    grid-template-columns: 1fr;
+  }
+
+  .fixture-horario {
+    padding-right: 0;
+    padding-bottom: 12px;
+
+    border-right: 0;
+    border-bottom: 1px solid #eadff0;
+  }
+
+  .fixture-enfrentamiento {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .fixture-pareja:last-child {
+    text-align: center;
+  }
+
+}
+
+
+/* ==========================================
+   IMPRESIÓN DEL FIXTURE
+========================================== */
+
+@media print {
+
+  body.imprimiendo-fixture > * {
+    visibility: hidden;
+  }
+
+  body.imprimiendo-fixture #panel-tab-fixture,
+  body.imprimiendo-fixture #panel-tab-fixture * {
+    visibility: visible;
+  }
+
+  body.imprimiendo-fixture #panel-tab-fixture {
+    position: absolute;
+    inset: 0;
+
+    width: 100%;
+
+    background: #ffffff;
+  }
+
+  body.imprimiendo-fixture
+  #boton-imprimir-fixture {
+    display: none;
+  }
+
+  body.imprimiendo-fixture
+  .fixture-admin-card {
+    border: 0;
+    box-shadow: none;
   }
 
 }

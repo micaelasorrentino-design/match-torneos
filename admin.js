@@ -3280,6 +3280,20 @@ const panelTabInscripciones =
   document.getElementById(
     "panel-tab-fixture"
   );
+  const listaFixtureAdmin =
+  document.getElementById(
+    "lista-fixture-admin"
+  );
+
+const textoCantidadFixture =
+  document.getElementById(
+    "texto-cantidad-fixture"
+  );
+
+const botonImprimirFixture =
+  document.getElementById(
+    "boton-imprimir-fixture"
+  );
 
 const panelTabResultados =
   document.getElementById(
@@ -3385,15 +3399,26 @@ function cambiarTabEvento(
       tabSeleccionada !==
         "resultados"
     );
-    panelTabFixture
-  ?.classList.toggle(
-    "oculto",
-    tabSeleccionada !==
-      "fixture"
-  );
+
+
+  panelTabFixture
+    ?.classList.toggle(
+      "oculto",
+      tabSeleccionada !==
+        "fixture"
+    );
+
+
+  if (
+    tabSeleccionada ===
+    "fixture"
+  ) {
+
+    renderizarFixtureEvento();
+
+  }
 
 }
-
 
 /* CARGAR JUGADORAS DEL EVENTO */
 
@@ -3475,6 +3500,7 @@ async function cargarPartidosEvento() {
     partidosActuales = [];
 
     renderizarPartidosEvento();
+    renderizarFixtureEvento();
 
     return;
 
@@ -3519,6 +3545,7 @@ async function cargarPartidosEvento() {
 
 
     renderizarPartidosEvento();
+    renderizarFixtureEvento();
 
 
   } catch (error) {
@@ -3530,6 +3557,9 @@ async function cargarPartidosEvento() {
 
 
     partidosActuales = [];
+
+
+    renderizarFixtureEvento();
 
 
     if (listaPartidosAdmin) {
@@ -3659,6 +3689,254 @@ function renderizarPartidosEvento() {
 
 }
 
+/* ==========================================
+   RENDERIZAR FIXTURE
+========================================== */
+
+function renderizarFixtureEvento() {
+
+  if (!listaFixtureAdmin) {
+    return;
+  }
+
+
+  if (!eventoActual) {
+
+    listaFixtureAdmin.innerHTML = `
+      <div class="estado-resultados-vacio">
+
+        <strong>
+          Seleccioná un evento
+        </strong>
+
+        <p>
+          Elegí un evento para ver su fixture.
+        </p>
+
+      </div>
+    `;
+
+
+    if (textoCantidadFixture) {
+
+      textoCantidadFixture.textContent =
+        "Seleccioná un evento para ver su fixture.";
+
+    }
+
+
+    return;
+
+  }
+
+
+  if (!partidosActuales.length) {
+
+    listaFixtureAdmin.innerHTML = `
+      <div class="estado-resultados-vacio">
+
+        <strong>
+          Todavía no hay partidos
+        </strong>
+
+        <p>
+          Primero cargá los partidos desde Resultados.
+        </p>
+
+      </div>
+    `;
+
+
+    if (textoCantidadFixture) {
+
+      textoCantidadFixture.textContent =
+        "0 partidos programados.";
+
+    }
+
+
+    return;
+
+  }
+
+
+  const partidosOrdenados =
+    [...partidosActuales].sort(
+      (partidoA, partidoB) => {
+
+        const horaA =
+          partidoA.hora_programada ||
+          "99:99";
+
+        const horaB =
+          partidoB.hora_programada ||
+          "99:99";
+
+
+        if (horaA !== horaB) {
+
+          return horaA.localeCompare(
+            horaB
+          );
+
+        }
+
+
+        return (
+          Number(
+            partidoA.numero_partido
+          ) -
+          Number(
+            partidoB.numero_partido
+          )
+        );
+
+      }
+    );
+
+
+  if (textoCantidadFixture) {
+
+    textoCantidadFixture.textContent =
+      `${partidosOrdenados.length} partido${
+        partidosOrdenados.length === 1
+          ? ""
+          : "s"
+      } programado${
+        partidosOrdenados.length === 1
+          ? ""
+          : "s"
+      }.`;
+
+  }
+
+
+  listaFixtureAdmin.innerHTML =
+    partidosOrdenados
+      .map(
+        crearFilaFixture
+      )
+      .join("");
+
+}
+
+
+/* ==========================================
+   FILA DEL FIXTURE
+========================================== */
+
+function crearFilaFixture(
+  partido
+) {
+
+  const hora =
+    partido.hora_programada
+      ? String(
+          partido.hora_programada
+        ).slice(0, 5)
+      : "Sin hora";
+
+
+  const cancha =
+    partido.cancha ||
+    "Sin cancha";
+
+
+  const instancia =
+    formatearInstanciaPartido(
+      partido.instancia
+    );
+
+
+  const tieneResultado =
+    partido.pareja_1_games !== null &&
+    partido.pareja_2_games !== null;
+
+
+  const marcador =
+    tieneResultado
+      ? `${partido.pareja_1_games} - ${partido.pareja_2_games}`
+      : "VS";
+
+
+  return `
+    <article class="fixture-partido-item">
+
+      <div class="fixture-horario">
+
+        <strong>
+          ${escaparHTML(hora)}
+        </strong>
+
+        <span>
+          ${escaparHTML(cancha)}
+        </span>
+
+      </div>
+
+
+      <div class="fixture-partido-centro">
+
+        <div class="fixture-instancia">
+
+          Partido ${escaparHTML(
+            partido.numero_partido
+          )}
+
+          ·
+
+          ${escaparHTML(instancia)}
+
+        </div>
+
+
+        <div class="fixture-enfrentamiento">
+
+          <span class="fixture-pareja">
+
+            ${escaparHTML(
+              partido.pareja_1_nombre
+            )}
+
+          </span>
+
+          <strong class="fixture-marcador">
+
+            ${escaparHTML(marcador)}
+
+          </strong>
+
+          <span class="fixture-pareja">
+
+            ${escaparHTML(
+              partido.pareja_2_nombre
+            )}
+
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <span
+        class="estado-chip estado-${escaparHTML(
+          partido.estado
+        )}"
+      >
+
+        ${escaparHTML(
+          formatearEstadoPartido(
+            partido.estado
+          )
+        )}
+
+      </span>
+
+    </article>
+  `;
+
+}
 
 /* ==========================================
    CREAR TARJETA DE PARTIDO
@@ -3967,6 +4245,44 @@ tabsEventoAdmin.forEach(
 botonAgregarPartido?.addEventListener(
   "click",
   abrirModalPartido
+);
+
+/* ==========================================
+   IMPRIMIR FIXTURE
+========================================== */
+
+botonImprimirFixture?.addEventListener(
+  "click",
+  () => {
+
+    if (!partidosActuales.length) {
+
+      alert(
+        "Todavía no hay partidos para imprimir."
+      );
+
+      return;
+
+    }
+
+    document.body.classList.add(
+      "imprimiendo-fixture"
+    );
+
+    window.print();
+
+    window.setTimeout(
+      () => {
+
+        document.body.classList.remove(
+          "imprimiendo-fixture"
+        );
+
+      },
+      500
+    );
+
+  }
 );
 
 cerrarModalPartido?.addEventListener(
