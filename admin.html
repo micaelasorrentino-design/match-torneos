@@ -20,7 +20,7 @@
     href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap"
     rel="stylesheet"
   >
-<link rel="stylesheet" href="./admin.css?v=18">
+<link rel="stylesheet" href="./admin.css?v=19">
 
 </head>
 
@@ -281,28 +281,6 @@
 
       </div>
 
-
-      <div class="acciones-bienvenida">
-
-        <button
-          type="button"
-          id="boton-editar-evento"
-          class="boton-admin boton-secundario-admin"
-          disabled
-        >
-          Editar evento
-        </button>
-
-        <button
-          type="button"
-          id="boton-actualizar"
-          class="boton-admin boton-secundario-admin"
-        >
-          Actualizar datos
-        </button>
-
-      </div>
-
     </section>
 
 
@@ -387,23 +365,23 @@
 
         <div class="botones-estado-evento">
 
-          <button
-            type="button"
-            id="guardar-estado-evento"
-            class="boton-admin boton-principal-admin"
-            disabled
-          >
-            Guardar estado
-          </button>
+          <div class="acciones-estado-evento">
 
-          <button
-            type="button"
-            id="eliminar-evento"
-            class="boton-admin boton-eliminar-evento"
-            disabled
-          >
-            Eliminar
-          </button>
+  <button
+    type="button"
+    id="guardar-estado-evento"
+    class="boton-admin boton-principal-admin boton-guardar-estado"
+  >
+    Guardar estado
+  </button>
+
+  <button
+    type="button"
+    id="eliminar-evento"
+    class="boton-admin boton-eliminar-admin boton-eliminar-evento"
+  >
+    Eliminar evento
+  </button>
 
         </div>
 
@@ -1411,7 +1389,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="./supabase.js"></script>
-<script src="./admin.js?v=27"></script>
+<script src="./admin.js?v=28"></script>
 
 </body>
 

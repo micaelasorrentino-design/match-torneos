@@ -402,6 +402,7 @@ function crearTarjetaInscripcion(
       <div class="inscripcion-detalles">
 
         <div class="inscripcion-dato">
+
           <small>Fecha</small>
 
           <strong>
@@ -411,19 +412,23 @@ function crearTarjetaInscripcion(
               )
             )}
           </strong>
+
         </div>
 
 
         <div class="inscripcion-dato">
+
           <small>Horario</small>
 
           <strong>
             ${escaparHTML(horario)}
           </strong>
+
         </div>
 
 
         <div class="inscripcion-dato">
+
           <small>Lugar</small>
 
           <strong>
@@ -432,10 +437,12 @@ function crearTarjetaInscripcion(
               "A confirmar"
             )}
           </strong>
+
         </div>
 
 
         <div class="inscripcion-dato">
+
           <small>Valor</small>
 
           <strong>
@@ -445,48 +452,55 @@ function crearTarjetaInscripcion(
               )
             )}
           </strong>
+
         </div>
 
 
         <div class="inscripcion-dato">
+
           <small>Modalidad</small>
 
           <strong>
             ${escaparHTML(modalidad)}
           </strong>
+
         </div>
 
 
         <div class="inscripcion-dato">
+
           <small>Posición</small>
 
           <strong>
             ${escaparHTML(posicion)}
           </strong>
+
         </div>
 
 
         <div class="inscripcion-dato">
+
           <small>Compañera</small>
 
           <strong>
             ${escaparHTML(companera)}
           </strong>
+
         </div>
 
 
         <div class="inscripcion-dato">
+
           <small>Comprobante</small>
 
           <strong>
             ${escaparHTML(comprobante)}
           </strong>
+
         </div>
 
       </div>
-
-
-      ${
+            ${
         puedeSubirComprobante
           ? `
             <div class="carga-comprobante">
@@ -613,8 +627,9 @@ function crearTarjetaInscripcion(
 
 }
 
+
 /* ==========================================
-   SUBIR COMPROBANTE DESDE MI MATCH
+   VALIDAR ARCHIVO
 ========================================== */
 
 function obtenerExtensionArchivo(
@@ -659,11 +674,13 @@ function archivoComprobanteValido(
       extension
     )
   ) {
+
     return {
       valido: false,
       mensaje:
         "El archivo debe ser JPG, PNG, WEBP o PDF."
     };
+
   }
 
 
@@ -675,11 +692,13 @@ function archivoComprobanteValido(
     archivo.size >
     tamanioMaximo
   ) {
+
     return {
       valido: false,
       mensaje:
         "El archivo no puede superar los 5 MB."
     };
+
   }
 
 
@@ -691,523 +710,9 @@ function archivoComprobanteValido(
 }
 
 
-function prepararCargaComprobantes() {
-
-  const inputs =
-    document.querySelectorAll(
-      "[data-input-comprobante]"
-    );
-
-
-  inputs.forEach(
-    (input) => {
-
-      input.addEventListener(
-        "change",
-        () => {
-
-          const inscripcionId =
-            input.dataset
-              .inputComprobante;
-
-
-          const boton =
-            document.querySelector(
-              `[data-subir-comprobante="${inscripcionId}"]`
-            );
-
-
-          const nombreArchivo =
-            document.querySelector(
-              `[data-nombre-archivo="${inscripcionId}"]`
-            );
-
-
-          const mensaje =
-            document.querySelector(
-              `[data-mensaje-subida="${inscripcionId}"]`
-            );
-
-
-          const archivo =
-            input.files?.[0];
-
-
-          if (mensaje) {
-            mensaje.textContent = "";
-            mensaje.className =
-              "mensaje-subida-panel";
-          }
-
-
-          if (!archivo) {
-
-            if (nombreArchivo) {
-              nombreArchivo.textContent =
-                "Seleccionar archivo";
-            }
-
-            if (boton) {
-              boton.disabled = true;
-            }
-
-            return;
-          }
-
-
-          const validacion =
-            archivoComprobanteValido(
-              archivo
-            );
-
-
-          if (!validacion.valido) {
-
-            input.value = "";
-
-            if (nombreArchivo) {
-              nombreArchivo.textContent =
-                "Seleccionar archivo";
-            }
-
-            if (boton) {
-              boton.disabled = true;
-            }
-
-            if (mensaje) {
-              mensaje.textContent =
-                validacion.mensaje;
-
-              mensaje.classList.add(
-                "mensaje-error"
-              );
-            }
-
-            return;
-          }
-
-
-          if (nombreArchivo) {
-            nombreArchivo.textContent =
-              archivo.name;
-          }
-
-
-          if (boton) {
-            boton.disabled = false;
-          }
-
-        }
-      );
-
-    }
-  );
-
-
-  const botones =
-    document.querySelectorAll(
-      "[data-subir-comprobante]"
-    );
-
-
-  botones.forEach(
-    (boton) => {
-
-      boton.addEventListener(
-        "click",
-        async () => {
-
-          const inscripcionId =
-            boton.dataset
-              .subirComprobante;
-
-
-          await subirComprobante(
-            inscripcionId
-          );
-
-        }
-      );
-
-    }
-  );
-
-}
-
-
-async function subirComprobante(
-  inscripcionId
-) {
-
-  const input =
-    document.querySelector(
-      `[data-input-comprobante="${inscripcionId}"]`
-    );
-
-
-  const boton =
-    document.querySelector(
-      `[data-subir-comprobante="${inscripcionId}"]`
-    );
-
-
-  const mensaje =
-    document.querySelector(
-      `[data-mensaje-subida="${inscripcionId}"]`
-    );
-
-
-  const archivo =
-    input?.files?.[0];
-
-
-  if (!archivo) {
-
-    if (mensaje) {
-      mensaje.textContent =
-        "Seleccioná un archivo.";
-
-      mensaje.className =
-        "mensaje-subida-panel mensaje-error";
-    }
-
-    return;
-  }
-
-
-  const validacion =
-    archivoComprobanteValido(
-      archivo
-    );
-
-
-  if (!validacion.valido) {
-
-    if (mensaje) {
-      mensaje.textContent =
-        validacion.mensaje;
-
-      mensaje.className =
-        "mensaje-subida-panel mensaje-error";
-    }
-
-    return;
-  }
-
-
-  const extension =
-    obtenerExtensionArchivo(
-      archivo
-    );
-
-
-  const telefono =
-    normalizarTelefono(
-      campoTelefono?.value ||
-      sessionStorage.getItem(
-        "match_telefono_consulta"
-      ) ||
-      ""
-    );
-
-
-  const nombreArchivo =
-    `${Date.now()}-${crypto.randomUUID()}.${extension}`;
-
-
-  const rutaArchivo =
-    `${inscripcionId}/${nombreArchivo}`;
-
-
-  if (boton) {
-    boton.disabled = true;
-    boton.textContent =
-      "Subiendo...";
-  }
-
-
-  if (mensaje) {
-    mensaje.textContent =
-      "Subiendo comprobante...";
-
-    mensaje.className =
-      "mensaje-subida-panel";
-  }
-
-
-  try {
-
-    const {
-      error: errorSubida
-    } =
-      await window.db.storage
-        .from("comprobantes")
-        .upload(
-          rutaArchivo,
-          archivo,
-          {
-            cacheControl: "3600",
-            upsert: false,
-            contentType:
-              archivo.type ||
-              undefined
-          }
-        );
-
-
-    if (errorSubida) {
-      throw errorSubida;
-    }
-
-
-    const {
-      error: errorActualizacion
-    } =
-      await window.db.rpc(
-        "actualizar_comprobante_inscripcion",
-        {
-          p_inscripcion_id:
-            inscripcionId,
-          p_telefono:
-            telefono,
-          p_comprobante_path:
-            rutaArchivo
-        }
-      );
-
-
-    if (errorActualizacion) {
-
-      await window.db.storage
-        .from("comprobantes")
-        .remove([
-          rutaArchivo
-        ]);
-
-      throw errorActualizacion;
-    }
-
-
-    if (mensaje) {
-      mensaje.textContent =
-        "¡Comprobante enviado correctamente! Ya quedó pendiente de revisión.";
-
-      mensaje.className =
-        "mensaje-subida-panel mensaje-exito";
-    }
-
-
-    input.value = "";
-
-
-    if (boton) {
-      boton.textContent =
-        "Comprobante enviado";
-    }
-
-
-    setTimeout(
-      () => {
-
-        formularioConsulta?.requestSubmit();
-
-      },
-      1200
-    );
-
-
-  } catch (error) {
-
-    console.error(
-      "Error al subir comprobante:",
-      error
-    );
-
-
-    if (mensaje) {
-      mensaje.textContent =
-        "No pudimos subir el comprobante. Intentá nuevamente.";
-
-      mensaje.className =
-        "mensaje-subida-panel mensaje-error";
-    }
-
-
-    if (boton) {
-      boton.disabled = false;
-      boton.textContent =
-        "Subir comprobante";
-    }
-
-  }
-
-}
-
 /* ==========================================
-   CAMBIAR PANTALLAS
+   PREPARAR CONTROLES DE COMPROBANTE
 ========================================== */
-
-function mostrarAcceso() {
-
-  accesoPanel?.classList.remove(
-    "oculto"
-  );
-
-  panelResultados?.classList.add(
-    "oculto"
-  );
-
-  estadoVacio?.classList.add(
-    "oculto"
-  );
-
-  if (mensajeConsulta) {
-    mensajeConsulta.textContent = "";
-  }
-
-  campoTelefono?.focus();
-
-}
-
-
-function mostrarEstadoVacio() {
-
-  accesoPanel?.classList.add(
-    "oculto"
-  );
-
-  panelResultados?.classList.add(
-    "oculto"
-  );
-
-  estadoVacio?.classList.remove(
-    "oculto"
-  );
-
-}
-
-
-/* ==========================================
-   CONSULTAR SUPABASE
-========================================== */
-
-async function consultarInscripciones(
-  evento
-) {
-
-  evento.preventDefault();
-
-
-  const telefono =
-    normalizarTelefono(
-      campoTelefono?.value || ""
-    );
-
-
-  if (mensajeConsulta) {
-    mensajeConsulta.textContent = "";
-  }
-
-
-  if (telefono.length < 8) {
-
-    if (mensajeConsulta) {
-      mensajeConsulta.textContent =
-        "Ingresá un número de WhatsApp válido.";
-    }
-
-    campoTelefono?.focus();
-
-    return;
-
-  }
-
-
-  botonConsultar.disabled = true;
-
-  botonConsultar.textContent =
-    "Buscando...";
-
-
-  try {
-
-    const {
-      data,
-      error
-    } =
-      await window.db.rpc(
-        "consultar_inscripciones_por_telefono",
-        {
-          p_telefono: telefono
-        }
-      );
-
-
-    if (error) {
-      throw error;
-    }
-
-
-    const inscripciones =
-      data || [];
-
-
-    if (!inscripciones.length) {
-
-      mostrarEstadoVacio();
-
-      return;
-
-    }
-
-
-    const primeraInscripcion =
-      inscripciones[0];
-
-
-    const nombre =
-      primeraInscripcion
-        .participante_nombre ||
-      "";
-
-
-    if (saludoParticipante) {
-
-      saludoParticipante.textContent =
-        nombre
-          ? `Hola, ${nombre} 💜`
-          : "Hola 💜";
-
-    }
-
-
-    if (cantidadInscripciones) {
-
-      cantidadInscripciones.textContent =
-        `Encontramos ${
-          inscripciones.length
-        } inscripción${
-          inscripciones.length === 1
-            ? ""
-            : "es"
-        } asociada${
-          inscripciones.length === 1
-            ? ""
-            : "s"
-        } a tu número.`;
-
-    }
-
-
-    if (listaInscripciones) {
-
-     listaInscripciones.innerHTML =
-  inscripciones
-    .map(
-      crearTarjetaInscripcion
-    )
-    .join("");
-
 
 function prepararCargaComprobantes() {
 
@@ -1271,8 +776,10 @@ function prepararCargaComprobantes() {
     if (!archivo) {
 
       if (nombreArchivo) {
+
         nombreArchivo.textContent =
           "Seleccionar archivo";
+
       }
 
 
@@ -1365,12 +872,6 @@ function prepararCargaComprobantes() {
         .subirComprobante;
 
 
-    console.log(
-      "Subiendo comprobante para:",
-      inscripcionId
-    );
-
-
     if (!inscripcionId) {
 
       alert(
@@ -1389,6 +890,487 @@ function prepararCargaComprobantes() {
   };
 
 }
+
+
+/* ==========================================
+   SUBIR COMPROBANTE
+========================================== */
+
+async function subirComprobante(
+  inscripcionId
+) {
+
+  const input =
+    listaInscripciones?.querySelector(
+      `[data-input-comprobante="${inscripcionId}"]`
+    );
+
+
+  const boton =
+    listaInscripciones?.querySelector(
+      `[data-subir-comprobante="${inscripcionId}"]`
+    );
+
+
+  const mensaje =
+    listaInscripciones?.querySelector(
+      `[data-mensaje-subida="${inscripcionId}"]`
+    );
+
+
+  const archivo =
+    input?.files?.[0];
+
+
+  if (!archivo) {
+
+    if (mensaje) {
+
+      mensaje.textContent =
+        "Seleccioná un archivo.";
+
+      mensaje.className =
+        "mensaje-subida-panel mensaje-error";
+
+    }
+
+    return;
+
+  }
+
+
+  const validacion =
+    archivoComprobanteValido(
+      archivo
+    );
+
+
+  if (!validacion.valido) {
+
+    if (mensaje) {
+
+      mensaje.textContent =
+        validacion.mensaje;
+
+      mensaje.className =
+        "mensaje-subida-panel mensaje-error";
+
+    }
+
+    return;
+
+  }
+
+
+  const extension =
+    obtenerExtensionArchivo(
+      archivo
+    );
+
+
+  const telefono =
+    normalizarTelefono(
+      campoTelefono?.value ||
+      sessionStorage.getItem(
+        "match_telefono_consulta"
+      ) ||
+      ""
+    );
+
+
+  const identificadorArchivo =
+    (
+      typeof crypto !== "undefined" &&
+      typeof crypto.randomUUID === "function"
+    )
+      ? crypto.randomUUID()
+      : Math.random()
+          .toString(36)
+          .slice(2);
+
+
+  const nombreArchivo =
+    `${Date.now()}-${identificadorArchivo}.${extension}`;
+
+
+  const rutaArchivo =
+    `${inscripcionId}/${nombreArchivo}`;
+
+
+  if (boton) {
+
+    boton.disabled = true;
+
+    boton.textContent =
+      "Subiendo...";
+
+  }
+
+
+  if (mensaje) {
+
+    mensaje.textContent =
+      "Subiendo comprobante...";
+
+    mensaje.className =
+      "mensaje-subida-panel";
+
+  }
+
+
+  try {
+
+    const {
+      error: errorSubida
+    } =
+      await window.db.storage
+        .from("comprobantes")
+        .upload(
+          rutaArchivo,
+          archivo,
+          {
+            cacheControl: "3600",
+            upsert: false,
+            contentType:
+              archivo.type ||
+              undefined
+          }
+        );
+
+
+    if (errorSubida) {
+      throw errorSubida;
+    }
+
+
+    const {
+      error: errorActualizacion
+    } =
+      await window.db.rpc(
+        "actualizar_comprobante_inscripcion",
+        {
+          p_inscripcion_id:
+            inscripcionId,
+          p_telefono:
+            telefono,
+          p_comprobante_path:
+            rutaArchivo
+        }
+      );
+
+
+    if (errorActualizacion) {
+
+      await window.db.storage
+        .from("comprobantes")
+        .remove([
+          rutaArchivo
+        ]);
+
+      throw errorActualizacion;
+
+    }
+
+
+    if (mensaje) {
+
+      mensaje.textContent =
+        "¡Comprobante enviado correctamente! Quedó pendiente de revisión.";
+
+      mensaje.className =
+        "mensaje-subida-panel mensaje-exito";
+
+    }
+
+
+    if (input) {
+      input.value = "";
+    }
+
+
+    if (boton) {
+
+      boton.disabled = true;
+
+      boton.textContent =
+        "Comprobante enviado";
+
+    }
+
+
+    setTimeout(
+      () => {
+
+        formularioConsulta
+          ?.requestSubmit();
+
+      },
+      1200
+    );
+
+  } catch (error) {
+
+    console.error(
+      "Error al subir comprobante:",
+      error
+    );
+
+
+    if (mensaje) {
+
+      mensaje.textContent =
+        "No pudimos subir el comprobante. Intentá nuevamente.";
+
+      mensaje.className =
+        "mensaje-subida-panel mensaje-error";
+
+    }
+
+
+    if (boton) {
+
+      boton.disabled = false;
+
+      boton.textContent =
+        "Subir comprobante";
+
+    }
+
+  }
+
+}
+/* ==========================================
+   CAMBIAR PANTALLAS
+========================================== */
+
+function mostrarAcceso() {
+
+  accesoPanel?.classList.remove(
+    "oculto"
+  );
+
+  panelResultados?.classList.add(
+    "oculto"
+  );
+
+  estadoVacio?.classList.add(
+    "oculto"
+  );
+
+  if (mensajeConsulta) {
+    mensajeConsulta.textContent = "";
+  }
+
+  campoTelefono?.focus();
+
+}
+
+
+function mostrarEstadoVacio() {
+
+  accesoPanel?.classList.add(
+    "oculto"
+  );
+
+  panelResultados?.classList.add(
+    "oculto"
+  );
+
+  estadoVacio?.classList.remove(
+    "oculto"
+  );
+
+}
+
+
+/* ==========================================
+   CONSULTAR SUPABASE
+========================================== */
+
+async function consultarInscripciones(
+  evento
+) {
+
+  evento.preventDefault();
+
+
+  const telefono =
+    normalizarTelefono(
+      campoTelefono?.value || ""
+    );
+
+
+  if (mensajeConsulta) {
+    mensajeConsulta.textContent = "";
+  }
+
+
+  if (telefono.length < 8) {
+
+    if (mensajeConsulta) {
+
+      mensajeConsulta.textContent =
+        "Ingresá un número de WhatsApp válido.";
+
+    }
+
+    campoTelefono?.focus();
+
+    return;
+
+  }
+
+
+  if (!window.db) {
+
+    if (mensajeConsulta) {
+
+      mensajeConsulta.textContent =
+        "No pudimos conectar con el sistema. Recargá la página.";
+
+    }
+
+    return;
+
+  }
+
+
+  botonConsultar.disabled = true;
+
+  botonConsultar.textContent =
+    "Buscando...";
+
+
+  try {
+
+    const {
+      data,
+      error
+    } =
+      await window.db.rpc(
+        "consultar_inscripciones_por_telefono",
+        {
+          p_telefono: telefono
+        }
+      );
+
+
+    if (error) {
+      throw error;
+    }
+
+
+    const inscripciones =
+      data || [];
+
+
+    if (!inscripciones.length) {
+
+      mostrarEstadoVacio();
+
+      return;
+
+    }
+
+
+    const primeraInscripcion =
+      inscripciones[0];
+
+
+    const nombre =
+      primeraInscripcion
+        .participante_nombre ||
+      "";
+
+
+    if (saludoParticipante) {
+
+      saludoParticipante.textContent =
+        nombre
+          ? `Hola, ${nombre} 💜`
+          : "Hola 💜";
+
+    }
+
+
+    if (cantidadInscripciones) {
+
+      cantidadInscripciones.textContent =
+        `Encontramos ${
+          inscripciones.length
+        } inscripción${
+          inscripciones.length === 1
+            ? ""
+            : "es"
+        } asociada${
+          inscripciones.length === 1
+            ? ""
+            : "s"
+        } a tu número.`;
+
+    }
+
+
+    if (listaInscripciones) {
+
+      listaInscripciones.innerHTML =
+        inscripciones
+          .map(
+            crearTarjetaInscripcion
+          )
+          .join("");
+
+      prepararCargaComprobantes();
+
+    }
+
+
+    accesoPanel?.classList.add(
+      "oculto"
+    );
+
+    estadoVacio?.classList.add(
+      "oculto"
+    );
+
+    panelResultados?.classList.remove(
+      "oculto"
+    );
+
+
+    sessionStorage.setItem(
+      "match_telefono_consulta",
+      telefono
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      "Error al consultar inscripciones:",
+      error
+    );
+
+
+    if (mensajeConsulta) {
+
+      mensajeConsulta.textContent =
+        "No pudimos consultar tus inscripciones. Intentá nuevamente.";
+
+    }
+
+
+  } finally {
+
+    botonConsultar.disabled = false;
+
+    botonConsultar.textContent =
+      "Buscar mis inscripciones";
+
+  }
+
+}
+
 
 /* ==========================================
    EVENTOS

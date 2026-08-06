@@ -48,11 +48,6 @@ const botonCerrarSesion =
     "boton-cerrar-sesion"
   );
 
-const botonActualizar =
-  document.getElementById(
-    "boton-actualizar"
-  );
-
 
 /* ==========================================
    EVENTOS — LISTADO Y SIDEBAR
@@ -91,11 +86,6 @@ const tituloEventoAdministrado =
 const descripcionEventoAdministrado =
   document.getElementById(
     "descripcion-evento-administrado"
-  );
-
-const botonEditarEvento =
-  document.getElementById(
-    "boton-editar-evento"
   );
 
 
@@ -1487,12 +1477,7 @@ function actualizarCabeceraEvento() {
     }
 
 
-    if (botonEditarEvento) {
-
-      botonEditarEvento.disabled =
-        true;
-
-    }
+    
 
 
     if (botonAgregarPartido) {
@@ -1544,15 +1529,7 @@ function actualizarCabeceraEvento() {
   }
 
 
-  if (botonEditarEvento) {
-
-    botonEditarEvento.disabled =
-      false;
-
-  }
-
-
-  if (botonAgregarPartido) {
+   if (botonAgregarPartido) {
 
     botonAgregarPartido.disabled =
       false;

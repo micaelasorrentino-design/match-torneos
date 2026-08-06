@@ -1469,3 +1469,56 @@ tbody tr:hover {
   }
 
 }
+/* ==========================================
+   ACCIONES DEL ESTADO DEL EVENTO
+========================================== */
+
+.acciones-estado-evento {
+  margin-top: 22px;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.acciones-estado-evento .boton-admin {
+  width: auto;
+  margin: 0;
+}
+
+.boton-guardar-estado {
+  min-width: 170px;
+  padding: 12px 24px;
+}
+
+.boton-eliminar-evento {
+  min-width: 140px;
+  padding: 12px 20px;
+
+  color: #a53b4b;
+  background: #ffffff;
+
+  border: 1px solid rgba(165, 59, 75, 0.26);
+}
+
+.boton-eliminar-evento:hover {
+  color: #ffffff;
+  background: #a53b4b;
+
+  border-color: #a53b4b;
+}
+
+
+@media (max-width: 650px) {
+
+  .acciones-estado-evento {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .acciones-estado-evento .boton-admin {
+    width: 100%;
+  }
+
+}
