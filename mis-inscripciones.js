@@ -242,13 +242,251 @@ function textoTipo(tipo) {
 
 }
 
+/* ==========================================
+   RESULTADOS DE UNA INSCRIPCIÓN
+========================================== */
+
+function crearDetalleResultados(
+  resultados = []
+) {
+
+  if (!resultados.length) {
+
+    return `
+      <div class="resultados-vacios">
+        Todavía no hay partidos cargados.
+      </div>
+    `;
+
+  }
+
+
+  const finalizados =
+    resultados.filter(
+      (partido) =>
+        partido.estado_partido ===
+        "finalizado"
+    );
+
+
+  const ganados =
+    finalizados.filter(
+      (partido) =>
+        partido.resultado ===
+        "ganado"
+    ).length;
+
+
+  const perdidos =
+    finalizados.filter(
+      (partido) =>
+        partido.resultado ===
+        "perdido"
+    ).length;
+
+
+  const gamesFavor =
+    finalizados.reduce(
+      (total, partido) =>
+        total +
+        Number(
+          partido.games_favor || 0
+        ),
+      0
+    );
+
+
+  const gamesContra =
+    finalizados.reduce(
+      (total, partido) =>
+        total +
+        Number(
+          partido.games_contra || 0
+        ),
+      0
+    );
+
+
+  return `
+    <section class="resumen-resultados">
+
+      <div class="estadisticas-resultados">
+
+        <div>
+          <strong>
+            ${resultados.length}
+          </strong>
+          <span>Partidos</span>
+        </div>
+
+        <div>
+          <strong>
+            ${ganados}
+          </strong>
+          <span>Ganados</span>
+        </div>
+
+        <div>
+          <strong>
+            ${perdidos}
+          </strong>
+          <span>Perdidos</span>
+        </div>
+
+        <div>
+          <strong>
+            ${gamesFavor}
+          </strong>
+          <span>Games a favor</span>
+        </div>
+
+        <div>
+          <strong>
+            ${gamesContra}
+          </strong>
+          <span>Games en contra</span>
+        </div>
+
+      </div>
+
+
+      <div class="lista-resultados-jugadora">
+
+        ${resultados
+          .map(
+            (partido) => {
+
+              const finalizado =
+                partido.estado_partido ===
+                "finalizado";
+
+              const marcador =
+                finalizado &&
+                partido.games_favor !== null &&
+                partido.games_contra !== null
+                  ? `${partido.games_favor} - ${partido.games_contra}`
+                  : "VS";
+
+
+              return `
+                <article class="resultado-jugadora-item">
+
+                  <div class="resultado-jugadora-meta">
+
+                    <strong>
+                      Partido ${escaparHTML(
+                        partido.numero_partido
+                      )}
+                    </strong>
+
+                    <span>
+                      ${escaparHTML(
+                        formatearHora(
+                          partido.hora_programada
+                        ) ||
+                        "Horario a confirmar"
+                      )}
+                      ·
+                      ${escaparHTML(
+                        partido.cancha ||
+                        "Cancha a confirmar"
+                      )}
+                    </span>
+
+                  </div>
+
+
+                  <div class="resultado-jugadora-partido">
+
+                    <span>
+                      Con
+                      <strong>
+                        ${escaparHTML(
+                          partido.companera
+                        )}
+                      </strong>
+                    </span>
+
+                    <strong class="resultado-marcador">
+                      ${escaparHTML(
+                        marcador
+                      )}
+                    </strong>
+
+                    <span>
+                      vs.
+                      <strong>
+                        ${escaparHTML(
+                          partido.rivales
+                        )}
+                      </strong>
+                    </span>
+
+                  </div>
+
+
+                  <span
+                    class="resultado-estado resultado-${escaparHTML(
+                      partido.resultado
+                    )}"
+                  >
+                    ${escaparHTML(
+                      textoResultadoPartido(
+                        partido.resultado
+                      )
+                    )}
+                  </span>
+
+                </article>
+              `;
+
+            }
+          )
+          .join("")}
+
+      </div>
+
+    </section>
+  `;
+
+}
+
+
+function textoResultadoPartido(
+  resultado
+) {
+
+  const textos = {
+
+    ganado:
+      "Ganado",
+
+    perdido:
+      "Perdido",
+
+    empatado:
+      "Empatado",
+
+    pendiente:
+      "Pendiente"
+
+  };
+
+
+  return (
+    textos[resultado] ||
+    "Pendiente"
+  );
+
+}
 
 /* ==========================================
    CREAR TARJETA
 ========================================== */
 
 function crearTarjetaInscripcion(
-  inscripcion
+  inscripcion,
+  resultados = []
 ) {
 
   const horario =
@@ -616,11 +854,43 @@ function crearTarjetaInscripcion(
 
         </span>
 
-        <span class="resultados-aviso">
-          Fixture y resultados próximamente
+        ${
+  tienePartidos
+    ? `
+      <button
+        type="button"
+        class="boton-ver-resultados"
+        data-ver-resultados="${escaparHTML(
+          inscripcionId
+        )}"
+      >
+        Ver fixture y resultados
+        <span>
+          ${cantidadPartidos}
         </span>
+      </button>
+    `
+    : `
+      <button
+        type="button"
+        class="boton-ver-resultados"
+        disabled
+      >
+        Fixture aún no disponible
+      </button>
+    `
+}
 
       </div>
+
+      <div
+  class="resultados-inscripcion oculto"
+  data-resultados-inscripcion="${escaparHTML(
+    inscripcionId
+  )}"
+>
+  ${crearDetalleResultados(resultados)}
+</div>
 
     </article>
   `;
@@ -739,6 +1009,12 @@ function prepararCargaComprobantes() {
     const inscripcionId =
       input.dataset
         .inputComprobante;
+    
+        const tienePartidos =
+  resultados.length > 0;
+
+const cantidadPartidos =
+  resultados.length;
 
 
     const boton =
@@ -1243,25 +1519,57 @@ async function consultarInscripciones(
 
   try {
 
-    const {
-      data,
-      error
-    } =
-      await window.db.rpc(
-        "consultar_inscripciones_por_telefono",
-        {
-          p_telefono: telefono
-        }
-      );
+    const [
+  respuestaInscripciones,
+  respuestaResultados
+] =
+  await Promise.all([
+
+    window.db.rpc(
+      "consultar_inscripciones_por_telefono",
+      {
+        p_telefono:
+          telefono
+      }
+    ),
+
+    window.db.rpc(
+      "consultar_resultados_por_telefono",
+      {
+        p_telefono:
+          telefono
+      }
+    )
+
+  ]);
 
 
-    if (error) {
-      throw error;
-    }
+if (
+  respuestaInscripciones.error
+) {
+
+  throw respuestaInscripciones.error;
+
+}
 
 
-    const inscripciones =
-      data || [];
+if (
+  respuestaResultados.error
+) {
+
+  throw respuestaResultados.error;
+
+}
+
+
+const inscripciones =
+  respuestaInscripciones.data ||
+  [];
+
+
+const resultados =
+  respuestaResultados.data ||
+  [];
 
 
     if (!inscripciones.length) {
@@ -1313,12 +1621,32 @@ async function consultarInscripciones(
 
     if (listaInscripciones) {
 
-      listaInscripciones.innerHTML =
-        inscripciones
-          .map(
-            crearTarjetaInscripcion
-          )
-          .join("");
+     listaInscripciones.innerHTML =
+  inscripciones
+    .map(
+      (inscripcion) => {
+
+        const inscripcionId =
+          inscripcion.inscripcion_id ||
+          inscripcion.id;
+
+
+        const resultadosInscripcion =
+          resultados.filter(
+            (partido) =>
+              partido.inscripcion_id ===
+              inscripcionId
+          );
+
+
+        return crearTarjetaInscripcion(
+          inscripcion,
+          resultadosInscripcion
+        );
+
+      }
+    )
+    .join("");
 
       prepararCargaComprobantes();
 
@@ -1371,6 +1699,94 @@ async function consultarInscripciones(
 
 }
 
+/* ==========================================
+   ABRIR FIXTURE Y RESULTADOS
+========================================== */
+
+document.addEventListener(
+  "click",
+  (evento) => {
+
+    const boton =
+      evento.target.closest(
+        "[data-ver-resultados]"
+      );
+
+
+    if (!boton) {
+      return;
+    }
+
+
+    const inscripcionId =
+      boton.dataset.verResultados;
+
+
+    const panel =
+      document.querySelector(
+        `[data-resultados-inscripcion="${inscripcionId}"]`
+      );
+
+
+    if (!panel) {
+      return;
+    }
+
+
+    const estaOculto =
+      panel.classList.contains(
+        "oculto"
+      );
+
+
+    document
+      .querySelectorAll(
+        "[data-resultados-inscripcion]"
+      )
+      .forEach(
+        (otroPanel) => {
+
+          otroPanel.classList.add(
+            "oculto"
+          );
+
+        }
+      );
+
+
+    document
+      .querySelectorAll(
+        "[data-ver-resultados]"
+      )
+      .forEach(
+        (otroBoton) => {
+
+          otroBoton.classList.remove(
+            "activo"
+          );
+
+          otroBoton.childNodes[0]
+            .textContent =
+            " Ver fixture y resultados ";
+
+        }
+      );
+
+
+    if (estaOculto) {
+
+      panel.classList.remove(
+        "oculto"
+      );
+
+      boton.classList.add(
+        "activo"
+      );
+
+    }
+
+  }
+);
 
 /* ==========================================
    EVENTOS
