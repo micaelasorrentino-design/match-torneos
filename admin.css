@@ -1522,3 +1522,130 @@ tbody tr:hover {
   }
 
 }
+/* ==========================================
+   MÁS AIRE ENTRE ESTADO Y RESUMEN
+========================================== */
+
+.resumen-admin {
+  margin-top: 42px;
+}
+
+.tabs-evento-admin {
+  margin-top: 28px;
+}
+
+/* ==========================================
+   FIXTURE ADMIN
+========================================== */
+
+.fixture-admin-cabecera {
+  margin-top: 20px;
+  padding: 28px 30px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+
+  border: 1px solid #eadff0;
+  border-radius: 24px;
+
+  background: rgba(255, 255, 255, 0.94);
+}
+
+.fixture-admin-cabecera h2 {
+  margin: 4px 0 8px;
+
+  color: #1c1327;
+
+  font-family: "Montserrat", sans-serif;
+  font-size: 27px;
+}
+
+.fixture-admin-cabecera p {
+  margin: 0;
+
+  color: #746c79;
+  font-size: 13px;
+}
+
+.fixture-admin-cabecera .boton-principal-admin {
+  min-height: 48px;
+  padding: 0 24px;
+
+  border: 0;
+  border-radius: 999px;
+
+  background: linear-gradient(
+    100deg,
+    #3d255b,
+    #7e3fa8
+  );
+
+  color: #ffffff;
+
+  font-family: "Montserrat", sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.fixture-admin-vacio {
+  margin-top: 18px;
+  padding: 55px 30px;
+
+  border: 1px dashed #d7c5e2;
+  border-radius: 24px;
+
+  background: rgba(255, 255, 255, 0.72);
+
+  text-align: center;
+}
+
+.fixture-admin-icono {
+  width: 58px;
+  height: 58px;
+  margin: 0 auto 18px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 50%;
+
+  background: #f0e9f7;
+  color: #a66cc9;
+
+  font-family: "Montserrat", sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.fixture-admin-vacio h3 {
+  margin: 0 0 8px;
+
+  color: #1c1327;
+
+  font-family: "Montserrat", sans-serif;
+  font-size: 19px;
+}
+
+.fixture-admin-vacio p {
+  margin: 0;
+
+  color: #746c79;
+  font-size: 13px;
+}
+
+@media (max-width: 700px) {
+
+  .fixture-admin-cabecera {
+    display: block;
+  }
+
+  .fixture-admin-cabecera .boton-principal-admin {
+    width: 100%;
+    margin-top: 20px;
+  }
+
+}

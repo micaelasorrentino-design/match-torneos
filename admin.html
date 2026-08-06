@@ -20,7 +20,7 @@
     href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap"
     rel="stylesheet"
   >
-<link rel="stylesheet" href="./admin.css?v=19">
+<link rel="stylesheet" href="./admin.css?v=29">
 
 </head>
 
@@ -476,7 +476,6 @@
         type="button"
         class="tab-evento-admin"
         data-tab-evento="fixture"
-        disabled
       >
         Fixture
       </button>
@@ -616,6 +615,61 @@
   id="panel-tab-resultados"
   class="contenido-tab-evento oculto"
 >
+<!-- ======================================
+     FIXTURE
+======================================= -->
+
+<section
+  id="panel-tab-fixture"
+  class="contenido-tab-evento oculto"
+>
+
+  <div class="fixture-admin-cabecera">
+
+    <div>
+
+      <span class="sobrelinea">
+        ORGANIZACIÓN DEL EVENTO
+      </span>
+
+      <h2>
+        Fixture
+      </h2>
+
+      <p>
+        Organizá los partidos, horarios y canchas del evento.
+      </p>
+
+    </div>
+
+    <button
+      type="button"
+      id="boton-agregar-partido-fixture"
+      class="boton-principal-admin"
+    >
+      + Agregar partido
+    </button>
+
+  </div>
+
+
+  <section class="fixture-admin-vacio">
+
+    <div class="fixture-admin-icono">
+      01
+    </div>
+
+    <h3>
+      Todavía no hay partidos cargados
+    </h3>
+
+    <p>
+      Agregá el primer partido para comenzar a organizar el fixture.
+    </p>
+
+  </section>
+
+</section>
 
   <section class="resultados-admin-card">
 
@@ -1389,7 +1443,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="./supabase.js"></script>
-<script src="./admin.js?v=28"></script>
+<script src="./admin.js?v=29"></script>
 
 </body>
 

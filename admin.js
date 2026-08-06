@@ -3276,6 +3276,11 @@ const panelTabInscripciones =
     "panel-tab-inscripciones"
   );
 
+  const panelTabFixture =
+  document.getElementById(
+    "panel-tab-fixture"
+  );
+
 const panelTabResultados =
   document.getElementById(
     "panel-tab-resultados"
@@ -3380,6 +3385,12 @@ function cambiarTabEvento(
       tabSeleccionada !==
         "resultados"
     );
+    panelTabFixture
+  ?.classList.toggle(
+    "oculto",
+    tabSeleccionada !==
+      "fixture"
+  );
 
 }
 
