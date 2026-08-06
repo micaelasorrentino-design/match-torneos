@@ -315,6 +315,8 @@ const eventoDescripcion =
 
 let inscripcionesActuales = [];
 
+let partidosActuales = [];
+
 let eventosAdministrables = [];
 
 let eventoActual = "";
@@ -2927,8 +2929,10 @@ async function actualizarInscripcion(
   }
 
 
-  await cargarInscripciones();
-
+await Promise.all([
+  cargarInscripciones(),
+  cargarPartidosEvento()
+]);
 
   return true;
 
@@ -3304,6 +3308,16 @@ const botonAgregarPartido =
     "boton-agregar-partido"
   );
 
+  const listaPartidosAdmin =
+  document.getElementById(
+    "lista-partidos-admin"
+  );
+
+const textoCantidadPartidos =
+  document.getElementById(
+    "texto-cantidad-partidos"
+  );
+
 const modalPartido =
   document.getElementById(
     "modal-partido"
@@ -3461,6 +3475,375 @@ function cargarJugadorasEnPartido() {
 
 }
 
+/* ==========================================
+   CARGAR PARTIDOS DEL EVENTO
+========================================== */
+
+async function cargarPartidosEvento() {
+
+  if (!eventoActual) {
+
+    partidosActuales = [];
+
+    renderizarPartidosEvento();
+
+    return;
+
+  }
+
+
+  if (listaPartidosAdmin) {
+
+    listaPartidosAdmin.innerHTML = `
+      <div class="estado-resultados-vacio">
+        <strong>
+          Cargando partidos...
+        </strong>
+      </div>
+    `;
+
+  }
+
+
+  try {
+
+    const {
+      data,
+      error
+    } =
+      await window.db.rpc(
+        "listar_partidos_evento",
+        {
+          p_evento_id:
+            eventoActual
+        }
+      );
+
+
+    if (error) {
+      throw error;
+    }
+
+
+    partidosActuales =
+      data || [];
+
+
+    renderizarPartidosEvento();
+
+
+  } catch (error) {
+
+    console.error(
+      "Error al cargar partidos:",
+      error
+    );
+
+
+    partidosActuales = [];
+
+
+    if (listaPartidosAdmin) {
+
+      listaPartidosAdmin.innerHTML = `
+        <div class="estado-resultados-vacio">
+
+          <strong>
+            No pudimos cargar los partidos
+          </strong>
+
+          <p>
+            Revisá la consola e intentá nuevamente.
+          </p>
+
+        </div>
+      `;
+
+    }
+
+
+    if (textoCantidadPartidos) {
+
+      textoCantidadPartidos.textContent =
+        "Error al cargar los partidos.";
+
+    }
+
+  }
+
+}
+
+
+/* ==========================================
+   RENDERIZAR PARTIDOS
+========================================== */
+
+function renderizarPartidosEvento() {
+
+  if (!listaPartidosAdmin) {
+    return;
+  }
+
+
+  if (!eventoActual) {
+
+    listaPartidosAdmin.innerHTML = `
+      <div class="estado-resultados-vacio">
+
+        <strong>
+          Seleccioná un evento
+        </strong>
+
+        <p>
+          Elegí un evento para ver sus partidos.
+        </p>
+
+      </div>
+    `;
+
+
+    if (textoCantidadPartidos) {
+
+      textoCantidadPartidos.textContent =
+        "Seleccioná un evento para cargar sus partidos.";
+
+    }
+
+
+    return;
+
+  }
+
+
+  if (!partidosActuales.length) {
+
+    listaPartidosAdmin.innerHTML = `
+      <div class="estado-resultados-vacio">
+
+        <strong>
+          Todavía no hay partidos cargados
+        </strong>
+
+        <p>
+          Agregá el primer partido del evento.
+        </p>
+
+      </div>
+    `;
+
+
+    if (textoCantidadPartidos) {
+
+      textoCantidadPartidos.textContent =
+        "0 partidos cargados.";
+
+    }
+
+
+    return;
+
+  }
+
+
+  if (textoCantidadPartidos) {
+
+    textoCantidadPartidos.textContent =
+      `${partidosActuales.length} partido${
+        partidosActuales.length === 1
+          ? ""
+          : "s"
+      } cargado${
+        partidosActuales.length === 1
+          ? ""
+          : "s"
+      }.`;
+
+  }
+
+
+  listaPartidosAdmin.innerHTML =
+    partidosActuales
+      .map(
+        crearTarjetaPartido
+      )
+      .join("");
+
+}
+
+
+/* ==========================================
+   CREAR TARJETA DE PARTIDO
+========================================== */
+
+function crearTarjetaPartido(
+  partido
+) {
+
+  const tieneResultado =
+    partido.pareja_1_games !== null &&
+    partido.pareja_2_games !== null;
+
+
+  const marcador =
+    tieneResultado
+      ? `${partido.pareja_1_games} - ${partido.pareja_2_games}`
+      : "vs";
+
+
+  const hora =
+    partido.hora_programada
+      ? String(
+          partido.hora_programada
+        ).slice(0, 5)
+      : "Sin hora";
+
+
+  const cancha =
+    partido.cancha ||
+    "Sin cancha";
+
+
+  const instancia =
+    formatearInstanciaPartido(
+      partido.instancia
+    );
+
+
+  return `
+    <article class="partido-admin-item">
+
+      <div class="partido-admin-info">
+
+        <small>
+          Partido ${escaparHTML(
+            partido.numero_partido
+          )}
+        </small>
+
+        <strong>
+          ${escaparHTML(hora)}
+          ·
+          ${escaparHTML(cancha)}
+        </strong>
+
+        <small>
+          ${escaparHTML(instancia)}
+        </small>
+
+      </div>
+
+
+      <div class="partido-admin-enfrentamiento">
+
+        <div class="partido-admin-pareja">
+          ${escaparHTML(
+            partido.pareja_1_nombre
+          )}
+        </div>
+
+        <div class="partido-admin-marcador">
+          ${escaparHTML(marcador)}
+        </div>
+
+        <div class="partido-admin-pareja">
+          ${escaparHTML(
+            partido.pareja_2_nombre
+          )}
+        </div>
+
+      </div>
+
+
+      <div class="partido-admin-acciones">
+
+        <span
+          class="estado-chip estado-${escaparHTML(
+            partido.estado
+          )}"
+        >
+          ${escaparHTML(
+            formatearEstadoPartido(
+              partido.estado
+            )
+          )}
+        </span>
+
+      </div>
+
+    </article>
+  `;
+
+}
+
+
+/* ==========================================
+   TEXTOS DE PARTIDOS
+========================================== */
+
+function formatearInstanciaPartido(
+  instancia
+) {
+
+  const textos = {
+
+    zona:
+      "Zona",
+
+    cuartos:
+      "Cuartos de final",
+
+    semifinal:
+      "Semifinal",
+
+    final:
+      "Final",
+
+    desempate:
+      "Desempate",
+
+    amistoso:
+      "Partido recreativo"
+
+  };
+
+
+  return (
+    textos[instancia] ||
+    instancia ||
+    "Partido"
+  );
+
+}
+
+
+function formatearEstadoPartido(
+  estado
+) {
+
+  const textos = {
+
+    pendiente:
+      "Pendiente",
+
+    en_juego:
+      "En juego",
+
+    finalizado:
+      "Finalizado",
+
+    cancelado:
+      "Cancelado"
+
+  };
+
+
+  return (
+    textos[estado] ||
+    estado ||
+    "Sin estado"
+  );
+
+}
 
 /* ABRIR MODAL */
 
@@ -3880,6 +4263,8 @@ formularioPartido?.addEventListener(
         "Partido guardado:",
         data
       );
+
+      await cargarPartidosEvento();
 
 
       window.setTimeout(
