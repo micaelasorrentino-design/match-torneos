@@ -3,34 +3,246 @@
 
 <head>
 
-<meta charset="UTF-8">
+  <meta charset="UTF-8">
 
-<meta
-name="viewport"
-content="width=device-width, initial-scale=1.0"
->
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
-<title>Mis inscripciones | MATCH Bragado</title>
+  <title>Mi MATCH | Mis inscripciones</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
 
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  >
 
-<link
-href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
-rel="stylesheet"
->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  >
 
-<link
-rel="stylesheet"
-href="./mis-inscripciones.css?v=1"
->
+  <link
+    rel="stylesheet"
+    href="./mis-inscripciones.css?v=2"
+  >
 
 </head>
 
 <body>
 
-<h1>Mi panel de inscripciones</h1>
+  <!-- ======================================
+       HEADER
+  ======================================= -->
+
+  <header class="mi-match-header">
+
+    <div class="mi-match-header-contenido">
+
+      <a
+        href="./index.html"
+        class="mi-match-marca"
+      >
+
+        <img
+          src="./logo-match.png"
+          alt="Logo MATCH Bragado"
+        >
+
+        <div>
+          <strong>MATCH</strong>
+          <span>Bragado</span>
+        </div>
+
+      </a>
+
+      <a
+        href="./index.html"
+        class="boton-volver"
+      >
+        Volver al inicio
+      </a>
+
+    </div>
+
+  </header>
+
+
+  <main class="mi-match-contenido">
+
+    <!-- ======================================
+         PRESENTACIÓN Y BÚSQUEDA
+    ======================================= -->
+
+    <section class="acceso-panel">
+
+      <div class="acceso-presentacion">
+
+        <span class="sobrelinea">
+          TU ESPACIO PERSONAL
+        </span>
+
+        <h1>
+          Mi MATCH
+        </h1>
+
+        <p>
+          Consultá tus inscripciones, pagos,
+          horarios y novedades de cada encuentro.
+        </p>
+
+      </div>
+
+
+      <form
+        id="formulario-consulta"
+        class="consulta-card"
+      >
+
+        <label for="consulta-telefono">
+
+          <span>Número de WhatsApp</span>
+
+          <input
+            type="tel"
+            id="consulta-telefono"
+            placeholder="Ej: 2342 55 1234"
+            inputmode="numeric"
+            autocomplete="tel"
+            required
+          >
+
+          <small>
+            Ingresalo con código de área, sin 0 y sin 15.
+          </small>
+
+        </label>
+
+
+        <button
+          type="submit"
+          id="boton-consultar"
+        >
+          Buscar mis inscripciones
+        </button>
+
+
+        <p
+          id="mensaje-consulta"
+          class="mensaje-consulta"
+          role="status"
+        ></p>
+
+      </form>
+
+    </section>
+
+
+    <!-- ======================================
+         RESULTADOS DE LA CONSULTA
+    ======================================= -->
+
+    <section
+      id="panel-resultados"
+      class="panel-resultados oculto"
+    >
+
+      <div class="resultados-encabezado">
+
+        <div>
+
+          <span class="sobrelinea">
+            MIS INSCRIPCIONES
+          </span>
+
+          <h2 id="saludo-participante">
+            Hola 💜
+          </h2>
+
+          <p id="cantidad-inscripciones">
+            Encontramos tus encuentros.
+          </p>
+
+        </div>
+
+
+        <button
+          type="button"
+          id="boton-cambiar-numero"
+          class="boton-secundario"
+        >
+          Cambiar número
+        </button>
+
+      </div>
+
+
+      <div
+        id="lista-inscripciones"
+        class="lista-inscripciones"
+      ></div>
+
+    </section>
+
+
+    <!-- ======================================
+         ESTADO VACÍO
+    ======================================= -->
+
+    <section
+      id="estado-vacio"
+      class="estado-vacio oculto"
+    >
+
+      <div class="estado-vacio-icono">
+        MATCH
+      </div>
+
+      <h2>
+        No encontramos inscripciones
+      </h2>
+
+      <p>
+        Revisá que el número coincida con el que utilizaste
+        al completar el formulario.
+      </p>
+
+      <button
+        type="button"
+        id="boton-intentar-nuevamente"
+        class="boton-principal"
+      >
+        Intentar nuevamente
+      </button>
+
+    </section>
+
+  </main>
+
+
+  <footer class="mi-match-footer">
+
+    <strong>MATCH</strong>
+
+    <span>|</span>
+
+    <small>Bragado</small>
+
+    <p>
+      Jugá. Conectá. Divertite.
+    </p>
+
+  </footer>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script src="./supabase.js"></script>
+
+  <script src="./mis-inscripciones.js?v=1"></script>
 
 </body>
 
