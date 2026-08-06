@@ -22,7 +22,7 @@
 
 <link
   rel="stylesheet"
-  href="./admin.css?v=5"
+  href="./admin.css?v=9"
 >
 
 </head>
@@ -142,125 +142,391 @@
     </header>
 
 
-    <main class="admin-contenido">
+<main class="admin-contenido admin-layout">
 
-      <section class="admin-bienvenida">
+  <!-- ======================================
+       BARRA LATERAL
+  ======================================= -->
 
-        <div>
+  <aside class="admin-sidebar">
 
-          <span class="sobrelinea">
-            GESTIÓN DE EVENTOS
-          </span>
+    <div class="sidebar-encabezado">
 
-          <h1>
-            Hola, Mica 💜
-          </h1>
+      <div>
 
-          <p>
-            Desde acá podés revisar inscripciones,
-            comprobantes y pagos.
-          </p>
+        <span class="sobrelinea">
+          EVENTOS MATCH
+        </span>
+
+        <h2>
+          Mis eventos
+        </h2>
+
+      </div>
+
+      <button
+        type="button"
+        id="boton-nuevo-evento"
+        class="boton-nuevo-sidebar"
+        aria-label="Crear nuevo evento"
+      >
+        +
+      </button>
+
+    </div>
+
+
+    <button
+      type="button"
+      id="boton-nuevo-evento-grande"
+      class="boton-admin boton-principal-admin boton-crear-evento-sidebar"
+    >
+      + Nuevo evento
+    </button>
+
+
+    <label class="buscador-eventos-sidebar">
+
+      <span>Buscar evento</span>
+
+      <input
+        type="search"
+        id="buscador-eventos"
+        placeholder="Nombre o categoría"
+      >
+
+    </label>
+
+
+    <div class="filtros-eventos-sidebar">
+
+      <button
+        type="button"
+        class="filtro-evento-sidebar activo"
+        data-filtro-eventos="todos"
+      >
+        Todos
+      </button>
+
+      <button
+        type="button"
+        class="filtro-evento-sidebar"
+        data-filtro-eventos="publicados"
+      >
+        Publicados
+      </button>
+
+      <button
+        type="button"
+        class="filtro-evento-sidebar"
+        data-filtro-eventos="borradores"
+      >
+        Borradores
+      </button>
+
+      <button
+        type="button"
+        class="filtro-evento-sidebar"
+        data-filtro-eventos="archivados"
+      >
+        Archivados
+      </button>
+
+    </div>
+
+
+    <!-- El select se conserva para que siga funcionando admin.js -->
+
+    <div class="selector-evento-oculto">
+
+      <label for="selector-evento">
+        Evento
+      </label>
+
+      <select id="selector-evento">
+
+        <option value="">
+          Seleccioná un evento
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <div
+      id="lista-eventos-admin"
+      class="lista-eventos-admin"
+    >
+
+      <p class="sidebar-vacio">
+        Cargando eventos...
+      </p>
+
+    </div>
+
+  </aside>
+
+
+  <!-- ======================================
+       DETALLE DEL EVENTO
+  ======================================= -->
+
+  <section class="admin-detalle">
+
+    <section class="admin-bienvenida admin-bienvenida-nueva">
+
+      <div>
+
+        <span class="sobrelinea">
+          GESTIÓN DE EVENTOS
+        </span>
+
+        <h1 id="titulo-evento-administrado">
+          Hola, Mica 💜
+        </h1>
+
+        <p id="descripcion-evento-administrado">
+          Seleccioná un evento para administrar sus inscripciones,
+          pagos y configuración.
+        </p>
+
+      </div>
+
+
+      <div class="acciones-bienvenida">
+
+        <button
+          type="button"
+          id="boton-editar-evento"
+          class="boton-admin boton-secundario-admin"
+          disabled
+        >
+          Editar evento
+        </button>
+
+        <button
+          type="button"
+          id="boton-actualizar"
+          class="boton-admin boton-secundario-admin"
+        >
+          Actualizar datos
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- ======================================
+         ESTADO DEL EVENTO
+    ======================================= -->
+
+    <section class="estado-publicacion-card">
+
+      <div class="estado-publicacion-texto">
+
+        <span class="sobrelinea">
+          ESTADO DEL EVENTO
+        </span>
+
+        <h2>
+          Publicación
+        </h2>
+
+        <p id="texto-estado-publicacion">
+          Seleccioná un evento para administrarlo.
+        </p>
+
+      </div>
+
+
+      <div class="controles-publicacion">
+
+        <label class="switch-publicacion">
+
+          <input
+            type="checkbox"
+            id="admin-evento-publicado"
+            disabled
+          >
+
+          <span class="switch-visual"></span>
+
+          <div>
+            <strong>Publicado</strong>
+            <small>Visible en la web.</small>
+          </div>
+
+        </label>
+
+
+        <label class="switch-publicacion">
+
+          <input
+            type="checkbox"
+            id="admin-inscripciones-abiertas"
+            disabled
+          >
+
+          <span class="switch-visual"></span>
+
+          <div>
+            <strong>Inscripciones</strong>
+            <small>Permitir nuevas inscripciones.</small>
+          </div>
+
+        </label>
+
+
+        <label class="switch-publicacion switch-archivado">
+
+          <input
+            type="checkbox"
+            id="admin-evento-archivado"
+            disabled
+          >
+
+          <span class="switch-visual"></span>
+
+          <div>
+            <strong>Archivado</strong>
+            <small>Oculto de la web pública.</small>
+          </div>
+
+        </label>
+
+
+        <div class="botones-estado-evento">
+
+          <button
+            type="button"
+            id="guardar-estado-evento"
+            class="boton-admin boton-principal-admin"
+            disabled
+          >
+            Guardar estado
+          </button>
+
+          <button
+            type="button"
+            id="eliminar-evento"
+            class="boton-admin boton-eliminar-evento"
+            disabled
+          >
+            Eliminar
+          </button>
 
         </div>
 
-       <div class="acciones-bienvenida">
+      </div>
 
-  <button
-    type="button"
-    id="boton-nuevo-evento"
-    class="boton-admin boton-principal-admin"
-  >
-    + Nuevo evento
-  </button>
-
-  <button
-    type="button"
-    id="boton-actualizar"
-    class="boton-admin boton-secundario-admin"
-  >
-    Actualizar datos
-  </button>
-
-</div>
-
-      </section>
+    </section>
 
 
-      <!-- SELECCIÓN DE EVENTO -->
+    <!-- ======================================
+         RESUMEN
+    ======================================= -->
 
-      <section class="selector-evento-card">
+    <section class="resumen-admin">
 
-        <label for="selector-evento">
-          Evento
-        </label>
+      <article>
 
-        <select id="selector-evento">
+        <span>Total</span>
 
-          <option value="">
-            Seleccioná un evento
-          </option>
+        <strong id="resumen-total">
+          0
+        </strong>
 
-        </select>
+        <small>inscripciones</small>
 
-      </section>
-
-
-      <!-- RESUMEN -->
-
-      <section class="resumen-admin">
-
-        <article>
-
-          <span>Total</span>
-
-          <strong id="resumen-total">
-            0
-          </strong>
-
-          <small>inscripciones</small>
-
-        </article>
-
-        <article>
-
-          <span>Pendientes</span>
-
-          <strong id="resumen-pendientes">
-            0
-          </strong>
-
-          <small>por confirmar</small>
-
-        </article>
-
-        <article>
-
-          <span>Comprobantes</span>
-
-          <strong id="resumen-comprobantes">
-            0
-          </strong>
-
-          <small>recibidos</small>
-
-        </article>
-
-        <article>
-
-          <span>Confirmadas</span>
-
-          <strong id="resumen-confirmadas">
-            0
-          </strong>
-
-          <small>cupos confirmados</small>
-
-        </article>
-
-      </section>
+      </article>
 
 
-      <!-- FILTROS -->
+      <article>
+
+        <span>Pendientes</span>
+
+        <strong id="resumen-pendientes">
+          0
+        </strong>
+
+        <small>por confirmar</small>
+
+      </article>
+
+
+      <article>
+
+        <span>Comprobantes</span>
+
+        <strong id="resumen-comprobantes">
+          0
+        </strong>
+
+        <small>recibidos</small>
+
+      </article>
+
+
+      <article>
+
+        <span>Confirmadas</span>
+
+        <strong id="resumen-confirmadas">
+          0
+        </strong>
+
+        <small>cupos confirmados</small>
+
+      </article>
+
+    </section>
+
+
+    <!-- ======================================
+         NAVEGACIÓN INTERNA
+    ======================================= -->
+
+    <nav class="tabs-evento-admin">
+
+      <button
+        type="button"
+        class="tab-evento-admin activo"
+        data-tab-evento="inscripciones"
+      >
+        Inscripciones
+      </button>
+
+      <button
+        type="button"
+        class="tab-evento-admin"
+        data-tab-evento="resultados"
+        disabled
+      >
+        Resultados
+      </button>
+
+      <button
+        type="button"
+        class="tab-evento-admin"
+        data-tab-evento="fixture"
+        disabled
+      >
+        Fixture
+      </button>
+
+    </nav>
+
+
+    <!-- ======================================
+         INSCRIPCIONES
+    ======================================= -->
+
+    <section
+      id="panel-tab-inscripciones"
+      class="contenido-tab-evento"
+    >
 
       <section class="filtros-admin">
 
@@ -280,7 +546,7 @@
             Pendientes
           </option>
 
-          <option value="pagado">
+          <option value="confirmada">
             Confirmadas
           </option>
 
@@ -289,6 +555,7 @@
           </option>
 
         </select>
+
 
         <select id="filtro-pago">
 
@@ -304,7 +571,7 @@
             Comprobante recibido
           </option>
 
-          <option value="pagado">
+          <option value="confirmado">
             Pago confirmado
           </option>
 
@@ -316,8 +583,6 @@
 
       </section>
 
-
-      <!-- TABLA -->
 
       <section class="tabla-card">
 
@@ -345,21 +610,13 @@
             <thead>
 
               <tr>
-
                 <th>Participante</th>
-
                 <th>Contacto</th>
-
                 <th>Modalidad</th>
-
                 <th>Pago</th>
-
                 <th>Estado</th>
-
                 <th>Comprobante</th>
-
                 <th>Acciones</th>
-
               </tr>
 
             </thead>
@@ -385,7 +642,11 @@
 
       </section>
 
-    </main>
+    </section>
+
+  </section>
+
+</main>
 
   </div>
 <!-- ======================================

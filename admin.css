@@ -970,3 +970,276 @@ tbody tr:hover {
     min-width: 0;
   }
 }
+/* ==========================================
+   NUEVO LAYOUT DEL ADMINISTRADOR
+========================================== */
+
+.admin-layout {
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr);
+  gap: 24px;
+  width: min(1600px, calc(100% - 40px));
+  padding-top: 28px;
+}
+
+.admin-sidebar {
+  position: sticky;
+  top: 106px;
+  align-self: start;
+  max-height: calc(100vh - 130px);
+  overflow: hidden;
+  padding: 22px;
+  border: 1px solid var(--match-borde);
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 16px 40px rgba(61, 37, 91, 0.07);
+}
+
+.sidebar-encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.sidebar-encabezado h2 {
+  margin: 5px 0 0;
+  font-family: "Montserrat", sans-serif;
+  font-size: 23px;
+}
+
+.boton-nuevo-sidebar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--match-oscuro);
+  color: #ffffff;
+  font-size: 25px;
+  cursor: pointer;
+}
+
+.boton-crear-evento-sidebar {
+  width: 100%;
+  margin: 0 0 18px;
+}
+
+.buscador-eventos-sidebar {
+  display: block;
+  margin-bottom: 14px;
+}
+
+.buscador-eventos-sidebar > span {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--match-gris);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.buscador-eventos-sidebar input {
+  width: 100%;
+  min-height: 45px;
+  padding: 0 14px;
+  border: 1px solid #ded3e5;
+  border-radius: 14px;
+  outline: none;
+}
+
+.buscador-eventos-sidebar input:focus {
+  border-color: var(--match-principal);
+  box-shadow: 0 0 0 4px rgba(166, 108, 201, 0.1);
+}
+
+.filtros-eventos-sidebar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 16px;
+}
+
+.filtro-evento-sidebar {
+  padding: 7px 10px;
+  border: 1px solid #e0d4e7;
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--match-gris);
+  font-family: "Montserrat", sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.filtro-evento-sidebar.activo {
+  border-color: var(--match-principal);
+  background: #f1e7f8;
+  color: var(--match-oscuro);
+}
+
+.selector-evento-oculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.lista-eventos-admin {
+  max-height: calc(100vh - 410px);
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+.sidebar-vacio {
+  padding: 25px 10px;
+  color: var(--match-gris);
+  font-size: 12px;
+  text-align: center;
+}
+
+.evento-sidebar-item {
+  width: 100%;
+  margin-bottom: 9px;
+  padding: 15px;
+  border: 1px solid #e9e0ee;
+  border-radius: 17px;
+  background: #ffffff;
+  color: var(--match-texto);
+  cursor: pointer;
+  text-align: left;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.evento-sidebar-item:hover {
+  transform: translateY(-1px);
+  border-color: #cdb4df;
+  background: #fcf9fe;
+}
+
+.evento-sidebar-item.activo {
+  border-color: var(--match-principal);
+  background: #f5eef9;
+}
+
+.evento-sidebar-item strong {
+  display: block;
+  font-family: "Montserrat", sans-serif;
+  font-size: 12px;
+}
+
+.evento-sidebar-item small {
+  display: block;
+  margin-top: 5px;
+  color: var(--match-gris);
+  font-size: 10px;
+}
+
+.estado-evento-sidebar {
+  display: inline-flex;
+  margin-top: 9px;
+  padding: 5px 8px;
+  border-radius: 999px;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.estado-evento-publicado {
+  background: #e6f3eb;
+  color: var(--match-exito);
+}
+
+.estado-evento-borrador {
+  background: #f6eddc;
+  color: var(--match-alerta);
+}
+
+.estado-evento-archivado {
+  background: #ece9ee;
+  color: #756d7a;
+}
+
+.admin-detalle {
+  min-width: 0;
+}
+
+.admin-bienvenida-nueva {
+  margin-bottom: 24px;
+  padding: 10px 2px;
+}
+
+.tabs-evento-admin {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 18px;
+  padding: 7px;
+  border: 1px solid var(--match-borde);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.tab-evento-admin {
+  padding: 11px 17px;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--match-gris);
+  font-family: "Montserrat", sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.tab-evento-admin.activo {
+  background: var(--match-oscuro);
+  color: #ffffff;
+}
+
+.tab-evento-admin:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+@media (max-width: 1100px) {
+
+  .admin-layout {
+    grid-template-columns: 270px minmax(0, 1fr);
+  }
+
+}
+
+@media (max-width: 850px) {
+
+  .admin-layout {
+    display: block;
+  }
+
+  .admin-sidebar {
+    position: relative;
+    top: auto;
+    max-height: none;
+    margin-bottom: 22px;
+  }
+
+  .lista-eventos-admin {
+    display: flex;
+    max-height: none;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 10px;
+    padding: 2px 0 8px;
+  }
+
+  .evento-sidebar-item {
+    min-width: 220px;
+    margin-bottom: 0;
+  }
+
+}
