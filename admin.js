@@ -2826,12 +2826,23 @@ function actualizarResumen() {
     ).length;
 
 
-  const confirmadas =
-    inscripcionesActuales.filter(
-      (item) =>
-        item.estado ===
-        "confirmada"
-    ).length;
+const confirmadas =
+  inscripcionesActuales.reduce(
+    (total, item) => {
+
+      if (item.estado !== "confirmada") {
+        return total;
+      }
+
+      if (item.modalidad === "pareja") {
+        return total + 2;
+      }
+
+      return total + 1;
+
+    },
+    0
+  );
 
 
   if (resumenTotal) {
