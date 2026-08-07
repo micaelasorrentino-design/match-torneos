@@ -2544,25 +2544,68 @@ function renderizarTabla(
 
 
   if (
-    textoCantidadInscripciones
-  ) {
+  textoCantidadInscripciones
+) {
 
-    textoCantidadInscripciones.textContent =
-      `${inscripciones.length} inscripción${
-        inscripciones.length === 1
-          ? ""
-          : "es"
-      }`;
+  const cantidadJugadoras =
+    inscripciones.reduce(
+      (total, inscripcion) => {
 
-  }
+        if (
+          inscripcion.modalidad === "pareja" &&
+          inscripcion.nombre_companera
+        ) {
+          return total + 2;
+        }
+
+        return total + 1;
+
+      },
+      0
+    );
 
 
-  tablaInscripciones.innerHTML =
-    inscripciones
-      .map(
-        crearFilaInscripcion
-      )
-      .join("");
+  textoCantidadInscripciones.textContent =
+    `${inscripciones.length} inscripción${
+      inscripciones.length === 1
+        ? ""
+        : "es"
+    } · ${cantidadJugadoras} jugadora${
+      cantidadJugadoras === 1
+        ? ""
+        : "s"
+    }`;
+
+}
+
+
+tablaInscripciones.innerHTML =
+  inscripciones
+    .map(
+      (inscripcion) => {
+
+        let filas =
+          crearFilaInscripcion(
+            inscripcion
+          );
+
+        if (
+          inscripcion.modalidad === "pareja" &&
+          inscripcion.nombre_companera
+        ) {
+
+          filas +=
+            crearFilaCompanera(
+              inscripcion
+            );
+
+        }
+
+        return filas;
+
+      }
+    )
+    .join("");
 
 }
 
@@ -2798,6 +2841,175 @@ function crearFilaInscripcion(
 
 }
 
+/* ==========================================
+   CREAR FILA DE COMPAÑERA
+========================================== */
+
+function crearFilaCompanera(
+  inscripcion
+) {
+
+  const participante =
+    inscripcion.participantes ||
+    {};
+
+
+  const nombreTitular =
+    [
+      participante.nombre,
+      participante.apellido
+    ]
+      .filter(Boolean)
+      .join(" ");
+
+
+  const nombreCompanera =
+    inscripcion.nombre_companera ||
+    "Compañera";
+
+
+  const telefonoCompanera =
+    inscripcion.telefono_companera ||
+    "";
+
+
+  const modalidadTexto =
+    nombreTitular
+      ? `Con ${nombreTitular}`
+      : "Con pareja";
+
+
+  const botonWhatsapp =
+    telefonoCompanera
+      ? `
+        <a
+          href="https://wa.me/54${escaparHTML(
+            telefonoCompanera.replace(
+              /\D/g,
+              ""
+            )
+          )}"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="boton-tabla"
+        >
+          WhatsApp
+        </a>
+      `
+      : "";
+
+
+  const comprobanteTexto =
+    inscripcion.comprobante_path
+      ? `
+        <span>
+          Mismo comprobante
+        </span>
+      `
+      : `
+        <span>
+          Sin comprobante
+        </span>
+      `;
+
+
+  return `
+    <tr>
+
+      <td>
+
+        <div class="participante-celda">
+
+          <strong>
+            ${escaparHTML(
+              nombreCompanera
+            )}
+          </strong>
+
+          <small>
+            Compañera
+          </small>
+
+        </div>
+
+      </td>
+
+
+      <td>
+
+        <div class="contacto-celda">
+
+          <strong>
+            ${escaparHTML(
+              telefonoCompanera
+            )}
+          </strong>
+
+        </div>
+
+      </td>
+
+
+      <td>
+        ${escaparHTML(
+          modalidadTexto
+        )}
+      </td>
+
+
+      <td>
+
+        <span
+          class="pago-chip pago-${escaparHTML(
+            inscripcion.estado_pago
+          )}"
+        >
+          ${escaparHTML(
+            textoPago(
+              inscripcion.estado_pago
+            )
+          )}
+        </span>
+
+      </td>
+
+
+      <td>
+
+        <span
+          class="estado-chip estado-${escaparHTML(
+            inscripcion.estado
+          )}"
+        >
+          ${escaparHTML(
+            textoEstado(
+              inscripcion.estado
+            )
+          )}
+        </span>
+
+      </td>
+
+
+      <td>
+        ${comprobanteTexto}
+      </td>
+
+
+      <td>
+
+        <div class="acciones-tabla">
+
+          ${botonWhatsapp}
+
+        </div>
+
+      </td>
+
+    </tr>
+  `;
+
+}
 
 /* ==========================================
    RESUMEN

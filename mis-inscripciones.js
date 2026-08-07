@@ -1244,13 +1244,13 @@ async function subirComprobante(
 
 
   const telefono =
-    normalizarTelefono(
-      campoTelefono?.value ||
-      sessionStorage.getItem(
-        "match_telefono_consulta"
-      ) ||
-      ""
-    );
+  normalizarTelefono(
+    sessionStorage.getItem(
+      "match_telefono_consulta"
+    ) ||
+    campoTelefono?.value ||
+    ""
+  );
 
 
   const identificadorArchivo =
@@ -1325,11 +1325,13 @@ async function subirComprobante(
         "actualizar_comprobante_inscripcion",
         {
           p_inscripcion_id:
-            inscripcionId,
-          p_telefono:
-            telefono,
-          p_comprobante_path:
-            rutaArchivo
+  inscripcionId,
+
+p_telefono:
+  telefono,
+
+p_comprobante_path:
+  rutaArchivo
         }
       );
 
@@ -1518,29 +1520,93 @@ async function consultarInscripciones(
 
   try {
 
-    const respuestaInscripciones =
+ let telefonoConsulta =
+  telefono;
+
+let esCompanera =
+  false;
+
+let nombreCompanera =
+  "";
+
+
+/* PRIMERO BUSCAMOS COMO TITULAR */
+
+let respuestaInscripciones =
+  await window.db.rpc(
+    "consultar_inscripciones_por_telefono",
+    {
+      p_telefono:
+        telefonoConsulta
+    }
+  );
+
+
+if (respuestaInscripciones.error) {
+  throw respuestaInscripciones.error;
+}
+
+
+let inscripciones =
+  respuestaInscripciones.data || [];
+
+
+/* SI NO APARECE COMO TITULAR,
+   BUSCAMOS SI ES COMPAÑERA */
+
+if (!inscripciones.length) {
+
+  const respuestaCompanera =
+    await window.db.rpc(
+      "buscar_titular_por_companera",
+      {
+        p_telefono:
+  telefonoConsulta
+      }
+    );
+
+
+  if (respuestaCompanera.error) {
+    throw respuestaCompanera.error;
+  }
+
+
+  const relacion =
+    respuestaCompanera.data?.[0];
+
+
+  if (relacion?.telefono_titular) {
+
+    telefonoConsulta =
+      relacion.telefono_titular;
+
+    nombreCompanera =
+      relacion.nombre_companera || "";
+
+    esCompanera =
+      true;
+
+
+    respuestaInscripciones =
       await window.db.rpc(
         "consultar_inscripciones_por_telefono",
         {
           p_telefono:
-            telefono
+            telefonoConsulta
         }
       );
 
 
-    if (
-      respuestaInscripciones.error
-    ) {
-
+    if (respuestaInscripciones.error) {
       throw respuestaInscripciones.error;
-
     }
 
 
-    const inscripciones =
+    inscripciones =
       respuestaInscripciones.data || [];
+  }
 
-
+}
     let resultados = [];
 
 
@@ -1550,8 +1616,8 @@ async function consultarInscripciones(
         await window.db.rpc(
           "consultar_resultados_por_telefono",
           {
-            p_telefono:
-              telefono
+           p_telefono:
+  telefonoConsulta
           }
         );
 
@@ -1596,9 +1662,13 @@ async function consultarInscripciones(
 
 
     const nombre =
-      primeraInscripcion
-        .participante_nombre ||
-      "";
+  esCompanera
+    ? nombreCompanera
+    : (
+        primeraInscripcion
+          .participante_nombre ||
+        ""
+      );
 
 
     if (saludoParticipante) {
@@ -1678,9 +1748,9 @@ async function consultarInscripciones(
 
 
     sessionStorage.setItem(
-      "match_telefono_consulta",
-      telefono
-    );
+  "match_telefono_consulta",
+  telefonoConsulta
+);
 
 
   } catch (error) {
