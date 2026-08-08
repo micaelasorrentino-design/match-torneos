@@ -4290,6 +4290,9 @@ function formatearInstanciaPartido(
     zona:
       "Zona",
 
+    octavos:
+      "Octavos de final",
+
     cuartos:
       "Cuartos de final",
 
@@ -4306,6 +4309,13 @@ function formatearInstanciaPartido(
       "Partido recreativo"
 
   };
+
+  return (
+    textos[instancia] ||
+    instancia ||
+    "Partido"
+  );
+}
 
 
   return (
@@ -4453,6 +4463,16 @@ function abrirModalEditarPartido(
     document.getElementById(
       "partido-instancia"
     );
+  
+  const campoPartidoZona =
+  document.getElementById(
+    "campo-partido-zona"
+  );
+
+const partidoZona =
+  document.getElementById(
+    "partido-zona"
+  );
 
   const equipo1Games =
     document.getElementById(
