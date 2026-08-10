@@ -4317,16 +4317,6 @@ function formatearInstanciaPartido(
   );
 }
 
-
-  return (
-    textos[instancia] ||
-    instancia ||
-    "Partido"
-  );
-
-}
-
-
 function formatearEstadoPartido(
   estado
 ) {
