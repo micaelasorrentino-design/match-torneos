@@ -3980,132 +3980,261 @@ function renderizarFixtureEvento() {
   fixtureTemporal.partidos.length
 ) {
 
-  const crearZonaHTML = (
-    titulo,
-    parejas
-  ) => {
+  const nombrePareja = (pareja) =>
+    `${pareja.jugadora1} / ${pareja.jugadora2}`;
 
-    return `
-      <section class="fixture-zona-bloque">
 
-        <h3>${titulo}</h3>
+  const crearPartidoHTML = (
+    numero,
+    subtitulo,
+    pareja1,
+    pareja2
+  ) => `
+    <article class="fixture-partido-item">
 
-        <div class="fixture-zona-parejas">
+      <div class="fixture-horario">
+        <strong>${numero}</strong>
+        <span>${escaparHTML(subtitulo)}</span>
+      </div>
 
-          ${parejas
-            .map(
-              (pareja) => `
-                <div class="fixture-pareja-zona">
+      <div class="fixture-partido-centro">
 
-                  <strong>
-                    P${pareja.numero}
-                  </strong>
+        <div class="fixture-enfrentamiento">
 
-                  <span>
-                    ${escaparHTML(
-                      pareja.jugadora1
-                    )}
-                    /
-                    ${escaparHTML(
-                      pareja.jugadora2
-                    )}
-                  </span>
+          <span class="fixture-pareja">
+            ${escaparHTML(pareja1)}
+          </span>
 
-                </div>
-              `
-            )
-            .join("")}
+          <strong class="fixture-marcador">
+            VS
+          </strong>
+
+          <span class="fixture-pareja">
+            ${escaparHTML(pareja2)}
+          </span>
 
         </div>
 
-      </section>
-    `;
-  };
+      </div>
+
+    </article>
+  `;
 
 
-  const partidosHTML =
-    fixtureTemporal.partidos
+  const partidosZonaA =
+    fixtureTemporal.partidos.filter(
+      (partido) =>
+        partido.zona === "A"
+    );
+
+
+  const partidosZonaB =
+    fixtureTemporal.partidos.filter(
+      (partido) =>
+        partido.zona === "B"
+    );
+
+
+  const zonaAHTML =
+    partidosZonaA
       .map(
-        (partido, indice) => `
-          <article class="fixture-partido-item">
-
-            <div class="fixture-horario">
-
-              <strong>
-                ${indice + 1}
-              </strong>
-
-              <span>
-                Zona ${partido.zona}
-              </span>
-
-            </div>
-
-            <div class="fixture-partido-centro">
-
-              <div class="fixture-instancia">
-                Partido ${indice + 1}
-                · Zona ${partido.zona}
-              </div>
-
-              <div class="fixture-enfrentamiento">
-
-                <span class="fixture-pareja">
-                  P${partido.pareja1.numero}
-                </span>
-
-                <strong class="fixture-marcador">
-                  VS
-                </strong>
-
-                <span class="fixture-pareja">
-                  P${partido.pareja2.numero}
-                </span>
-
-              </div>
-
-            </div>
-
-          </article>
-        `
+        (partido, indice) =>
+          crearPartidoHTML(
+            indice + 1,
+            "Zona A",
+            nombrePareja(
+              partido.pareja1
+            ),
+            nombrePareja(
+              partido.pareja2
+            )
+          )
       )
       .join("");
 
 
+  const zonaBHTML =
+    partidosZonaB
+      .map(
+        (partido, indice) =>
+          crearPartidoHTML(
+            partidosZonaA.length +
+              indice +
+              1,
+            "Zona B",
+            nombrePareja(
+              partido.pareja1
+            ),
+            nombrePareja(
+              partido.pareja2
+            )
+          )
+      )
+      .join("");
+
+
+  /* ==========================================
+     ELIMINACIÓN
+  ========================================== */
+
+  const cuartosHTML = [
+
+    [
+      "C1",
+      "1° Zona A",
+      "4° Zona B"
+    ],
+
+    [
+      "C2",
+      "2° Zona A",
+      "3° Zona B"
+    ],
+
+    [
+      "C3",
+      "1° Zona B",
+      "4° Zona A"
+    ],
+
+    [
+      "C4",
+      "2° Zona B",
+      "3° Zona A"
+    ]
+
+  ]
+    .map(
+      (partido) =>
+        crearPartidoHTML(
+          partido[0],
+          "Cuartos de final",
+          partido[1],
+          partido[2]
+        )
+    )
+    .join("");
+
+
+  const semifinalesHTML = [
+
+    [
+      "S1",
+      "Ganador C1",
+      "Ganador C2"
+    ],
+
+    [
+      "S2",
+      "Ganador C3",
+      "Ganador C4"
+    ]
+
+  ]
+    .map(
+      (partido) =>
+        crearPartidoHTML(
+          partido[0],
+          "Semifinal",
+          partido[1],
+          partido[2]
+        )
+    )
+    .join("");
+
+
+  const finalHTML =
+    crearPartidoHTML(
+      "F",
+      "Final",
+      "Ganador S1",
+      "Ganador S2"
+    );
+
+
   listaFixtureAdmin.innerHTML = `
 
-    ${crearZonaHTML(
-      "Zona A",
-      fixtureTemporal.zonaA
-    )}
+    <section class="fixture-etapa">
 
-    ${crearZonaHTML(
-      "Zona B",
-      fixtureTemporal.zonaB
-    )}
+      <div class="fixture-etapa-titulo">
+        <span>FASE DE GRUPOS</span>
+        <h3>Zona A</h3>
+      </div>
 
-    <section class="fixture-partidos-generados">
-
-      <h3>
-        Partidos de zona
-      </h3>
-
-      ${partidosHTML}
+      <div class="fixture-etapa-partidos">
+        ${zonaAHTML}
+      </div>
 
     </section>
+
+
+    <section class="fixture-etapa">
+
+      <div class="fixture-etapa-titulo">
+        <span>FASE DE GRUPOS</span>
+        <h3>Zona B</h3>
+      </div>
+
+      <div class="fixture-etapa-partidos">
+        ${zonaBHTML}
+      </div>
+
+    </section>
+
+
+    <section class="fixture-etapa">
+
+      <div class="fixture-etapa-titulo">
+        <span>ELIMINACIÓN</span>
+        <h3>Cuartos de final</h3>
+      </div>
+
+      <div class="fixture-etapa-partidos">
+        ${cuartosHTML}
+      </div>
+
+    </section>
+
+
+    <section class="fixture-etapa">
+
+      <div class="fixture-etapa-titulo">
+        <span>ELIMINACIÓN</span>
+        <h3>Semifinales</h3>
+      </div>
+
+      <div class="fixture-etapa-partidos">
+        ${semifinalesHTML}
+      </div>
+
+    </section>
+
+
+    <section class="fixture-etapa">
+
+      <div class="fixture-etapa-titulo">
+        <span>DEFINICIÓN</span>
+        <h3>Final</h3>
+      </div>
+
+      <div class="fixture-etapa-partidos">
+        ${finalHTML}
+      </div>
+
+    </section>
+
   `;
 
 
   if (textoCantidadFixture) {
 
     textoCantidadFixture.textContent =
-      `${fixtureTemporal.partidos.length} partidos generados.`;
+      `${fixtureTemporal.partidos.length} partidos de zona + fase eliminatoria.`;
 
   }
 
   return;
 }
-
   if (!partidosActuales.length) {
 
     listaFixtureAdmin.innerHTML = `
