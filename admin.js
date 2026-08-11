@@ -4884,10 +4884,128 @@ const textoParejas =
     .join("\n");
 
 
+/* ==========================================
+   ARMAR ZONAS
+========================================== */
+
+const zonaA = [];
+const zonaB = [];
+
+parejasConfirmadas.forEach(
+  (pareja, indice) => {
+
+    const parejaConNumero = {
+      ...pareja,
+      numero: indice + 1
+    };
+
+    if (indice % 2 === 0) {
+      zonaA.push(parejaConNumero);
+    } else {
+      zonaB.push(parejaConNumero);
+    }
+
+  }
+);
+
+
+/* ==========================================
+   GENERAR TODOS CONTRA TODOS
+========================================== */
+
+function generarPartidosZona(
+  parejas,
+  zona
+) {
+
+  const partidos = [];
+
+  for (
+    let i = 0;
+    i < parejas.length;
+    i++
+  ) {
+
+    for (
+      let j = i + 1;
+      j < parejas.length;
+      j++
+    ) {
+
+      partidos.push({
+        zona,
+        pareja1: parejas[i],
+        pareja2: parejas[j]
+      });
+
+    }
+
+  }
+
+  return partidos;
+}
+
+
+const partidosZonaA =
+  generarPartidosZona(
+    zonaA,
+    "A"
+  );
+
+
+const partidosZonaB =
+  generarPartidosZona(
+    zonaB,
+    "B"
+  );
+
+
+const partidosFixture = [
+  ...partidosZonaA,
+  ...partidosZonaB
+];
+
+
+/* ==========================================
+   MOSTRAR PRUEBA
+========================================== */
+
+const textoZonaA =
+  zonaA
+    .map(
+      (pareja) =>
+        `P${pareja.numero}: ${pareja.jugadora1} / ${pareja.jugadora2}`
+    )
+    .join("\n");
+
+
+const textoZonaB =
+  zonaB
+    .map(
+      (pareja) =>
+        `P${pareja.numero}: ${pareja.jugadora1} / ${pareja.jugadora2}`
+    )
+    .join("\n");
+
+
+const textoPartidos =
+  partidosFixture
+    .map(
+      (partido, indice) =>
+        `${indice + 1}. Zona ${partido.zona}: ` +
+        `P${partido.pareja1.numero} vs P${partido.pareja2.numero}`
+    )
+    .join("\n");
+
+
 alert(
-  `Encontré ${cantidadJugadoras} jugadoras confirmadas.\n\n` +
-  `${parejasConfirmadas.length} parejas detectadas:\n\n` +
-  textoParejas
+  `FIXTURE GENERADO 💜\n\n` +
+
+  `ZONA A\n${textoZonaA}\n\n` +
+
+  `ZONA B\n${textoZonaB}\n\n` +
+
+  `PARTIDOS DE ZONA\n${textoPartidos}`
 );
   }
 );
