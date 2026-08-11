@@ -5015,7 +5015,95 @@ botonGenerarFixture?.addEventListener(
 
       return;
     }
+  }/* ==========================================
+   CONFIGURACIÓN DEL FIXTURE
+========================================== */
 
+const eventoSeleccionado =
+  eventosAdministrables.find(
+    (evento) =>
+      evento.id === eventoActual
+  );
+
+
+const horaInicio =
+  window.prompt(
+    "¿A qué hora comienza el evento?",
+    eventoSeleccionado?.hora_inicio
+      ?.slice(0, 5) ||
+    "10:00"
+  );
+
+
+if (!horaInicio) {
+  return;
+}
+
+
+const duracionEvento =
+  Number(
+    window.prompt(
+      "¿Cuántas horas dura el evento?",
+      "5"
+    )
+  );
+
+
+if (
+  !duracionEvento ||
+  duracionEvento <= 0
+) {
+
+  alert(
+    "Ingresá una duración válida."
+  );
+
+  return;
+}
+
+
+const cantidadCanchas =
+  Number(
+    window.prompt(
+      "¿Cuántas canchas tenés disponibles?",
+      "2"
+    )
+  );
+
+
+if (
+  !cantidadCanchas ||
+  cantidadCanchas < 1
+) {
+
+  alert(
+    "Ingresá una cantidad válida de canchas."
+  );
+
+  return;
+}
+
+
+const duracionPartido =
+  Number(
+    window.prompt(
+      "¿Cuántos minutos estimás por partido?",
+      "30"
+    )
+  );
+
+
+if (
+  !duracionPartido ||
+  duracionPartido < 1
+) {
+
+  alert(
+    "Ingresá una duración válida por partido."
+  );
+
+  return;
+}
 
     const inscripcionesConfirmadas =
       inscripcionesActuales.filter(
@@ -5262,7 +5350,14 @@ const textoPartidos =
 fixtureTemporal = {
   zonaA,
   zonaB,
-  partidos: partidosFixture
+  partidos: partidosFixture,
+
+  configuracion: {
+    horaInicio,
+    duracionEvento,
+    cantidadCanchas,
+    duracionPartido
+  }
 };
 
 renderizarFixtureEvento();
