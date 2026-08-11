@@ -5443,21 +5443,461 @@ botonImprimirFixture?.addEventListener(
   "click",
   () => {
 
-    if (!partidosActuales.length) {
+    if (
+      !fixtureTemporal ||
+      !fixtureTemporal.partidos?.length
+    ) {
 
       alert(
-        "Todavía no hay partidos para imprimir."
+        "Primero generá el fixture."
       );
 
       return;
-
     }
+
+
+    const evento =
+      eventosAdministrables.find(
+        (item) =>
+          item.id === eventoActual
+      );
+
+
+    const tituloEvento =
+      evento?.titulo ||
+      "Encuentro MATCH";
+
+
+    const categoriaEvento =
+      evento?.categoria ||
+      "";
+
+
+    const fechaEvento =
+      evento?.fecha
+        ? formatearFechaAdmin(
+            evento.fecha
+          )
+        : "";
+
+
+    const nombrePareja = (
+      pareja
+    ) =>
+      `${pareja.jugadora1} / ${pareja.jugadora2}`;
+
+
+    /* ==========================================
+       PARTIDOS DE CADA ZONA
+    ========================================== */
+
+    const partidosZonaA =
+      fixtureTemporal.partidos.filter(
+        (partido) =>
+          partido.zona === "A"
+      );
+
+
+    const partidosZonaB =
+      fixtureTemporal.partidos.filter(
+        (partido) =>
+          partido.zona === "B"
+      );
+
+
+    const crearPartidosZona = (
+      partidos
+    ) => {
+
+      return partidos
+        .map(
+          (partido) => `
+            <div class="print-partido">
+
+              <div class="print-partido-info">
+
+                <strong>
+                  ${escaparHTML(
+                    partido.hora || "--:--"
+                  )}
+                </strong>
+
+                <span>
+                  ${escaparHTML(
+                    partido.cancha || ""
+                  )}
+                </span>
+
+              </div>
+
+
+              <div class="print-pareja">
+                ${escaparHTML(
+                  nombrePareja(
+                    partido.pareja1
+                  )
+                )}
+              </div>
+
+
+              <div class="print-vs">
+                VS
+              </div>
+
+
+              <div class="print-pareja print-pareja-derecha">
+                ${escaparHTML(
+                  nombrePareja(
+                    partido.pareja2
+                  )
+                )}
+              </div>
+
+            </div>
+          `
+        )
+        .join("");
+
+    };
+
+
+    /* ==========================================
+       PÁGINA DE ZONA
+    ========================================== */
+
+    const crearPaginaZona = (
+      letraZona,
+      parejas,
+      partidos
+    ) => {
+
+      const parejasHTML =
+        parejas
+          .map(
+            (pareja) => `
+              <div class="print-pareja-listado">
+                <strong>
+                  P${pareja.numero}
+                </strong>
+
+                <span>
+                  ${escaparHTML(
+                    nombrePareja(
+                      pareja
+                    )
+                  )}
+                </span>
+              </div>
+            `
+          )
+          .join("");
+
+
+      return `
+        <section class="print-pagina">
+
+          <header class="print-header">
+
+            <div>
+
+              <span class="print-marca">
+                MATCH
+              </span>
+
+              <h1>
+                ${escaparHTML(
+                  tituloEvento
+                )}
+              </h1>
+
+              <p>
+                ${escaparHTML(
+                  categoriaEvento
+                )}
+
+                ${
+                  fechaEvento
+                    ? ` · ${escaparHTML(
+                        fechaEvento
+                      )}`
+                    : ""
+                }
+              </p>
+
+            </div>
+
+
+            <div class="print-zona-grande">
+              ZONA ${letraZona}
+            </div>
+
+          </header>
+
+
+          <div class="print-contenido-zona">
+
+            <aside class="print-parejas-zona">
+
+              <h2>
+                Parejas
+              </h2>
+
+              ${parejasHTML}
+
+            </aside>
+
+
+            <main class="print-partidos-zona">
+
+              <h2>
+                Partidos
+              </h2>
+
+              ${crearPartidosZona(
+                partidos
+              )}
+
+            </main>
+
+          </div>
+
+        </section>
+      `;
+
+    };
+
+
+    /* ==========================================
+       FASE FINAL
+    ========================================== */
+
+    const paginaFinal = `
+      <section class="print-pagina">
+
+        <header class="print-header">
+
+          <div>
+
+            <span class="print-marca">
+              MATCH
+            </span>
+
+            <h1>
+              ${escaparHTML(
+                tituloEvento
+              )}
+            </h1>
+
+            <p>
+              ${escaparHTML(
+                categoriaEvento
+              )}
+
+              ${
+                fechaEvento
+                  ? ` · ${escaparHTML(
+                      fechaEvento
+                    )}`
+                  : ""
+              }
+            </p>
+
+          </div>
+
+
+          <div class="print-zona-grande">
+            FASE FINAL
+          </div>
+
+        </header>
+
+
+        <div class="print-cuadro-final">
+
+
+          <section class="print-ronda">
+
+            <h2>
+              Cuartos de final
+            </h2>
+
+
+            <div class="print-cruce">
+
+              <span>
+                1° Zona A
+              </span>
+
+              <strong>C1</strong>
+
+              <span>
+                4° Zona B
+              </span>
+
+            </div>
+
+
+            <div class="print-cruce">
+
+              <span>
+                2° Zona A
+              </span>
+
+              <strong>C2</strong>
+
+              <span>
+                3° Zona B
+              </span>
+
+            </div>
+
+
+            <div class="print-cruce">
+
+              <span>
+                1° Zona B
+              </span>
+
+              <strong>C3</strong>
+
+              <span>
+                4° Zona A
+              </span>
+
+            </div>
+
+
+            <div class="print-cruce">
+
+              <span>
+                2° Zona B
+              </span>
+
+              <strong>C4</strong>
+
+              <span>
+                3° Zona A
+              </span>
+
+            </div>
+
+          </section>
+
+
+          <section class="print-ronda print-ronda-semis">
+
+            <h2>
+              Semifinales
+            </h2>
+
+
+            <div class="print-cruce">
+
+              <span>
+                Ganador C1
+              </span>
+
+              <strong>S1</strong>
+
+              <span>
+                Ganador C2
+              </span>
+
+            </div>
+
+
+            <div class="print-cruce">
+
+              <span>
+                Ganador C3
+              </span>
+
+              <strong>S2</strong>
+
+              <span>
+                Ganador C4
+              </span>
+
+            </div>
+
+          </section>
+
+
+          <section class="print-ronda print-ronda-final">
+
+            <h2>
+              Final
+            </h2>
+
+
+            <div class="print-cruce">
+
+              <span>
+                Ganador S1
+              </span>
+
+              <strong>FINAL</strong>
+
+              <span>
+                Ganador S2
+              </span>
+
+            </div>
+
+          </section>
+
+
+        </div>
+
+      </section>
+    `;
+
+
+    /* ==========================================
+       CREAR VISTA DE IMPRESIÓN
+    ========================================== */
+
+    const contenedor =
+      document.createElement(
+        "div"
+      );
+
+
+    contenedor.id =
+      "fixture-impresion";
+
+
+    contenedor.innerHTML = `
+
+      ${crearPaginaZona(
+        "A",
+        fixtureTemporal.zonaA,
+        partidosZonaA
+      )}
+
+      ${crearPaginaZona(
+        "B",
+        fixtureTemporal.zonaB,
+        partidosZonaB
+      )}
+
+      ${paginaFinal}
+
+    `;
+
+
+    document.body.appendChild(
+      contenedor
+    );
+
 
     document.body.classList.add(
       "imprimiendo-fixture"
     );
 
+
     window.print();
+
 
     window.setTimeout(
       () => {
@@ -5465,6 +5905,8 @@ botonImprimirFixture?.addEventListener(
         document.body.classList.remove(
           "imprimiendo-fixture"
         );
+
+        contenedor.remove();
 
       },
       500

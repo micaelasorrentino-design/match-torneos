@@ -2173,3 +2173,314 @@ tbody tr:hover {
   }
 
 }
+/* ==========================================
+   FIXTURE — IMPRESIÓN
+========================================== */
+
+#fixture-impresion {
+  display: none;
+}
+
+
+@media print {
+
+  @page {
+    size: A4 landscape;
+    margin: 10mm;
+  }
+
+
+  body.imprimiendo-fixture
+  > *:not(#fixture-impresion) {
+    display: none !important;
+  }
+
+
+  body.imprimiendo-fixture
+  #fixture-impresion {
+    display: block !important;
+  }
+
+
+  .print-pagina {
+    width: 100%;
+    min-height: 185mm;
+
+    box-sizing: border-box;
+
+    page-break-after: always;
+    break-after: page;
+
+    font-family: "Poppins", sans-serif;
+
+    color: #1c1327;
+    background: #ffffff;
+  }
+
+
+  .print-pagina:last-child {
+    page-break-after: auto;
+    break-after: auto;
+  }
+
+
+  /* CABECERA */
+
+  .print-header {
+    display: flex;
+
+    align-items: flex-end;
+    justify-content: space-between;
+
+    padding-bottom: 7mm;
+    margin-bottom: 7mm;
+
+    border-bottom:
+      2px solid #a66cc9;
+  }
+
+
+  .print-marca {
+    display: block;
+
+    margin-bottom: 2mm;
+
+    color: #a66cc9;
+
+    font-family: "Montserrat", sans-serif;
+    font-size: 10pt;
+    font-weight: 800;
+
+    letter-spacing: 2px;
+  }
+
+
+  .print-header h1 {
+    margin: 0;
+
+    font-family: "Montserrat", sans-serif;
+    font-size: 22pt;
+  }
+
+
+  .print-header p {
+    margin: 2mm 0 0;
+
+    font-size: 9pt;
+  }
+
+
+  .print-zona-grande {
+    color: #3d255b;
+
+    font-family: "Montserrat", sans-serif;
+    font-size: 26pt;
+    font-weight: 800;
+  }
+
+
+  /* ZONAS */
+
+  .print-contenido-zona {
+    display: grid;
+
+    grid-template-columns:
+      62mm
+      minmax(0, 1fr);
+
+    gap: 8mm;
+  }
+
+
+  .print-parejas-zona {
+    padding-right: 6mm;
+
+    border-right:
+      1px solid #ded2e6;
+  }
+
+
+  .print-parejas-zona h2,
+  .print-partidos-zona h2,
+  .print-ronda h2 {
+    margin: 0 0 4mm;
+
+    font-family: "Montserrat", sans-serif;
+    font-size: 13pt;
+  }
+
+
+  .print-pareja-listado {
+    display: grid;
+
+    grid-template-columns:
+      10mm
+      1fr;
+
+    gap: 2mm;
+
+    margin-bottom: 3mm;
+
+    font-size: 8.5pt;
+  }
+
+
+  .print-pareja-listado strong {
+    color: #a66cc9;
+  }
+
+
+  /* PARTIDO */
+
+  .print-partidos-zona {
+    min-width: 0;
+  }
+
+
+  .print-partido {
+    display: grid;
+
+    grid-template-columns:
+      27mm
+      minmax(0, 1fr)
+      12mm
+      minmax(0, 1fr);
+
+    align-items: center;
+
+    min-height: 12mm;
+
+    margin-bottom: 2.5mm;
+    padding: 2.2mm 3mm;
+
+    border:
+      1px solid #dfd2e7;
+
+    border-radius: 3mm;
+
+    page-break-inside: avoid;
+  }
+
+
+  .print-partido-info strong {
+    display: block;
+
+    font-size: 10pt;
+  }
+
+
+  .print-partido-info span {
+    display: block;
+
+    margin-top: 1mm;
+
+    color: #766d7d;
+
+    font-size: 7pt;
+  }
+
+
+  .print-pareja {
+    font-size: 8pt;
+    font-weight: 600;
+  }
+
+
+  .print-pareja-derecha {
+    text-align: right;
+  }
+
+
+  .print-vs {
+    text-align: center;
+
+    color: #a66cc9;
+
+    font-family: "Montserrat", sans-serif;
+    font-size: 10pt;
+    font-weight: 800;
+  }
+
+
+  /* CUADRO FINAL */
+
+  .print-cuadro-final {
+    display: grid;
+
+    grid-template-columns:
+      1.25fr
+      1fr
+      0.8fr;
+
+    align-items: stretch;
+
+    gap: 12mm;
+
+    min-height: 135mm;
+  }
+
+
+  .print-ronda {
+    display: flex;
+    flex-direction: column;
+
+    justify-content: space-around;
+  }
+
+
+  .print-cruce {
+    padding: 4mm;
+
+    border:
+      1px solid #dfd2e7;
+
+    border-radius: 3mm;
+
+    background: #ffffff;
+  }
+
+
+  .print-cruce span {
+    display: block;
+
+    min-height: 8mm;
+
+    padding: 2mm 0;
+
+    font-size: 9pt;
+    font-weight: 600;
+
+    border-bottom:
+      1px solid #eee6f2;
+  }
+
+
+  .print-cruce span:last-child {
+    border-bottom: 0;
+  }
+
+
+  .print-cruce strong {
+    display: block;
+
+    padding: 2mm 0;
+
+    color: #a66cc9;
+
+    font-family: "Montserrat", sans-serif;
+    font-size: 8pt;
+  }
+
+
+  .print-ronda-semis {
+    padding-top: 20mm;
+    padding-bottom: 20mm;
+  }
+
+
+  .print-ronda-final {
+    padding-top: 50mm;
+    padding-bottom: 50mm;
+  }
+
+}
