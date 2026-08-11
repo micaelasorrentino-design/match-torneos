@@ -1738,55 +1738,134 @@ tbody tr:hover {
 
 }
 /* ==========================================
-   FIXTURE — CABECERA ARRIBA / CONTENIDO ABAJO
+   FIXTURE ADMIN — ESTRUCTURA VERTICAL
 ========================================== */
 
-.fixture-admin-card {
-  display: block !important;
+#panel-tab-fixture {
   width: 100%;
 }
+
+.fixture-admin-card {
+  display: flex !important;
+  flex-direction: column !important;
+
+  width: 100% !important;
+  max-width: none !important;
+
+  gap: 0 !important;
+
+  box-sizing: border-box;
+}
+
+
+/* CABECERA */
 
 .fixture-admin-cabecera {
-  width: 100%;
-  margin-bottom: 28px;
+  display: flex !important;
+  flex-direction: row !important;
+
+  width: 100% !important;
+
+  align-items: center;
+  justify-content: space-between;
+
+  margin: 0 0 32px 0 !important;
+
   box-sizing: border-box;
 }
+
+
+/* LISTADO */
 
 .lista-fixture-admin {
-  display: block;
-  width: 100%;
+  display: block !important;
+
+  width: 100% !important;
+  max-width: none !important;
+
+  margin: 0 !important;
+
   box-sizing: border-box;
 }
 
+
+/* CADA ETAPA */
+
 .fixture-etapa {
-  width: 100%;
-  margin-bottom: 38px;
+  display: block !important;
+
+  width: 100% !important;
+
+  margin: 0 0 42px 0;
 }
 
+
+/* TÍTULO DE ETAPA */
+
 .fixture-etapa-titulo {
+  width: 100%;
   margin-bottom: 16px;
 }
 
 .fixture-etapa-titulo span {
   display: block;
-  margin-bottom: 4px;
+
+  margin-bottom: 5px;
 
   color: #a66cc9;
+
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 1.4px;
+  text-transform: uppercase;
 }
 
 .fixture-etapa-titulo h3 {
   margin: 0;
 
   color: #1c1327;
+
   font-family: "Montserrat", sans-serif;
   font-size: 22px;
 }
 
+
+/* PARTIDOS */
+
 .fixture-etapa-partidos {
-  display: grid;
+  display: grid !important;
+
+  grid-template-columns: 1fr !important;
+
+  width: 100% !important;
+
   gap: 10px;
-  width: 100%;
+}
+
+.fixture-partido-item {
+  width: 100% !important;
+  max-width: none !important;
+
+  box-sizing: border-box;
+}
+
+
+/* MOBILE */
+
+@media (max-width: 750px) {
+
+  .fixture-admin-cabecera {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 16px;
+  }
+
+  .acciones-fixture-admin {
+    width: 100%;
+  }
+
+  .acciones-fixture-admin .boton-admin {
+    width: 100%;
+  }
+
 }
