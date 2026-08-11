@@ -704,24 +704,89 @@
 
       </div>
 
-      <div class="acciones-fixture-admin">
+ <div class="configuracion-fixture-admin">
 
-  <button
-    type="button"
-    id="boton-generar-fixture"
-    class="boton-admin boton-principal-admin"
-    disabled
-  >
-    ✨ Generar fixture
-  </button>
+  <div class="configuracion-fixture-campos">
 
-  <button
-    type="button"
-    id="boton-imprimir-fixture"
-    class="boton-admin boton-secundario-admin"
-  >
-    Imprimir fixture
-  </button>
+    <label>
+      <span>Hora de inicio</span>
+
+      <input
+        type="time"
+        id="fixture-hora-inicio"
+        value="10:00"
+      >
+    </label>
+
+
+    <label>
+      <span>Duración del evento</span>
+
+      <div class="campo-con-unidad">
+        <input
+          type="number"
+          id="fixture-duracion-evento"
+          value="5"
+          min="1"
+          step="0.5"
+        >
+
+        <small>hs</small>
+      </div>
+    </label>
+
+
+    <label>
+      <span>Cantidad de canchas</span>
+
+      <input
+        type="number"
+        id="fixture-cantidad-canchas"
+        value="2"
+        min="1"
+      >
+    </label>
+
+
+    <label>
+      <span>Duración por partido</span>
+
+      <div class="campo-con-unidad">
+        <input
+          type="number"
+          id="fixture-duracion-partido"
+          value="30"
+          min="5"
+          step="5"
+        >
+
+        <small>min</small>
+      </div>
+    </label>
+
+  </div>
+
+
+  <div class="acciones-fixture-admin">
+
+    <button
+      type="button"
+      id="boton-generar-fixture"
+      class="boton-admin boton-principal-admin"
+      disabled
+    >
+      ✨ Generar fixture
+    </button>
+
+    <button
+      type="button"
+      id="boton-imprimir-fixture"
+      class="boton-admin boton-secundario-admin"
+    >
+      Imprimir fixture
+    </button>
+
+  </div>
 
 </div>
 

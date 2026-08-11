@@ -5016,37 +5016,48 @@ botonGenerarFixture?.addEventListener(
       return;
     }
 
-    /* ==========================================
+/* ==========================================
    CONFIGURACIÓN DEL FIXTURE
 ========================================== */
 
-const eventoSeleccionado =
-  eventosAdministrables.find(
-    (evento) =>
-      evento.id === eventoActual
+const campoHoraInicio =
+  document.getElementById(
+    "fixture-hora-inicio"
+  );
+
+const campoDuracionEvento =
+  document.getElementById(
+    "fixture-duracion-evento"
+  );
+
+const campoCantidadCanchas =
+  document.getElementById(
+    "fixture-cantidad-canchas"
+  );
+
+const campoDuracionPartido =
+  document.getElementById(
+    "fixture-duracion-partido"
   );
 
 
 const horaInicio =
-  window.prompt(
-    "¿A qué hora comienza el evento?",
-    eventoSeleccionado?.hora_inicio
-      ?.slice(0, 5) ||
-    "10:00"
-  );
-
-
-if (!horaInicio) {
-  return;
-}
-
+  campoHoraInicio?.value ||
+  "10:00";
 
 const duracionEvento =
   Number(
-    window.prompt(
-      "¿Cuántas horas dura el evento?",
-      "5"
-    )
+    campoDuracionEvento?.value
+  );
+
+const cantidadCanchas =
+  Number(
+    campoCantidadCanchas?.value
+  );
+
+const duracionPartido =
+  Number(
+    campoDuracionPartido?.value
   );
 
 
@@ -5056,20 +5067,11 @@ if (
 ) {
 
   alert(
-    "Ingresá una duración válida."
+    "Ingresá una duración válida para el evento."
   );
 
   return;
 }
-
-
-const cantidadCanchas =
-  Number(
-    window.prompt(
-      "¿Cuántas canchas tenés disponibles?",
-      "2"
-    )
-  );
 
 
 if (
@@ -5083,15 +5085,6 @@ if (
 
   return;
 }
-
-
-const duracionPartido =
-  Number(
-    window.prompt(
-      "¿Cuántos minutos estimás por partido?",
-      "30"
-    )
-  );
 
 
 if (
