@@ -307,6 +307,8 @@ let inscripcionesActuales = [];
 
 let partidosActuales = [];
 
+let fixtureTemporal = null;
+
 let partidoEditandoId = "";
 
 let eventosAdministrables = [];
@@ -3973,6 +3975,136 @@ function renderizarFixtureEvento() {
 
   }
 
+  if (
+  fixtureTemporal &&
+  fixtureTemporal.partidos.length
+) {
+
+  const crearZonaHTML = (
+    titulo,
+    parejas
+  ) => {
+
+    return `
+      <section class="fixture-zona-bloque">
+
+        <h3>${titulo}</h3>
+
+        <div class="fixture-zona-parejas">
+
+          ${parejas
+            .map(
+              (pareja) => `
+                <div class="fixture-pareja-zona">
+
+                  <strong>
+                    P${pareja.numero}
+                  </strong>
+
+                  <span>
+                    ${escaparHTML(
+                      pareja.jugadora1
+                    )}
+                    /
+                    ${escaparHTML(
+                      pareja.jugadora2
+                    )}
+                  </span>
+
+                </div>
+              `
+            )
+            .join("")}
+
+        </div>
+
+      </section>
+    `;
+  };
+
+
+  const partidosHTML =
+    fixtureTemporal.partidos
+      .map(
+        (partido, indice) => `
+          <article class="fixture-partido-item">
+
+            <div class="fixture-horario">
+
+              <strong>
+                ${indice + 1}
+              </strong>
+
+              <span>
+                Zona ${partido.zona}
+              </span>
+
+            </div>
+
+            <div class="fixture-partido-centro">
+
+              <div class="fixture-instancia">
+                Partido ${indice + 1}
+                · Zona ${partido.zona}
+              </div>
+
+              <div class="fixture-enfrentamiento">
+
+                <span class="fixture-pareja">
+                  P${partido.pareja1.numero}
+                </span>
+
+                <strong class="fixture-marcador">
+                  VS
+                </strong>
+
+                <span class="fixture-pareja">
+                  P${partido.pareja2.numero}
+                </span>
+
+              </div>
+
+            </div>
+
+          </article>
+        `
+      )
+      .join("");
+
+
+  listaFixtureAdmin.innerHTML = `
+
+    ${crearZonaHTML(
+      "Zona A",
+      fixtureTemporal.zonaA
+    )}
+
+    ${crearZonaHTML(
+      "Zona B",
+      fixtureTemporal.zonaB
+    )}
+
+    <section class="fixture-partidos-generados">
+
+      <h3>
+        Partidos de zona
+      </h3>
+
+      ${partidosHTML}
+
+    </section>
+  `;
+
+
+  if (textoCantidadFixture) {
+
+    textoCantidadFixture.textContent =
+      `${fixtureTemporal.partidos.length} partidos generados.`;
+
+  }
+
+  return;
+}
 
   if (!partidosActuales.length) {
 
@@ -4998,15 +5130,13 @@ const textoPartidos =
     .join("\n");
 
 
-alert(
-  `FIXTURE GENERADO 💜\n\n` +
+fixtureTemporal = {
+  zonaA,
+  zonaB,
+  partidos: partidosFixture
+};
 
-  `ZONA A\n${textoZonaA}\n\n` +
-
-  `ZONA B\n${textoZonaB}\n\n` +
-
-  `PARTIDOS DE ZONA\n${textoPartidos}`
-);
+renderizarFixtureEvento();
   }
 );
 
