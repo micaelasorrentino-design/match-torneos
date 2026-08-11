@@ -2173,3 +2173,36 @@ tbody tr:hover {
   }
 
 }
+
+/* Ajuste para que todos los partidos de una zona entren en una hoja */
+
+.print-partido {
+  min-height: 0 !important;
+  padding: 7px 12px !important;
+  margin-bottom: 5px !important;
+}
+
+.print-partido-info strong {
+  font-size: 13px !important;
+}
+
+.print-partido-info span {
+  font-size: 9px !important;
+}
+
+.print-pareja {
+  font-size: 11px !important;
+}
+
+.print-vs {
+  font-size: 15px !important;
+}
+
+.print-header {
+  margin-bottom: 10px !important;
+}
+
+.print-contenido-zona h2 {
+  margin-top: 0 !important;
+  margin-bottom: 8px !important;
+}
