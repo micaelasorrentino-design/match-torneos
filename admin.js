@@ -3527,6 +3527,11 @@ const botonImprimirFixture =
     "boton-generar-fixture"
   );
 
+  const botonConfirmarFixture =
+  document.getElementById(
+    "boton-confirmar-fixture"
+  );
+
 const panelTabResultados =
   document.getElementById(
     "panel-tab-resultados"
@@ -5430,6 +5435,13 @@ fixtureTemporal = {
     duracionPartido
   }
 };
+
+if (botonConfirmarFixture) {
+
+  botonConfirmarFixture.disabled =
+    false;
+
+}
 
 renderizarFixtureEvento();
   }
