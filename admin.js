@@ -4889,6 +4889,8 @@ alert(
   `${parejasConfirmadas.length} parejas detectadas:\n\n` +
   textoParejas
 );
+  }
+);
 
 /* ==========================================
    IMPRIMIR FIXTURE
