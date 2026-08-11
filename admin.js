@@ -427,18 +427,21 @@ function textoPago(
 ) {
 
   const textos = {
-    pendiente:
-      "Pago pendiente",
+  pendiente:
+    "Pago pendiente",
 
-    comprobante_recibido:
-      "Comprobante recibido",
+  comprobante_recibido:
+    "Comprobante recibido",
 
-    confirmado:
-      "Pago confirmado",
+  efectivo:
+    "Efectivo en admisión",
 
-    rechazado:
-      "Pago rechazado"
-  };
+  confirmado:
+    "Pago confirmado",
+
+  rechazado:
+    "Pago rechazado"
+};
 
   return (
     textos[estadoPago] ||
@@ -2695,7 +2698,22 @@ function crearFilaInscripcion(
           Confirmada
         </span>
       `;
-
+  
+      const accionEfectivo =
+  inscripcion.estado_pago !== "efectivo" &&
+  inscripcion.estado_pago !== "confirmado"
+    ? `
+        <button
+          type="button"
+          class="boton-tabla"
+          data-efectivo="${
+            inscripcion.id
+          }"
+        >
+          💵 Efectivo
+        </button>
+      `
+    : "";
 
   const accionCancelar =
     inscripcion.estado !==
@@ -2833,13 +2851,15 @@ function crearFilaInscripcion(
 
         <div class="acciones-tabla">
 
-          ${accionesConfirmacion}
+  ${accionesConfirmacion}
 
-          ${accionCancelar}
+  ${accionEfectivo}
 
-          ${botonWhatsapp}
+  ${accionCancelar}
 
-        </div>
+  ${botonWhatsapp}
+
+</div>
 
       </td>
 
@@ -3247,6 +3267,81 @@ async function confirmarInscripcion(
 
 }
 
+/* ==========================================
+   CONFIRMAR EFECTIVO EN ADMISIÓN
+========================================== */
+
+async function marcarPagoEfectivo(
+  inscripcionId
+) {
+
+  const inscripcion =
+    inscripcionesActuales.find(
+      (item) =>
+        item.id === inscripcionId
+    );
+
+  if (!inscripcion) {
+
+    alert(
+      "No encontramos la inscripción."
+    );
+
+    return;
+
+  }
+
+
+  const participante =
+    inscripcion.participantes ||
+    {};
+
+
+  const nombreCompleto =
+    [
+      participante.nombre,
+      participante.apellido
+    ]
+      .filter(Boolean)
+      .join(" ");
+
+
+  const confirmar =
+    window.confirm(
+      `¿Confirmar a ${
+        nombreCompleto ||
+        "esta participante"
+      } con pago en efectivo en admisión?`
+    );
+
+
+  if (!confirmar) {
+    return;
+  }
+
+
+  const actualizado =
+    await actualizarInscripcion(
+      inscripcionId,
+      {
+        estado:
+          "confirmada",
+
+        estado_pago:
+          "efectivo"
+      }
+    );
+
+
+  if (actualizado) {
+
+    alert(
+      "Inscripción confirmada · Pago en efectivo pendiente para admisión."
+    );
+
+  }
+
+}
 
 /* ==========================================
    CANCELAR INSCRIPCIÓN
@@ -6919,7 +7014,20 @@ document.addEventListener(
       return;
 
     }
+const botonEfectivo =
+  evento.target.closest(
+    "[data-efectivo]"
+  );
 
+if (botonEfectivo) {
+
+  marcarPagoEfectivo(
+    botonEfectivo.dataset
+      .efectivo
+  );
+
+  return;
+}
 
     const botonCancelar =
       evento.target.closest(
