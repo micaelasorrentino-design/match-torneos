@@ -1659,7 +1659,27 @@ if (!inscripciones.length) {
 
     const primeraInscripcion =
       inscripciones[0];
+/* ==========================================
+   AJUSTAR RESULTADOS SI ENTRA LA COMPAÑERA
+========================================== */
 
+if (esCompanera) {
+
+  const nombreTitular =
+    primeraInscripcion
+      ?.participante_nombre ||
+    "Tu compañera";
+
+  resultados =
+    resultados.map(
+      (partido) => ({
+        ...partido,
+        companera:
+          nombreTitular
+      })
+    );
+
+}
 
     const nombre =
   esCompanera
