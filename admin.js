@@ -4796,14 +4796,98 @@ botonGenerarFixture?.addEventListener(
 
     const cantidadParejas =
       cantidadJugadoras / 2;
+    
+const parejasConfirmadas = [];
+
+const individuales = [];
 
 
-    alert(
-      `Encontré ${cantidadJugadoras} jugadoras confirmadas.\n\n` +
-      `Eso equivale a ${cantidadParejas} parejas.`
-    );
+inscripcionesConfirmadas.forEach(
+  (inscripcion) => {
+
+    const participante =
+      inscripcion.participantes || {};
+
+    const nombreTitular =
+      [
+        participante.nombre,
+        participante.apellido
+      ]
+        .filter(Boolean)
+        .join(" ");
+
+
+    if (
+      inscripcion.modalidad === "pareja"
+    ) {
+
+      parejasConfirmadas.push({
+        id: inscripcion.id,
+        jugadora1: nombreTitular,
+        jugadora2:
+          inscripcion.nombre_companera ||
+          "PENDIENTE"
+      });
+
+      return;
+
+    }
+
+
+    individuales.push({
+      id: inscripcion.id,
+      nombre:
+        nombreTitular ||
+        "Jugadora sin nombre"
+    });
 
   }
+);
+
+
+/* ARMAR PAREJAS CON LAS INDIVIDUALES */
+
+for (
+  let i = 0;
+  i < individuales.length;
+  i += 2
+) {
+
+  const jugadora1 =
+    individuales[i];
+
+  const jugadora2 =
+    individuales[i + 1];
+
+
+  parejasConfirmadas.push({
+    id:
+      `${jugadora1.id}-${
+        jugadora2?.id || "pendiente"
+      }`,
+
+    jugadora1:
+      jugadora1.nombre,
+
+    jugadora2:
+      jugadora2?.nombre ||
+      "PENDIENTE"
+  });
+
+}
+const textoParejas =
+  parejasConfirmadas
+    .map(
+      (pareja, indice) =>
+        `P${indice + 1}: ${pareja.jugadora1} / ${pareja.jugadora2}`
+    )
+    .join("\n");
+
+
+alert(
+  `Encontré ${cantidadJugadoras} jugadoras confirmadas.\n\n` +
+  `${parejasConfirmadas.length} parejas detectadas:\n\n` +
+  textoParejas
 );
 
 /* ==========================================
