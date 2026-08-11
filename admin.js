@@ -2408,6 +2408,11 @@ function obtenerInscripcionesFiltradas() {
   return inscripcionesActuales.filter(
     (inscripcion) => {
 
+      // Ocultar inscripciones canceladas del listado
+if (inscripcion.estado === "cancelada") {
+  return false;
+}
+
       const participante =
         inscripcion.participantes ||
         {};
@@ -3019,20 +3024,25 @@ function crearFilaCompanera(
 
 function actualizarResumen() {
 
+  const inscripcionesActivas =
+    inscripcionesActuales.filter(
+      (item) =>
+        item.estado !== "cancelada"
+    );
+
   const total =
-    inscripcionesActuales.length;
+    inscripcionesActivas.length;
 
 
   const pendientes =
-    inscripcionesActuales.filter(
+    inscripcionesActivas.filter(
       (item) =>
-        item.estado ===
-        "pendiente"
+        item.estado === "pendiente"
     ).length;
 
 
   const comprobantes =
-    inscripcionesActuales.filter(
+    inscripcionesActivas.filter(
       (item) =>
         Boolean(
           item.comprobante_path
@@ -3040,24 +3050,23 @@ function actualizarResumen() {
     ).length;
 
 
-const confirmadas =
-  inscripcionesActuales.reduce(
-    (total, item) => {
+  const confirmadas =
+    inscripcionesActivas.reduce(
+      (total, item) => {
 
-      if (item.estado !== "confirmada") {
-        return total;
-      }
+        if (item.estado !== "confirmada") {
+          return total;
+        }
 
-      if (item.modalidad === "pareja") {
-        return total + 2;
-      }
+        if (item.modalidad === "pareja") {
+          return total + 2;
+        }
 
-      return total + 1;
+        return total + 1;
 
-    },
-    0
-  );
-
+      },
+      0
+    );
 
   if (resumenTotal) {
 
