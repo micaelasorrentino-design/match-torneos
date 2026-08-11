@@ -5487,6 +5487,650 @@ botonImprimirFixture?.addEventListener(
       `${pareja.jugadora1} / ${pareja.jugadora2}`;
 
 
+    const partidosZonaA =
+      fixtureTemporal.partidos.filter(
+        (partido) =>
+          partido.zona === "A"
+      );
+
+
+    const partidosZonaB =
+      fixtureTemporal.partidos.filter(
+        (partido) =>
+          partido.zona === "B"
+      );
+
+
+    const crearPartidos = (
+      partidos
+    ) =>
+      partidos
+        .map(
+          (partido) => `
+            <div class="partido">
+
+              <div class="hora">
+
+                <strong>
+                  ${escaparHTML(
+                    partido.hora ||
+                    "--:--"
+                  )}
+                </strong>
+
+                <span>
+                  ${escaparHTML(
+                    partido.cancha ||
+                    ""
+                  )}
+                </span>
+
+              </div>
+
+
+              <div class="pareja">
+                ${escaparHTML(
+                  nombrePareja(
+                    partido.pareja1
+                  )
+                )}
+              </div>
+
+
+              <div class="vs">
+                VS
+              </div>
+
+
+              <div class="pareja derecha">
+                ${escaparHTML(
+                  nombrePareja(
+                    partido.pareja2
+                  )
+                )}
+              </div>
+
+            </div>
+          `
+        )
+        .join("");
+
+
+    const crearParejas = (
+      parejas
+    ) =>
+      parejas
+        .map(
+          (pareja) => `
+            <div class="pareja-listado">
+
+              <strong>
+                P${pareja.numero}
+              </strong>
+
+              <span>
+                ${escaparHTML(
+                  nombrePareja(
+                    pareja
+                  )
+                )}
+              </span>
+
+            </div>
+          `
+        )
+        .join("");
+
+
+    const crearZona = (
+      zona,
+      parejas,
+      partidos
+    ) => `
+      <section class="pagina">
+
+        <header>
+
+          <div>
+
+            <div class="marca">
+              MATCH
+            </div>
+
+            <h1>
+              ${escaparHTML(
+                tituloEvento
+              )}
+            </h1>
+
+            <p>
+              ${escaparHTML(
+                categoriaEvento
+              )}
+
+              ·
+
+              ${escaparHTML(
+                fechaEvento
+              )}
+            </p>
+
+          </div>
+
+
+          <div class="titulo-zona">
+            ZONA ${zona}
+          </div>
+
+        </header>
+
+
+        <div class="zona-layout">
+
+          <aside>
+
+            <h2>
+              Parejas
+            </h2>
+
+            ${crearParejas(
+              parejas
+            )}
+
+          </aside>
+
+
+          <main>
+
+            <h2>
+              Partidos
+            </h2>
+
+            ${crearPartidos(
+              partidos
+            )}
+
+          </main>
+
+        </div>
+
+      </section>
+    `;
+
+
+    const faseFinal = `
+      <section class="pagina">
+
+        <header>
+
+          <div>
+
+            <div class="marca">
+              MATCH
+            </div>
+
+            <h1>
+              ${escaparHTML(
+                tituloEvento
+              )}
+            </h1>
+
+            <p>
+              ${escaparHTML(
+                categoriaEvento
+              )}
+
+              ·
+
+              ${escaparHTML(
+                fechaEvento
+              )}
+            </p>
+
+          </div>
+
+
+          <div class="titulo-zona">
+            FASE FINAL
+          </div>
+
+        </header>
+
+
+        <div class="cuadro">
+
+
+          <div class="ronda">
+
+            <h2>
+              Cuartos
+            </h2>
+
+            <div class="cruce">
+              <span>1° Zona A</span>
+              <b>C1</b>
+              <span>4° Zona B</span>
+            </div>
+
+            <div class="cruce">
+              <span>2° Zona A</span>
+              <b>C2</b>
+              <span>3° Zona B</span>
+            </div>
+
+            <div class="cruce">
+              <span>1° Zona B</span>
+              <b>C3</b>
+              <span>4° Zona A</span>
+            </div>
+
+            <div class="cruce">
+              <span>2° Zona B</span>
+              <b>C4</b>
+              <span>3° Zona A</span>
+            </div>
+
+          </div>
+
+
+          <div class="ronda semis">
+
+            <h2>
+              Semifinales
+            </h2>
+
+            <div class="cruce">
+              <span>Ganador C1</span>
+              <b>S1</b>
+              <span>Ganador C2</span>
+            </div>
+
+            <div class="cruce">
+              <span>Ganador C3</span>
+              <b>S2</b>
+              <span>Ganador C4</span>
+            </div>
+
+          </div>
+
+
+          <div class="ronda final">
+
+            <h2>
+              Final
+            </h2>
+
+            <div class="cruce">
+              <span>Ganador S1</span>
+              <b>FINAL</b>
+              <span>Ganador S2</span>
+            </div>
+
+          </div>
+
+
+        </div>
+
+      </section>
+    `;
+
+
+    const ventana =
+      window.open(
+        "",
+        "_blank"
+      );
+
+
+    if (!ventana) {
+
+      alert(
+        "El navegador bloqueó la ventana de impresión."
+      );
+
+      return;
+    }
+
+
+    ventana.document.write(`
+      <!DOCTYPE html>
+
+      <html lang="es">
+
+      <head>
+
+        <meta charset="UTF-8">
+
+        <title>
+          Fixture MATCH
+        </title>
+
+        <style>
+
+          @page {
+            size: A4 landscape;
+            margin: 10mm;
+          }
+
+          * {
+            box-sizing: border-box;
+          }
+
+          body {
+            margin: 0;
+
+            color: #1c1327;
+
+            font-family:
+              Arial,
+              sans-serif;
+
+            background: white;
+          }
+
+
+          .pagina {
+            width: 100%;
+
+            min-height: 185mm;
+
+            page-break-after: always;
+
+            break-after: page;
+          }
+
+
+          .pagina:last-child {
+            page-break-after: auto;
+
+            break-after: auto;
+          }
+
+
+          header {
+            display: flex;
+
+            align-items: flex-end;
+
+            justify-content:
+              space-between;
+
+            padding-bottom: 7mm;
+
+            margin-bottom: 7mm;
+
+            border-bottom:
+              3px solid #a66cc9;
+          }
+
+
+          .marca {
+            margin-bottom: 2mm;
+
+            color: #a66cc9;
+
+            font-size: 10pt;
+            font-weight: 800;
+
+            letter-spacing: 2px;
+          }
+
+
+          h1 {
+            margin: 0;
+
+            font-size: 22pt;
+          }
+
+
+          header p {
+            margin: 2mm 0 0;
+
+            font-size: 9pt;
+          }
+
+
+          .titulo-zona {
+            color: #3d255b;
+
+            font-size: 28pt;
+            font-weight: 800;
+          }
+
+
+          .zona-layout {
+            display: grid;
+
+            grid-template-columns:
+              62mm
+              1fr;
+
+            gap: 8mm;
+          }
+
+
+          aside {
+            padding-right: 6mm;
+
+            border-right:
+              1px solid #ded2e6;
+          }
+
+
+          h2 {
+            margin:
+              0
+              0
+              4mm;
+
+            font-size: 14pt;
+          }
+
+
+          .pareja-listado {
+            display: grid;
+
+            grid-template-columns:
+              10mm
+              1fr;
+
+            gap: 2mm;
+
+            margin-bottom: 4mm;
+
+            font-size: 9pt;
+          }
+
+
+          .pareja-listado strong {
+            color: #a66cc9;
+          }
+
+
+          .partido {
+            display: grid;
+
+            grid-template-columns:
+              28mm
+              1fr
+              12mm
+              1fr;
+
+            align-items: center;
+
+            min-height: 12mm;
+
+            margin-bottom: 2.5mm;
+
+            padding:
+              2.5mm
+              3mm;
+
+            border:
+              1px solid #dfd2e7;
+
+            border-radius: 3mm;
+          }
+
+
+          .hora strong {
+            display: block;
+
+            font-size: 10pt;
+          }
+
+
+          .hora span {
+            display: block;
+
+            margin-top: 1mm;
+
+            color: #746c79;
+
+            font-size: 7pt;
+          }
+
+
+          .pareja {
+            font-size: 8.5pt;
+
+            font-weight: 600;
+          }
+
+
+          .derecha {
+            text-align: right;
+          }
+
+
+          .vs {
+            text-align: center;
+
+            color: #a66cc9;
+
+            font-weight: 800;
+          }
+
+
+          .cuadro {
+            display: grid;
+
+            grid-template-columns:
+              1.2fr
+              1fr
+              0.8fr;
+
+            gap: 12mm;
+
+            min-height: 135mm;
+          }
+
+
+          .ronda {
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content:
+              space-around;
+          }
+
+
+          .cruce {
+            padding: 4mm;
+
+            border:
+              1px solid #dfd2e7;
+
+            border-radius: 3mm;
+          }
+
+
+          .cruce span {
+            display: block;
+
+            min-height: 8mm;
+
+            padding: 2mm 0;
+
+            font-size: 9pt;
+            font-weight: 600;
+          }
+
+
+          .cruce b {
+            display: block;
+
+            padding: 2mm 0;
+
+            color: #a66cc9;
+
+            font-size: 8pt;
+
+            border-top:
+              1px solid #eee6f2;
+
+            border-bottom:
+              1px solid #eee6f2;
+          }
+
+
+          .semis {
+            padding:
+              20mm
+              0;
+          }
+
+
+          .final {
+            padding:
+              50mm
+              0;
+          }
+
+        </style>
+
+      </head>
+
+
+      <body>
+
+        ${crearZona(
+          "A",
+          fixtureTemporal.zonaA,
+          partidosZonaA
+        )}
+
+        ${crearZona(
+          "B",
+          fixtureTemporal.zonaB,
+          partidosZonaB
+        )}
+
+        ${faseFinal}
+
+
+        <script>
+
+          window.onload = () => {
+
+            window.print();
+
+          };
+
+        <\/script>
+
+      </body>
+
+      </html>
+    `);
+
+
+    ventana.document.close();
+
+  }
+);
+
     /* ==========================================
        PARTIDOS DE CADA ZONA
     ========================================== */
