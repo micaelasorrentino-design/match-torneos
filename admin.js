@@ -5929,9 +5929,21 @@ botonImprimirFixture?.addEventListener(
 
           <div>
 
-            <div class="marca">
-              MATCH
-            </div>
+            <div class="marca-con-logo">
+
+  <img
+    src="./logo-match.png"
+    alt="Logo MATCH"
+    class="logo-print"
+  >
+
+  <div>
+    <div class="marca">
+      MATCH
+    </div>
+  </div>
+
+</div>
 
             <h1>
               ${escaparHTML(
@@ -6423,6 +6435,27 @@ botonImprimirFixture?.addEventListener(
               50mm
               0;
           }
+
+          .marca-con-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 2mm;
+}
+
+.logo-print {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+}
+
+.marca {
+  margin: 0;
+  color: #a66cc9;
+  font-size: 10pt;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
 
         </style>
 
