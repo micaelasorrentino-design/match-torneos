@@ -5339,12 +5339,8 @@ const partidosZonaB =
   );
 
 
-const partidosFixture = [
-  ...partidosZonaA,
-  ...partidosZonaB
-];
 /* ==========================================
-   ASIGNAR HORARIOS Y CANCHAS
+   INTERCALAR ZONAS + ASIGNAR HORARIOS
 ========================================== */
 
 function horaAMinutos(hora) {
@@ -5353,7 +5349,6 @@ function horaAMinutos(hora) {
     hora.split(":").map(Number);
 
   return horas * 60 + minutos;
-
 }
 
 
@@ -5370,39 +5365,182 @@ function minutosAHora(totalMinutos) {
     ":" +
     String(minutos).padStart(2, "0")
   );
-
 }
 
+
+/* Copias para no modificar los arrays originales */
+
+const pendientesA =
+  [...partidosZonaA];
+
+const pendientesB =
+  [...partidosZonaB];
+
+const partidosFixture = [];
 
 const inicioEnMinutos =
   horaAMinutos(horaInicio);
 
-
-partidosFixture.forEach(
-  (partido, indice) => {
-
-    const bloque =
-      Math.floor(
-        indice / cantidadCanchas
-      );
-
-    const cancha =
-      (indice % cantidadCanchas) + 1;
-
-    const horaPartido =
-      inicioEnMinutos +
-      bloque * duracionPartido;
+let numeroBloque = 0;
 
 
-    partido.hora =
-      minutosAHora(horaPartido);
+/*
+  En cada horario:
+  - intenta mezclar Zona A y Zona B
+  - ninguna pareja puede jugar dos veces
+    en el mismo horario
+  - alterna qué zona tiene prioridad
+*/
 
-    partido.cancha =
-      `Cancha ${cancha}`;
+while (
+  pendientesA.length ||
+  pendientesB.length
+) {
+
+  const parejasOcupadas =
+    new Set();
+
+  const partidosDelBloque = [];
+
+  /*
+    Alternamos la zona que empieza primero
+    para que ninguna quede siempre relegada.
+  */
+
+  const prioridad =
+    numeroBloque % 2 === 0
+      ? ["A", "B"]
+      : ["B", "A"];
+
+
+  function buscarPartidoDisponible(
+    lista
+  ) {
+
+    return lista.findIndex(
+      (partido) => {
+
+        const pareja1 =
+          partido.pareja1.numero;
+
+        const pareja2 =
+          partido.pareja2.numero;
+
+        return (
+          !parejasOcupadas.has(
+            pareja1
+          ) &&
+          !parejasOcupadas.has(
+            pareja2
+          )
+        );
+
+      }
+    );
 
   }
-);
 
+
+  while (
+    partidosDelBloque.length <
+    cantidadCanchas
+  ) {
+
+    let partidoElegido = null;
+
+
+    /*
+      Vamos recorriendo A/B o B/A,
+      dependiendo del bloque.
+    */
+
+    for (
+      const zonaPrioritaria
+      of prioridad
+    ) {
+
+      const lista =
+        zonaPrioritaria === "A"
+          ? pendientesA
+          : pendientesB;
+
+      const indice =
+        buscarPartidoDisponible(
+          lista
+        );
+
+      if (indice !== -1) {
+
+        partidoElegido =
+          lista.splice(
+            indice,
+            1
+          )[0];
+
+        break;
+      }
+
+    }
+
+
+    /*
+      Si no encontramos más partidos
+      compatibles con este horario,
+      pasamos al próximo bloque.
+    */
+
+    if (!partidoElegido) {
+      break;
+    }
+
+
+    partidosDelBloque.push(
+      partidoElegido
+    );
+
+    parejasOcupadas.add(
+      partidoElegido
+        .pareja1.numero
+    );
+
+    parejasOcupadas.add(
+      partidoElegido
+        .pareja2.numero
+    );
+
+  }
+
+
+  const horaPartido =
+    inicioEnMinutos +
+    numeroBloque *
+    duracionPartido;
+
+
+  partidosDelBloque.forEach(
+    (partido, indiceCancha) => {
+
+      partido.hora =
+        minutosAHora(
+          horaPartido
+        );
+
+      partido.cancha =
+        `Cancha ${
+          indiceCancha + 1
+        }`;
+
+      partidosFixture.push(
+        partido
+      );
+
+    }
+  );
+
+
+  numeroBloque++;
+
+}
 
 /* ==========================================
    MOSTRAR PRUEBA
