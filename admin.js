@@ -3520,6 +3520,11 @@ const botonImprimirFixture =
     "boton-imprimir-fixture"
   );
 
+  const botonGenerarFixture =
+  document.getElementById(
+    "boton-generar-fixture"
+  );
+
 const panelTabResultados =
   document.getElementById(
     "panel-tab-resultados"
@@ -3720,6 +3725,8 @@ function cargarJugadorasEnPartido() {
 
 async function cargarPartidosEvento() {
 
+  actualizarEstadoBotonFixture();
+
   if (!eventoActual) {
 
     partidosActuales = [];
@@ -3913,6 +3920,18 @@ function renderizarPartidosEvento() {
       .join("");
 
 }
+
+function actualizarEstadoBotonFixture() {
+
+  if (!botonGenerarFixture) {
+    return;
+  }
+
+  botonGenerarFixture.disabled =
+    !eventoActual;
+
+}
+
 
 /* ==========================================
    RENDERIZAR FIXTURE
@@ -4717,6 +4736,74 @@ tabsEventoAdmin.forEach(
 botonAgregarPartido?.addEventListener(
   "click",
   abrirModalPartido
+);
+
+/* ==========================================
+   GENERAR FIXTURE
+========================================== */
+
+botonGenerarFixture?.addEventListener(
+  "click",
+  () => {
+
+    if (!eventoActual) {
+
+      alert(
+        "Seleccioná un evento antes de generar el fixture."
+      );
+
+      return;
+    }
+
+
+    const inscripcionesConfirmadas =
+      inscripcionesActuales.filter(
+        (inscripcion) =>
+          inscripcion.estado === "confirmada"
+      );
+
+
+    if (!inscripcionesConfirmadas.length) {
+
+      alert(
+        "Este evento todavía no tiene inscripciones confirmadas."
+      );
+
+      return;
+    }
+
+
+    let cantidadJugadoras = 0;
+
+    inscripcionesConfirmadas.forEach(
+      (inscripcion) => {
+
+        if (
+          inscripcion.modalidad === "pareja"
+        ) {
+
+          cantidadJugadoras += 2;
+
+        } else {
+
+          cantidadJugadoras += 1;
+
+        }
+
+      }
+    );
+
+
+    const cantidadParejas =
+      cantidadJugadoras / 2;
+
+
+    alert(
+      `Encontré ${cantidadJugadoras} jugadoras confirmadas.\n\n` +
+      `Eso equivale a ${cantidadParejas} parejas.`
+    );
+
+  }
 );
 
 /* ==========================================
