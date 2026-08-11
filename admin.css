@@ -1869,3 +1869,307 @@ tbody tr:hover {
   }
 
 }
+/* ==========================================
+   FIXTURE ADMIN — DISEÑO FINAL
+========================================== */
+
+#panel-tab-fixture {
+  width: 100%;
+}
+
+.fixture-admin-card {
+  display: flex !important;
+  flex-direction: column !important;
+  width: 100% !important;
+  max-width: none !important;
+  gap: 0 !important;
+}
+
+
+/* CABECERA COMPLETA */
+
+.fixture-admin-cabecera {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+
+  width: 100% !important;
+  max-width: none !important;
+
+  margin: 0 0 28px 0 !important;
+  padding: 26px 28px !important;
+
+  box-sizing: border-box;
+
+  border: 1px solid #eadff0;
+  border-radius: 24px;
+
+  background: #ffffff;
+}
+
+
+/* TEXTO SUPERIOR */
+
+.fixture-admin-cabecera > div:first-child {
+  width: 100%;
+  margin-bottom: 22px;
+}
+
+.fixture-admin-cabecera h2 {
+  margin: 5px 0 6px;
+
+  font-family: "Montserrat", sans-serif;
+  font-size: 28px;
+  color: #1c1327;
+}
+
+.fixture-admin-cabecera p {
+  margin: 0;
+
+  color: #746c79;
+  font-size: 13px;
+}
+
+
+/* ==========================================
+   CONFIGURACIÓN
+========================================== */
+
+.configuracion-fixture-admin {
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+
+  gap: 18px;
+}
+
+
+/* CAMPOS */
+
+.configuracion-fixture-campos {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 14px;
+
+  width: 100%;
+}
+
+
+.configuracion-fixture-campos label {
+  display: flex;
+  flex-direction: column;
+
+  gap: 7px;
+}
+
+
+.configuracion-fixture-campos label > span {
+  color: #3d255b;
+
+  font-family: "Montserrat", sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+
+/* INPUTS */
+
+.configuracion-fixture-campos input {
+  width: 100%;
+  height: 44px;
+
+  padding: 0 13px;
+
+  box-sizing: border-box;
+
+  border: 1px solid #dfd1e7;
+  border-radius: 12px;
+
+  background: #faf7fc;
+
+  color: #1c1327;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 13px;
+
+  outline: none;
+}
+
+
+.configuracion-fixture-campos input:focus {
+  border-color: #a66cc9;
+  background: #ffffff;
+
+  box-shadow:
+    0 0 0 3px rgba(166, 108, 201, 0.10);
+}
+
+
+/* UNIDADES HS / MIN */
+
+.campo-con-unidad {
+  position: relative;
+}
+
+
+.campo-con-unidad input {
+  padding-right: 45px;
+}
+
+
+.campo-con-unidad small {
+  position: absolute;
+
+  right: 13px;
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  color: #8a7f90;
+
+  font-size: 11px;
+  font-weight: 600;
+
+  pointer-events: none;
+}
+
+
+/* ==========================================
+   BOTONES
+========================================== */
+
+.acciones-fixture-admin {
+  display: flex !important;
+
+  align-items: center;
+  justify-content: flex-end;
+
+  gap: 10px;
+
+  width: 100%;
+}
+
+
+.acciones-fixture-admin .boton-admin {
+  width: auto !important;
+
+  min-width: 155px;
+
+  margin: 0 !important;
+
+  padding: 12px 20px;
+}
+
+
+/* ==========================================
+   FIXTURE GENERADO
+========================================== */
+
+.lista-fixture-admin {
+  display: block !important;
+
+  width: 100% !important;
+  max-width: none !important;
+
+  margin: 0 !important;
+
+  box-sizing: border-box;
+}
+
+
+.fixture-etapa {
+  display: block !important;
+
+  width: 100% !important;
+
+  margin-bottom: 40px;
+}
+
+
+.fixture-etapa-titulo {
+  width: 100%;
+
+  margin-bottom: 14px;
+}
+
+
+.fixture-etapa-titulo span {
+  display: block;
+
+  margin-bottom: 3px;
+
+  color: #a66cc9;
+
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+
+.fixture-etapa-titulo h3 {
+  margin: 0;
+
+  color: #1c1327;
+
+  font-family: "Montserrat", sans-serif;
+  font-size: 21px;
+}
+
+
+.fixture-etapa-partidos {
+  display: grid !important;
+
+  grid-template-columns: 1fr !important;
+
+  gap: 10px;
+
+  width: 100% !important;
+}
+
+
+.fixture-partido-item {
+  width: 100% !important;
+  max-width: none !important;
+
+  box-sizing: border-box;
+}
+
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 950px) {
+
+  .configuracion-fixture-campos {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+}
+
+
+@media (max-width: 600px) {
+
+  .configuracion-fixture-campos {
+    grid-template-columns: 1fr;
+  }
+
+
+  .acciones-fixture-admin {
+    flex-direction: column;
+
+    align-items: stretch;
+  }
+
+
+  .acciones-fixture-admin .boton-admin {
+    width: 100% !important;
+  }
+
+}

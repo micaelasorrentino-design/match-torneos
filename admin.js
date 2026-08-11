@@ -3984,18 +3984,31 @@ function renderizarFixtureEvento() {
     `${pareja.jugadora1} / ${pareja.jugadora2}`;
 
 
-  const crearPartidoHTML = (
-    numero,
-    subtitulo,
-    pareja1,
-    pareja2
-  ) => `
+const crearPartidoHTML = (
+  numero,
+  subtitulo,
+  pareja1,
+  pareja2,
+  hora = "",
+  cancha = ""
+) => `
     <article class="fixture-partido-item">
 
-      <div class="fixture-horario">
-        <strong>${numero}</strong>
-        <span>${escaparHTML(subtitulo)}</span>
-      </div>
+<div class="fixture-horario">
+
+  <strong>
+    ${hora || numero}
+  </strong>
+
+  <span>
+    ${
+      cancha
+        ? `${escaparHTML(cancha)} · ${escaparHTML(subtitulo)}`
+        : escaparHTML(subtitulo)
+    }
+  </span>
+
+</div>
 
       <div class="fixture-partido-centro">
 
@@ -4047,7 +4060,10 @@ function renderizarFixtureEvento() {
             ),
             nombrePareja(
               partido.pareja2
-            )
+            ),
+            partido.hora,
+            partido.cancha
+          
           )
       )
       .join("");
@@ -4067,7 +4083,9 @@ function renderizarFixtureEvento() {
             ),
             nombrePareja(
               partido.pareja2
-            )
+            ),
+            partido.hora,
+            partido.cancha
           )
       )
       .join("");
@@ -5307,6 +5325,65 @@ const partidosFixture = [
   ...partidosZonaA,
   ...partidosZonaB
 ];
+/* ==========================================
+   ASIGNAR HORARIOS Y CANCHAS
+========================================== */
+
+function horaAMinutos(hora) {
+
+  const [horas, minutos] =
+    hora.split(":").map(Number);
+
+  return horas * 60 + minutos;
+
+}
+
+
+function minutosAHora(totalMinutos) {
+
+  const horas =
+    Math.floor(totalMinutos / 60) % 24;
+
+  const minutos =
+    totalMinutos % 60;
+
+  return (
+    String(horas).padStart(2, "0") +
+    ":" +
+    String(minutos).padStart(2, "0")
+  );
+
+}
+
+
+const inicioEnMinutos =
+  horaAMinutos(horaInicio);
+
+
+partidosFixture.forEach(
+  (partido, indice) => {
+
+    const bloque =
+      Math.floor(
+        indice / cantidadCanchas
+      );
+
+    const cancha =
+      (indice % cantidadCanchas) + 1;
+
+    const horaPartido =
+      inicioEnMinutos +
+      bloque * duracionPartido;
+
+
+    partido.hora =
+      minutosAHora(horaPartido);
+
+    partido.cancha =
+      `Cancha ${cancha}`;
+
+  }
+);
 
 
 /* ==========================================
