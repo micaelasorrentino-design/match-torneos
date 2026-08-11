@@ -5187,13 +5187,20 @@ inscripcionesConfirmadas.forEach(
       inscripcion.modalidad === "pareja"
     ) {
 
-      parejasConfirmadas.push({
-        id: inscripcion.id,
-        jugadora1: nombreTitular,
-        jugadora2:
-          inscripcion.nombre_companera ||
-          "PENDIENTE"
-      });
+parejasConfirmadas.push({
+  id: inscripcion.id,
+
+  inscripciones: [
+    inscripcion.id
+  ],
+
+  jugadora1:
+    nombreTitular,
+
+  jugadora2:
+    inscripcion.nombre_companera ||
+    "PENDIENTE"
+});
 
       return;
 
@@ -5226,19 +5233,25 @@ for (
     individuales[i + 1];
 
 
-  parejasConfirmadas.push({
-    id:
-      `${jugadora1.id}-${
-        jugadora2?.id || "pendiente"
-      }`,
+parejasConfirmadas.push({
+  id:
+    `${jugadora1.id}-${
+      jugadora2?.id || "pendiente"
+    }`,
 
-    jugadora1:
-      jugadora1.nombre,
+  inscripciones:
+    [
+      jugadora1.id,
+      jugadora2?.id
+    ].filter(Boolean),
 
-    jugadora2:
-      jugadora2?.nombre ||
-      "PENDIENTE"
-  });
+  jugadora1:
+    jugadora1.nombre,
+
+  jugadora2:
+    jugadora2?.nombre ||
+    "PENDIENTE"
+});
 
 }
 const textoParejas =
@@ -5444,6 +5457,179 @@ if (botonConfirmarFixture) {
 }
 
 renderizarFixtureEvento();
+  }
+);
+
+botonConfirmarFixture?.addEventListener(
+  "click",
+  async () => {
+
+    if (
+      !fixtureTemporal ||
+      !fixtureTemporal.partidos?.length
+    ) {
+
+      alert(
+        "Primero generá el fixture."
+      );
+
+      return;
+    }
+
+
+    const tienePendientes =
+      [
+        ...fixtureTemporal.zonaA,
+        ...fixtureTemporal.zonaB
+      ].some(
+        (pareja) =>
+          pareja.jugadora1 === "PENDIENTE" ||
+          pareja.jugadora2 === "PENDIENTE"
+      );
+
+
+    if (tienePendientes) {
+
+      alert(
+        "Todavía hay una pareja pendiente. Completá las inscripciones antes de confirmar el fixture."
+      );
+
+      return;
+    }
+
+
+    if (partidosActuales.length) {
+
+      alert(
+        "Este evento ya tiene partidos guardados. No se puede confirmar otro fixture encima."
+      );
+
+      return;
+    }
+
+
+    const confirmar =
+      window.confirm(
+        `¿Confirmar este fixture?\n\n` +
+        `${fixtureTemporal.partidos.length} partidos de zona se guardarán en Resultados.\n\n` +
+        `Después vas a poder editarlos manualmente.`
+      );
+
+
+    if (!confirmar) {
+      return;
+    }
+
+
+    botonConfirmarFixture.disabled =
+      true;
+
+    botonConfirmarFixture.textContent =
+      "Guardando fixture...";
+
+
+    try {
+
+      for (
+        let indice = 0;
+        indice < fixtureTemporal.partidos.length;
+        indice++
+      ) {
+
+        const partido =
+          fixtureTemporal.partidos[indice];
+
+
+        const parametros = {
+
+          p_evento_id:
+            eventoActual,
+
+          p_numero_partido:
+            indice + 1,
+
+          p_instancia:
+            `zona_${partido.zona.toLowerCase()}`,
+
+          p_cancha:
+            partido.cancha ||
+            null,
+
+          p_hora_programada:
+            partido.hora ||
+            null,
+
+          p_equipo_1_inscripciones:
+            partido.pareja1.inscripciones,
+
+          p_equipo_2_inscripciones:
+            partido.pareja2.inscripciones,
+
+          p_pareja_1_nombre:
+            `${partido.pareja1.jugadora1} - ${partido.pareja1.jugadora2}`,
+
+          p_pareja_2_nombre:
+            `${partido.pareja2.jugadora1} - ${partido.pareja2.jugadora2}`,
+
+          p_observaciones:
+            `Generado automáticamente · Zona ${partido.zona}`
+
+        };
+
+
+        const {
+          error
+        } =
+          await window.db.rpc(
+            "guardar_partido_fixture",
+            parametros
+          );
+
+
+        if (error) {
+          throw error;
+        }
+
+      }
+
+
+      await cargarPartidosEvento();
+
+
+      alert(
+        "✓ Fixture confirmado correctamente.\n\nLos partidos ya aparecen en Resultados."
+      );
+
+
+      botonConfirmarFixture.textContent =
+        "✓ Fixture confirmado";
+
+      botonConfirmarFixture.disabled =
+        true;
+
+
+    } catch (error) {
+
+      console.error(
+        "Error al confirmar fixture:",
+        error
+      );
+
+
+      alert(
+        error.message ||
+        "No pudimos confirmar el fixture."
+      );
+
+
+      botonConfirmarFixture.disabled =
+        false;
+
+      botonConfirmarFixture.textContent =
+        "✓ Confirmar fixture";
+
+    }
+
   }
 );
 
