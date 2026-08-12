@@ -3402,12 +3402,10 @@ async function marcarPagoEfectivo(
     await actualizarInscripcion(
       inscripcionId,
       {
-        estado:
-          "confirmada",
-
-        estado_pago:
-          "efectivo"
-      }
+  estado: "confirmada",
+  estado_pago: "confirmado",
+  medio_pago: "efectivo"
+}
     );
 
 
