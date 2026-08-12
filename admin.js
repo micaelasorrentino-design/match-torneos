@@ -423,34 +423,37 @@ function textoEstado(
 
 
 function textoPago(
-  estadoPago
+  estadoPago,
+  medioPago = ""
 ) {
 
+  if (
+    estadoPago === "confirmado" &&
+    medioPago === "transferencia"
+  ) {
+    return "Pago confirmado · Transferencia";
+  }
+
+  if (
+    estadoPago === "confirmado" &&
+    medioPago === "efectivo"
+  ) {
+    return "Pago confirmado · Efectivo";
+  }
+
   const textos = {
-  pendiente:
-    "Pago pendiente",
-
-  comprobante_recibido:
-    "Comprobante recibido",
-
-  efectivo:
-    "Efectivo en admisión",
-
-  confirmado:
-    "Pago confirmado",
-
-  rechazado:
-    "Pago rechazado"
-};
+    pendiente: "Pago pendiente",
+    comprobante_recibido: "Comprobante recibido",
+    confirmado: "Pago confirmado",
+    rechazado: "Pago rechazado"
+  };
 
   return (
     textos[estadoPago] ||
     estadoPago ||
     "Sin estado"
   );
-
-}
-
+} 
 
 /* ==========================================
    LOGIN Y SESIÓN
@@ -2820,8 +2823,9 @@ function crearFilaInscripcion(
         >
           ${escaparHTML(
             textoPago(
-              inscripcion.estado_pago
-            )
+  inscripcion.estado_pago,
+  inscripcion.medio_pago
+)
           )}
         </span>
 
