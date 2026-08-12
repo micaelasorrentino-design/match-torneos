@@ -2309,9 +2309,12 @@ async function cargarInscripciones() {
         nombre_companera,
         telefono_companera,
         estado,
-        estado_pago,
-        comprobante_path,
-        observaciones_participante,
+estado_pago,
+medio_pago,
+estado_pago_companera,
+medio_pago_companera,
+comprobante_path,
+observaciones_participante,
 
         participantes (
           nombre,
@@ -2677,45 +2680,45 @@ function crearFilaInscripcion(
       `;
 
 
-  const accionesConfirmacion =
-    inscripcion.estado !==
-    "confirmada"
+ const accionesConfirmacion = `
+  <button
+    type="button"
+    class="boton-tabla boton-tabla-principal"
+    data-confirmar="${
+      inscripcion.id
+    }"
+  >
+    Transferencia
+  </button>
+
+  <button
+    type="button"
+    class="boton-tabla"
+    data-efectivo="${
+      inscripcion.id
+    }"
+  >
+    💵 Efectivo
+  </button>
+
+  ${
+    inscripcion.estado_pago === "confirmado"
       ? `
         <button
           type="button"
-          class="boton-tabla boton-tabla-principal"
-          data-confirmar="${
-            inscripcion.id
-          }"
-        >
-          Confirmar pago
-        </button>
-      `
-      : `
-        <span
-          class="estado-chip estado-confirmada"
-        >
-          Confirmada
-        </span>
-      `;
-  
-      const accionEfectivo =
-  inscripcion.estado_pago !== "efectivo" &&
-  inscripcion.estado_pago !== "confirmado"
-    ? `
-        <button
-          type="button"
           class="boton-tabla"
-          data-efectivo="${
+          data-titular-pendiente="${
             inscripcion.id
           }"
         >
-          💵 Efectivo
+          ↩ Pendiente
         </button>
       `
-    : "";
-
-  const accionCancelar =
+      : ""
+  }
+`;
+  
+ const accionCancelar =
     inscripcion.estado !==
     "cancelada"
       ? `
@@ -2853,8 +2856,6 @@ function crearFilaInscripcion(
 
   ${accionesConfirmacion}
 
-  ${accionEfectivo}
-
   ${accionCancelar}
 
   ${botonWhatsapp}
@@ -2906,6 +2907,42 @@ function crearFilaCompanera(
       : "Con pareja";
 
 
+  const estadoPagoCompanera =
+    inscripcion.estado_pago_companera ||
+    "pendiente";
+
+
+  const medioPagoCompanera =
+    inscripcion.medio_pago_companera ||
+    "";
+
+
+  let textoPagoCompanera =
+    "Pago pendiente";
+
+
+  if (
+    estadoPagoCompanera === "confirmado" &&
+    medioPagoCompanera === "transferencia"
+  ) {
+
+    textoPagoCompanera =
+      "Pago confirmado · Transferencia";
+
+  }
+
+
+  if (
+    estadoPagoCompanera === "confirmado" &&
+    medioPagoCompanera === "efectivo"
+  ) {
+
+    textoPagoCompanera =
+      "Pago confirmado · Efectivo";
+
+  }
+
+
   const botonWhatsapp =
     telefonoCompanera
       ? `
@@ -2926,18 +2963,43 @@ function crearFilaCompanera(
       : "";
 
 
-  const comprobanteTexto =
-    inscripcion.comprobante_path
-      ? `
-        <span>
-          Mismo comprobante
-        </span>
-      `
-      : `
-        <span>
-          Sin comprobante
-        </span>
-      `;
+  const accionesPago = `
+    <button
+      type="button"
+      class="boton-tabla boton-tabla-principal"
+      data-companera-transferencia="${
+        inscripcion.id
+      }"
+    >
+      Transferencia
+    </button>
+
+    <button
+      type="button"
+      class="boton-tabla"
+      data-companera-efectivo="${
+        inscripcion.id
+      }"
+    >
+      💵 Efectivo
+    </button>
+
+    ${
+      estadoPagoCompanera === "confirmado"
+        ? `
+          <button
+            type="button"
+            class="boton-tabla"
+            data-companera-pendiente="${
+              inscripcion.id
+            }"
+          >
+            ↩ Pendiente
+          </button>
+        `
+        : ""
+    }
+  `;
 
 
   return `
@@ -2988,13 +3050,11 @@ function crearFilaCompanera(
 
         <span
           class="pago-chip pago-${escaparHTML(
-            inscripcion.estado_pago
+            estadoPagoCompanera
           )}"
         >
           ${escaparHTML(
-            textoPago(
-              inscripcion.estado_pago
-            )
+            textoPagoCompanera
           )}
         </span>
 
@@ -3004,28 +3064,42 @@ function crearFilaCompanera(
       <td>
 
         <span
-          class="estado-chip estado-${escaparHTML(
-            inscripcion.estado
-          )}"
+          class="estado-chip ${
+            estadoPagoCompanera === "confirmado"
+              ? "estado-confirmada"
+              : "estado-pendiente"
+          }"
         >
-          ${escaparHTML(
-            textoEstado(
-              inscripcion.estado
-            )
-          )}
+          ${
+            estadoPagoCompanera === "confirmado"
+              ? "Confirmada"
+              : "Pendiente"
+          }
         </span>
 
       </td>
 
 
       <td>
-        ${comprobanteTexto}
+
+        <span>
+          ${
+            medioPagoCompanera === "transferencia"
+              ? "Transferencia"
+              : medioPagoCompanera === "efectivo"
+                ? "Efectivo"
+                : "—"
+          }
+        </span>
+
       </td>
 
 
       <td>
 
         <div class="acciones-tabla">
+
+          ${accionesPago}
 
           ${botonWhatsapp}
 
@@ -3247,13 +3321,13 @@ async function confirmarInscripcion(
   const actualizado =
     await actualizarInscripcion(
       inscripcionId,
-      {
-        estado:
-          "confirmada",
-
-        estado_pago:
-          "confirmado"
-      }
+      
+        {
+  estado: "confirmada",
+  estado_pago: "confirmado",
+  medio_pago: "transferencia"
+}
+      
     );
 
 
@@ -3339,6 +3413,91 @@ async function marcarPagoEfectivo(
       "Inscripción confirmada · Pago en efectivo pendiente para admisión."
     );
 
+  }
+
+}
+async function marcarTitularPendiente(
+  inscripcionId
+) {
+
+  const actualizado =
+    await actualizarInscripcion(
+      inscripcionId,
+      {
+        estado_pago: "pendiente",
+        medio_pago: null
+      }
+    );
+
+  if (actualizado) {
+    alert(
+      "Pago de la titular marcado como pendiente."
+    );
+  }
+
+}
+
+async function confirmarTransferenciaCompanera(
+  inscripcionId
+) {
+
+  const actualizado =
+    await actualizarInscripcion(
+      inscripcionId,
+      {
+        estado_pago_companera: "confirmado",
+        medio_pago_companera: "transferencia"
+      }
+    );
+
+  if (actualizado) {
+    alert(
+      "Pago de la compañera confirmado por transferencia."
+    );
+  }
+
+}
+
+
+async function confirmarEfectivoCompanera(
+  inscripcionId
+) {
+
+  const actualizado =
+    await actualizarInscripcion(
+      inscripcionId,
+      {
+        estado_pago_companera: "confirmado",
+        medio_pago_companera: "efectivo"
+      }
+    );
+
+  if (actualizado) {
+    alert(
+      "Pago de la compañera confirmado en efectivo."
+    );
+  }
+
+}
+
+
+async function marcarCompaneraPendiente(
+  inscripcionId
+) {
+
+  const actualizado =
+    await actualizarInscripcion(
+      inscripcionId,
+      {
+        estado_pago_companera: "pendiente",
+        medio_pago_companera: null
+      }
+    );
+
+  if (actualizado) {
+    alert(
+      "Pago de la compañera marcado como pendiente."
+    );
   }
 
 }
@@ -5227,10 +5386,10 @@ if (
 }
 
     const inscripcionesConfirmadas =
-      inscripcionesActuales.filter(
-        (inscripcion) =>
-          inscripcion.estado === "confirmada"
-      );
+  inscripcionesActuales.filter(
+    (inscripcion) =>
+      inscripcion.estado !== "cancelada"
+  );
 
 
     if (!inscripcionesConfirmadas.length) {
@@ -7024,6 +7183,68 @@ if (botonEfectivo) {
   marcarPagoEfectivo(
     botonEfectivo.dataset
       .efectivo
+  );
+
+  return;
+}
+
+const botonCompaneraTransferencia =
+  evento.target.closest(
+    "[data-companera-transferencia]"
+  );
+
+if (botonCompaneraTransferencia) {
+
+  confirmarTransferenciaCompanera(
+    botonCompaneraTransferencia.dataset
+      .companeraTransferencia
+  );
+
+  return;
+}
+
+
+const botonCompaneraEfectivo =
+  evento.target.closest(
+    "[data-companera-efectivo]"
+  );
+
+if (botonCompaneraEfectivo) {
+
+  confirmarEfectivoCompanera(
+    botonCompaneraEfectivo.dataset
+      .companeraEfectivo
+  );
+
+  return;
+}
+
+
+const botonCompaneraPendiente =
+  evento.target.closest(
+    "[data-companera-pendiente]"
+  );
+
+if (botonCompaneraPendiente) {
+
+  marcarCompaneraPendiente(
+    botonCompaneraPendiente.dataset
+      .companeraPendiente
+  );
+
+  return;
+}
+
+const botonTitularPendiente =
+  evento.target.closest(
+    "[data-titular-pendiente]"
+  );
+
+if (botonTitularPendiente) {
+
+  marcarTitularPendiente(
+    botonTitularPendiente.dataset
+      .titularPendiente
   );
 
   return;
