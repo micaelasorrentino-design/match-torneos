@@ -4926,50 +4926,7 @@ const crearPartidoHTML = (
     .join("");
 
 
-  const zonaAHTML =
-    partidosZonaA
-      .map(
-        (partido, indice) =>
-          crearPartidoHTML(
-            indice + 1,
-            "Zona A",
-            nombrePareja(
-              partido.pareja1
-            ),
-            nombrePareja(
-              partido.pareja2
-            ),
-            partido.hora,
-            partido.cancha
-          
-          )
-      )
-      .join("");
-
-
-  const zonaBHTML =
-    partidosZonaB
-      .map(
-        (partido, indice) =>
-          crearPartidoHTML(
-            partidosZonaA.length +
-              indice +
-              1,
-            "Zona B",
-            nombrePareja(
-              partido.pareja1
-            ),
-            nombrePareja(
-              partido.pareja2
-            ),
-            partido.hora,
-            partido.cancha
-          )
-      )
-      .join("");
-
-
-  /* ==========================================
+    /* ==========================================
      ELIMINACIÓN
   ========================================== */
 
