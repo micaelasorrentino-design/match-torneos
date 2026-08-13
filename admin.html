@@ -548,23 +548,31 @@
       </section>
 
 
-      <section class="tabla-card">
+    <section class="tabla-card">
 
-        <div class="tabla-cabecera">
+  <div class="tabla-cabecera">
 
-          <div>
+    <div>
 
-            <h2>
-              Inscripciones
-            </h2>
+      <h2>
+        Inscripciones
+      </h2>
 
-            <p id="texto-cantidad-inscripciones">
-              Seleccioná un evento.
-            </p>
+      <p id="texto-cantidad-inscripciones">
+        Seleccioná un evento.
+      </p>
 
-          </div>
+    </div>
 
-        </div>
+    <button
+      type="button"
+      id="boton-imprimir-inscripciones"
+      class="boton-admin boton-secundario-admin"
+    >
+      🖨 Imprimir inscripciones
+    </button>
+
+  </div>
 
 
         <div class="tabla-contenedor">
@@ -745,10 +753,18 @@
         value="2"
         min="1"
       >
-    </label>
-
-
     <label>
+  <span>Cantidad de zonas</span>
+
+  <input
+    type="number"
+    id="fixture-cantidad-zonas"
+    value="2"
+    min="1"
+    max="6"
+    step="1"
+  >
+</label>
       <span>Duración por partido</span>
 
       <div class="campo-con-unidad">

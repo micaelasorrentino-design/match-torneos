@@ -153,6 +153,11 @@ const textoCantidadInscripciones =
     "texto-cantidad-inscripciones"
   );
 
+  const botonImprimirInscripciones =
+  document.getElementById(
+    "boton-imprimir-inscripciones"
+  );
+
 const resumenTotal =
   document.getElementById(
     "resumen-total"
@@ -2625,6 +2630,571 @@ tablaInscripciones.innerHTML =
 
 }
 
+/* ==========================================
+   IMPRIMIR LISTADO DE INSCRIPCIONES
+========================================== */
+
+function imprimirInscripcionesEvento() {
+
+  if (!eventoActual) {
+    alert(
+      "Seleccioná un evento antes de imprimir."
+    );
+    return;
+  }
+
+  const evento =
+    eventosAdministrables.find(
+      (item) =>
+        item.id === eventoActual
+    );
+
+  if (!evento) {
+    alert(
+      "No encontramos el evento."
+    );
+    return;
+  }
+
+  const inscripciones =
+    inscripcionesActuales.filter(
+      (inscripcion) =>
+        inscripcion.estado !== "cancelada"
+    );
+
+  if (!inscripciones.length) {
+    alert(
+      "Este evento no tiene inscripciones para imprimir."
+    );
+    return;
+  }
+
+
+  /* ==========================================
+     ARMAR LISTA DE JUGADORAS
+  ========================================== */
+
+  const jugadoras = [];
+
+  inscripciones.forEach(
+    (inscripcion) => {
+
+      const participante =
+        inscripcion.participantes || {};
+
+      const nombreTitular =
+        [
+          participante.nombre,
+          participante.apellido
+        ]
+          .filter(Boolean)
+          .join(" ");
+
+      const nombreCompanera =
+        inscripcion.nombre_companera ||
+        "";
+
+      /* TITULAR */
+
+      jugadoras.push({
+
+        nombre:
+          nombreTitular ||
+          "Sin nombre",
+
+        telefono:
+          participante.telefono ||
+          participante.telefono_normalizado ||
+          "",
+
+        pareja:
+          nombreCompanera ||
+          (
+            inscripcion.modalidad ===
+            "individual"
+              ? "Individual"
+              : "Pendiente"
+          ),
+
+        estadoPago:
+          inscripcion.estado_pago ||
+          "pendiente",
+
+        medioPago:
+          inscripcion.medio_pago ||
+          ""
+
+      });
+
+
+      /* COMPAÑERA */
+
+      if (
+        inscripcion.modalidad === "pareja" &&
+        nombreCompanera
+      ) {
+
+        jugadoras.push({
+
+          nombre:
+            nombreCompanera,
+
+          telefono:
+            inscripcion.telefono_companera ||
+            "",
+
+          pareja:
+            nombreTitular ||
+            "Pareja",
+
+          estadoPago:
+            inscripcion
+              .estado_pago_companera ||
+            "pendiente",
+
+          medioPago:
+            inscripcion
+              .medio_pago_companera ||
+            ""
+
+        });
+
+      }
+
+    }
+  );
+
+
+  /* ORDENAR ALFABÉTICAMENTE */
+
+  jugadoras.sort(
+    (a, b) =>
+      a.nombre.localeCompare(
+        b.nombre,
+        "es"
+      )
+  );
+
+
+  function obtenerEstadoImpresion(
+    jugadora
+  ) {
+
+    if (
+      jugadora.estadoPago ===
+        "confirmado" &&
+      jugadora.medioPago ===
+        "transferencia"
+    ) {
+
+      return {
+        clase: "transferencia",
+        texto: "✓ TRANSFERENCIA",
+        admision: "✓ PAGADO"
+      };
+
+    }
+
+
+    if (
+      jugadora.estadoPago ===
+        "confirmado" &&
+      jugadora.medioPago ===
+        "efectivo"
+    ) {
+
+      return {
+        clase: "efectivo",
+        texto: "EFECTIVO",
+        admision: "☐ COBRAR"
+      };
+
+    }
+
+
+    if (
+      jugadora.estadoPago ===
+      "comprobante_recibido"
+    ) {
+
+      return {
+        clase: "pendiente",
+        texto: "COMPROBANTE",
+        admision: "☐ REVISAR"
+      };
+
+    }
+
+
+    return {
+      clase: "pendiente",
+      texto: "PENDIENTE",
+      admision: "☐ REVISAR"
+    };
+
+  }
+
+
+  const filas =
+    jugadoras
+      .map(
+        (jugadora, indice) => {
+
+          const pago =
+            obtenerEstadoImpresion(
+              jugadora
+            );
+
+          return `
+            <tr>
+
+              <td class="numero">
+                ${indice + 1}
+              </td>
+
+              <td>
+                <strong>
+                  ${escaparHTML(
+                    jugadora.nombre
+                  )}
+                </strong>
+              </td>
+
+              <td>
+                ${escaparHTML(
+                  jugadora.telefono
+                )}
+              </td>
+
+              <td>
+                ${escaparHTML(
+                  jugadora.pareja
+                )}
+              </td>
+
+              <td>
+                <span class="pago ${pago.clase}">
+                  ${pago.texto}
+                </span>
+              </td>
+
+              <td class="admision">
+                ${pago.admision}
+              </td>
+
+            </tr>
+          `;
+
+        }
+      )
+      .join("");
+
+
+  const cantidadTransferencias =
+    jugadoras.filter(
+      (jugadora) =>
+        jugadora.estadoPago ===
+          "confirmado" &&
+        jugadora.medioPago ===
+          "transferencia"
+    ).length;
+
+
+  const cantidadEfectivo =
+    jugadoras.filter(
+      (jugadora) =>
+        jugadora.estadoPago ===
+          "confirmado" &&
+        jugadora.medioPago ===
+          "efectivo"
+    ).length;
+
+
+  const cantidadPendientes =
+    jugadoras.length -
+    cantidadTransferencias -
+    cantidadEfectivo;
+
+
+  /* ==========================================
+     VENTANA DE IMPRESIÓN
+  ========================================== */
+
+  const ventana =
+    window.open(
+      "",
+      "_blank",
+      "width=1100,height=800"
+    );
+
+
+  if (!ventana) {
+
+    alert(
+      "El navegador bloqueó la ventana de impresión."
+    );
+
+    return;
+
+  }
+
+
+  ventana.document.write(`
+    <!DOCTYPE html>
+
+    <html lang="es">
+
+    <head>
+
+      <meta charset="UTF-8">
+
+      <title>
+        Admisión · ${escaparHTML(
+          evento.titulo || "MATCH"
+        )}
+      </title>
+
+      <style>
+
+        * {
+          box-sizing: border-box;
+        }
+
+        body {
+          font-family:
+            Arial,
+            Helvetica,
+            sans-serif;
+
+          color: #1C1327;
+          margin: 30px;
+        }
+
+        .cabecera {
+          border-bottom:
+            3px solid #A66CC9;
+
+          padding-bottom: 14px;
+          margin-bottom: 22px;
+        }
+
+        .marca {
+          font-size: 26px;
+          font-weight: 800;
+          letter-spacing: 1px;
+          color: #3D255B;
+        }
+
+        h1 {
+          font-size: 22px;
+          margin:
+            10px 0 4px;
+        }
+
+        .datos-evento {
+          font-size: 14px;
+          color: #555;
+        }
+
+        .resumen {
+          display: flex;
+          gap: 12px;
+          margin:
+            20px 0;
+        }
+
+        .resumen-item {
+          border:
+            1px solid #ddd;
+
+          border-radius: 8px;
+          padding:
+            8px 12px;
+
+          font-size: 13px;
+        }
+
+        .resumen-item strong {
+          font-size: 17px;
+        }
+
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          font-size: 12px;
+        }
+
+        th {
+          background: #F0E9F7;
+          color: #3D255B;
+          text-align: left;
+          padding: 9px;
+          border:
+            1px solid #d8cbe2;
+        }
+
+        td {
+          padding: 9px;
+          border:
+            1px solid #ddd;
+          vertical-align: middle;
+        }
+
+        .numero {
+          width: 28px;
+          text-align: center;
+        }
+
+        .pago {
+          font-weight: 700;
+          white-space: nowrap;
+        }
+
+        .transferencia {
+          color: #266a45;
+        }
+
+        .efectivo {
+          color: #7b5700;
+        }
+
+        .pendiente {
+          color: #8b3434;
+        }
+
+        .admision {
+          font-weight: 800;
+          white-space: nowrap;
+          font-size: 13px;
+        }
+
+        @media print {
+
+          body {
+            margin: 12mm;
+          }
+
+        }
+
+      </style>
+
+    </head>
+
+    <body>
+
+      <div class="cabecera">
+
+        <div class="marca">
+          MATCH
+        </div>
+
+        <h1>
+          Lista de admisión
+        </h1>
+
+        <div class="datos-evento">
+
+          <strong>
+            ${escaparHTML(
+              evento.titulo ||
+              "Evento MATCH"
+            )}
+          </strong>
+
+          ·
+
+          ${escaparHTML(
+            evento.categoria ||
+            ""
+          )}
+
+          ·
+
+          ${escaparHTML(
+            formatearFechaAdmin(
+              evento.fecha
+            )
+          )}
+
+        </div>
+
+      </div>
+
+
+      <div class="resumen">
+
+        <div class="resumen-item">
+          Jugadoras:
+          <strong>
+            ${jugadoras.length}
+          </strong>
+        </div>
+
+        <div class="resumen-item">
+          Transferencia:
+          <strong>
+            ${cantidadTransferencias}
+          </strong>
+        </div>
+
+        <div class="resumen-item">
+          Cobrar efectivo:
+          <strong>
+            ${cantidadEfectivo}
+          </strong>
+        </div>
+
+        <div class="resumen-item">
+          Pendientes:
+          <strong>
+            ${cantidadPendientes}
+          </strong>
+        </div>
+
+      </div>
+
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>#</th>
+            <th>Jugadora</th>
+            <th>Teléfono</th>
+            <th>Pareja</th>
+            <th>Pago</th>
+            <th>Admisión</th>
+          </tr>
+
+        </thead>
+
+        <tbody>
+          ${filas}
+        </tbody>
+
+      </table>
+
+
+      <script>
+
+        window.onload = () => {
+
+          window.print();
+
+        };
+
+      <\/script>
+
+    </body>
+
+    </html>
+  `);
+
+
+  ventana.document.close();
+
+}
 
 /* ==========================================
    CREAR FILA DE INSCRIPCIÓN
@@ -4304,18 +4874,56 @@ const crearPartidoHTML = (
   `;
 
 
-  const partidosZonaA =
-    fixtureTemporal.partidos.filter(
-      (partido) =>
-        partido.zona === "A"
-    );
+ const zonasHTML =
+  fixtureTemporal.zonas
+    .map(
+      (zona) => {
 
+        const partidosZona =
+          fixtureTemporal.partidos.filter(
+            (partido) =>
+              partido.zona === zona.letra
+          );
 
-  const partidosZonaB =
-    fixtureTemporal.partidos.filter(
-      (partido) =>
-        partido.zona === "B"
-    );
+        const partidosHTML =
+          partidosZona
+            .map(
+              (partido, indice) =>
+                crearPartidoHTML(
+                  indice + 1,
+                  `Zona ${zona.letra}`,
+                  nombrePareja(
+                    partido.pareja1
+                  ),
+                  nombrePareja(
+                    partido.pareja2
+                  ),
+                  partido.hora,
+                  partido.cancha
+                )
+            )
+            .join("");
+
+        return `
+          <section class="fixture-etapa">
+
+            <div class="fixture-etapa-titulo">
+              <span>FASE DE GRUPOS</span>
+              <h3>Zona ${escaparHTML(
+                zona.letra
+              )}</h3>
+            </div>
+
+            <div class="fixture-etapa-partidos">
+              ${partidosHTML}
+            </div>
+
+          </section>
+        `;
+
+      }
+    )
+    .join("");
 
 
   const zonaAHTML =
@@ -4442,77 +5050,50 @@ const crearPartidoHTML = (
 
   listaFixtureAdmin.innerHTML = `
 
-    <section class="fixture-etapa">
+  ${zonasHTML}
 
-      <div class="fixture-etapa-titulo">
-        <span>FASE DE GRUPOS</span>
-        <h3>Zona A</h3>
-      </div>
+  <section class="fixture-etapa">
 
-      <div class="fixture-etapa-partidos">
-        ${zonaAHTML}
-      </div>
+    <div class="fixture-etapa-titulo">
+      <span>ELIMINACIÓN</span>
+      <h3>Cuartos de final</h3>
+    </div>
 
-    </section>
+    <div class="fixture-etapa-partidos">
+      ${cuartosHTML}
+    </div>
 
-
-    <section class="fixture-etapa">
-
-      <div class="fixture-etapa-titulo">
-        <span>FASE DE GRUPOS</span>
-        <h3>Zona B</h3>
-      </div>
-
-      <div class="fixture-etapa-partidos">
-        ${zonaBHTML}
-      </div>
-
-    </section>
+  </section>
 
 
-    <section class="fixture-etapa">
+  <section class="fixture-etapa">
 
-      <div class="fixture-etapa-titulo">
-        <span>ELIMINACIÓN</span>
-        <h3>Cuartos de final</h3>
-      </div>
+    <div class="fixture-etapa-titulo">
+      <span>ELIMINACIÓN</span>
+      <h3>Semifinales</h3>
+    </div>
 
-      <div class="fixture-etapa-partidos">
-        ${cuartosHTML}
-      </div>
+    <div class="fixture-etapa-partidos">
+      ${semifinalesHTML}
+    </div>
 
-    </section>
-
-
-    <section class="fixture-etapa">
-
-      <div class="fixture-etapa-titulo">
-        <span>ELIMINACIÓN</span>
-        <h3>Semifinales</h3>
-      </div>
-
-      <div class="fixture-etapa-partidos">
-        ${semifinalesHTML}
-      </div>
-
-    </section>
+  </section>
 
 
-    <section class="fixture-etapa">
+  <section class="fixture-etapa">
 
-      <div class="fixture-etapa-titulo">
-        <span>DEFINICIÓN</span>
-        <h3>Final</h3>
-      </div>
+    <div class="fixture-etapa-titulo">
+      <span>DEFINICIÓN</span>
+      <h3>Final</h3>
+    </div>
 
-      <div class="fixture-etapa-partidos">
-        ${finalHTML}
-      </div>
+    <div class="fixture-etapa-partidos">
+      ${finalHTML}
+    </div>
 
-    </section>
+  </section>
 
-  `;
-
+`;
 
   if (textoCantidadFixture) {
 
@@ -5323,6 +5904,11 @@ const campoCantidadCanchas =
     "fixture-cantidad-canchas"
   );
 
+  const campoCantidadZonas =
+  document.getElementById(
+    "fixture-cantidad-zonas"
+  );
+
 const campoDuracionPartido =
   document.getElementById(
     "fixture-duracion-partido"
@@ -5341,6 +5927,11 @@ const duracionEvento =
 const cantidadCanchas =
   Number(
     campoCantidadCanchas?.value
+  );
+
+  const cantidadZonas =
+  Number(
+    campoCantidadZonas?.value
   );
 
 const duracionPartido =
@@ -5369,6 +5960,19 @@ if (
 
   alert(
     "Ingresá una cantidad válida de canchas."
+  );
+
+  return;
+}
+
+if (
+  !cantidadZonas ||
+  cantidadZonas < 1 ||
+  cantidadZonas > 6
+) {
+
+  alert(
+    "Ingresá una cantidad de zonas entre 1 y 6."
   );
 
   return;
@@ -5532,8 +6136,18 @@ const textoParejas =
    ARMAR ZONAS
 ========================================== */
 
-const zonaA = [];
-const zonaB = [];
+const letrasZonas =
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    .split("");
+
+const zonas =
+  Array.from(
+    { length: cantidadZonas },
+    (_, indice) => ({
+      letra: letrasZonas[indice],
+      parejas: []
+    })
+  );
 
 parejasConfirmadas.forEach(
   (pareja, indice) => {
@@ -5543,11 +6157,14 @@ parejasConfirmadas.forEach(
       numero: indice + 1
     };
 
-    if (indice % 2 === 0) {
-      zonaA.push(parejaConNumero);
-    } else {
-      zonaB.push(parejaConNumero);
-    }
+    const indiceZona =
+      indice % cantidadZonas;
+
+    zonas[indiceZona]
+      .parejas
+      .push(
+        parejaConNumero
+      );
 
   }
 );
@@ -5590,17 +6207,18 @@ function generarPartidosZona(
 }
 
 
-const partidosZonaA =
-  generarPartidosZona(
-    zonaA,
-    "A"
-  );
+const partidosPorZona =
+  zonas.map(
+    (zona) => ({
+      letra:
+        zona.letra,
 
-
-const partidosZonaB =
-  generarPartidosZona(
-    zonaB,
-    "B"
+      partidos:
+        generarPartidosZona(
+          zona.parejas,
+          zona.letra
+        )
+    })
   );
 
 
@@ -5633,13 +6251,17 @@ function minutosAHora(totalMinutos) {
 }
 
 
-/* Copias para no modificar los arrays originales */
+/* ==========================================
+   INTERCALAR ZONAS + ASIGNAR HORARIOS
+========================================== */
 
-const pendientesA =
-  [...partidosZonaA];
-
-const pendientesB =
-  [...partidosZonaB];
+const pendientesPorZona =
+  partidosPorZona.map(
+    (zona) => ({
+      letra: zona.letra,
+      partidos: [...zona.partidos]
+    })
+  );
 
 const partidosFixture = [];
 
@@ -5651,15 +6273,16 @@ let numeroBloque = 0;
 
 /*
   En cada horario:
-  - intenta mezclar Zona A y Zona B
-  - ninguna pareja puede jugar dos veces
-    en el mismo horario
-  - alterna qué zona tiene prioridad
+  - intenta repartir partidos entre todas las zonas
+  - ninguna pareja juega dos veces en el mismo horario
+  - la prioridad de las zonas va rotando
 */
 
 while (
-  pendientesA.length ||
-  pendientesB.length
+  pendientesPorZona.some(
+    (zona) =>
+      zona.partidos.length > 0
+  )
 ) {
 
   const parejasOcupadas =
@@ -5667,15 +6290,28 @@ while (
 
   const partidosDelBloque = [];
 
+
   /*
-    Alternamos la zona que empieza primero
-    para que ninguna quede siempre relegada.
+    Rotamos el orden de prioridad.
+    Ejemplo:
+    bloque 1: A B C
+    bloque 2: B C A
+    bloque 3: C A B
   */
 
-  const prioridad =
-    numeroBloque % 2 === 0
-      ? ["A", "B"]
-      : ["B", "A"];
+  const desplazamiento =
+    numeroBloque %
+    pendientesPorZona.length;
+
+  const prioridadZonas = [
+    ...pendientesPorZona.slice(
+      desplazamiento
+    ),
+    ...pendientesPorZona.slice(
+      0,
+      desplazamiento
+    )
+  ];
 
 
   function buscarPartidoDisponible(
@@ -5714,45 +6350,30 @@ while (
     let partidoElegido = null;
 
 
-    /*
-      Vamos recorriendo A/B o B/A,
-      dependiendo del bloque.
-    */
-
     for (
       const zonaPrioritaria
-      of prioridad
+      of prioridadZonas
     ) {
-
-      const lista =
-        zonaPrioritaria === "A"
-          ? pendientesA
-          : pendientesB;
 
       const indice =
         buscarPartidoDisponible(
-          lista
+          zonaPrioritaria.partidos
         );
 
       if (indice !== -1) {
 
         partidoElegido =
-          lista.splice(
+          zonaPrioritaria.partidos.splice(
             indice,
             1
           )[0];
 
         break;
+
       }
 
     }
 
-
-    /*
-      Si no encontramos más partidos
-      compatibles con este horario,
-      pasamos al próximo bloque.
-    */
 
     if (!partidoElegido) {
       break;
@@ -5763,6 +6384,7 @@ while (
       partidoElegido
     );
 
+
     parejasOcupadas.add(
       partidoElegido
         .pareja1.numero
@@ -5772,6 +6394,23 @@ while (
       partidoElegido
         .pareja2.numero
     );
+
+  }
+
+
+  /*
+    Seguridad:
+    evita un bucle infinito si por algún
+    motivo no se pudo asignar ningún partido.
+  */
+
+  if (!partidosDelBloque.length) {
+
+    console.warn(
+      "No se pudo asignar ningún partido en el bloque."
+    );
+
+    break;
 
   }
 
@@ -5808,25 +6447,30 @@ while (
 }
 
 /* ==========================================
-   MOSTRAR PRUEBA
+   GUARDAR FIXTURE TEMPORAL
 ========================================== */
 
-const textoZonaA =
-  zonaA
+const textoZonas =
+  zonas
     .map(
-      (pareja) =>
-        `P${pareja.numero}: ${pareja.jugadora1} / ${pareja.jugadora2}`
-    )
-    .join("\n");
+      (zona) => {
 
+        const parejasTexto =
+          zona.parejas
+            .map(
+              (pareja) =>
+                `P${pareja.numero}: ${pareja.jugadora1} / ${pareja.jugadora2}`
+            )
+            .join("\n");
 
-const textoZonaB =
-  zonaB
-    .map(
-      (pareja) =>
-        `P${pareja.numero}: ${pareja.jugadora1} / ${pareja.jugadora2}`
+        return (
+          `Zona ${zona.letra}\n` +
+          parejasTexto
+        );
+
+      }
     )
-    .join("\n");
+    .join("\n\n");
 
 
 const textoPartidos =
@@ -5840,202 +6484,28 @@ const textoPartidos =
 
 
 fixtureTemporal = {
-  zonaA,
-  zonaB,
-  partidos: partidosFixture,
+
+  zonas:
+    zonas,
+
+  partidos:
+    partidosFixture,
 
   configuracion: {
+
     horaInicio,
+
     duracionEvento,
+
     cantidadCanchas,
+
+    cantidadZonas,
+
     duracionPartido
+
   }
+
 };
-
-if (botonConfirmarFixture) {
-
-  botonConfirmarFixture.disabled =
-    false;
-
-}
-
-renderizarFixtureEvento();
-  }
-);
-
-botonConfirmarFixture?.addEventListener(
-  "click",
-  async () => {
-
-    if (
-      !fixtureTemporal ||
-      !fixtureTemporal.partidos?.length
-    ) {
-
-      alert(
-        "Primero generá el fixture."
-      );
-
-      return;
-    }
-
-
-    const tienePendientes =
-      [
-        ...fixtureTemporal.zonaA,
-        ...fixtureTemporal.zonaB
-      ].some(
-        (pareja) =>
-          pareja.jugadora1 === "PENDIENTE" ||
-          pareja.jugadora2 === "PENDIENTE"
-      );
-
-
-    if (tienePendientes) {
-
-      alert(
-        "Todavía hay una pareja pendiente. Completá las inscripciones antes de confirmar el fixture."
-      );
-
-      return;
-    }
-
-
-    if (partidosActuales.length) {
-
-      alert(
-        "Este evento ya tiene partidos guardados. No se puede confirmar otro fixture encima."
-      );
-
-      return;
-    }
-
-
-    const confirmar =
-      window.confirm(
-        `¿Confirmar este fixture?\n\n` +
-        `${fixtureTemporal.partidos.length} partidos de zona se guardarán en Resultados.\n\n` +
-        `Después vas a poder editarlos manualmente.`
-      );
-
-
-    if (!confirmar) {
-      return;
-    }
-
-
-    botonConfirmarFixture.disabled =
-      true;
-
-    botonConfirmarFixture.textContent =
-      "Guardando fixture...";
-
-
-    try {
-
-      for (
-        let indice = 0;
-        indice < fixtureTemporal.partidos.length;
-        indice++
-      ) {
-
-        const partido =
-          fixtureTemporal.partidos[indice];
-
-
-        const parametros = {
-
-          p_evento_id:
-            eventoActual,
-
-          p_numero_partido:
-            indice + 1,
-
-          p_instancia:
-            `zona_${partido.zona.toLowerCase()}`,
-
-          p_cancha:
-            partido.cancha ||
-            null,
-
-          p_hora_programada:
-            partido.hora ||
-            null,
-
-          p_equipo_1_inscripciones:
-            partido.pareja1.inscripciones,
-
-          p_equipo_2_inscripciones:
-            partido.pareja2.inscripciones,
-
-          p_pareja_1_nombre:
-            `${partido.pareja1.jugadora1} - ${partido.pareja1.jugadora2}`,
-
-          p_pareja_2_nombre:
-            `${partido.pareja2.jugadora1} - ${partido.pareja2.jugadora2}`,
-
-          p_observaciones:
-            `Generado automáticamente · Zona ${partido.zona}`
-
-        };
-
-
-        const {
-          error
-        } =
-          await window.db.rpc(
-            "guardar_partido_fixture",
-            parametros
-          );
-
-
-        if (error) {
-          throw error;
-        }
-
-      }
-
-
-      await cargarPartidosEvento();
-
-
-      alert(
-        "✓ Fixture confirmado correctamente.\n\nLos partidos ya aparecen en Resultados."
-      );
-
-
-      botonConfirmarFixture.textContent =
-        "✓ Fixture confirmado";
-
-      botonConfirmarFixture.disabled =
-        true;
-
-
-    } catch (error) {
-
-      console.error(
-        "Error al confirmar fixture:",
-        error
-      );
-
-
-      alert(
-        error.message ||
-        "No pudimos confirmar el fixture."
-      );
-
-
-      botonConfirmarFixture.disabled =
-        false;
-
-      botonConfirmarFixture.textContent =
-        "✓ Confirmar fixture";
-
-    }
-
-  }
-);
-
 /* ==========================================
    IMPRIMIR FIXTURE
 ========================================== */
@@ -6088,18 +6558,24 @@ botonImprimirFixture?.addEventListener(
       `${pareja.jugadora1} / ${pareja.jugadora2}`;
 
 
-    const partidosZonaA =
-      fixtureTemporal.partidos.filter(
-        (partido) =>
-          partido.zona === "A"
-      );
+    const zonasImpresion =
+  fixtureTemporal.zonas.map(
+    (zona) => ({
 
+      letra:
+        zona.letra,
 
-    const partidosZonaB =
-      fixtureTemporal.partidos.filter(
-        (partido) =>
-          partido.zona === "B"
-      );
+      parejas:
+        zona.parejas,
+
+      partidos:
+        fixtureTemporal.partidos.filter(
+          (partido) =>
+            partido.zona === zona.letra
+        )
+
+    })
+  );
 
 
     const crearPartidos = (
@@ -6729,17 +7205,16 @@ botonImprimirFixture?.addEventListener(
 
       <body>
 
-        ${crearZona(
-          "A",
-          fixtureTemporal.zonaA,
-          partidosZonaA
-        )}
-
-        ${crearZona(
-          "B",
-          fixtureTemporal.zonaB,
-          partidosZonaB
-        )}
+       ${zonasImpresion
+  .map(
+    (zona) =>
+      crearZona(
+        zona.letra,
+        zona.parejas,
+        zona.partidos
+      )
+  )
+  .join("")}
 
         ${faseFinal}
 
@@ -7590,6 +8065,10 @@ filtroPago?.addEventListener(
   aplicarFiltros
 );
 
+botonImprimirInscripciones?.addEventListener(
+  "click",
+  imprimirInscripcionesEvento
+);
 
 /* ==========================================
    MODAL DE COMPROBANTE
