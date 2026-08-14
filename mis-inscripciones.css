@@ -1269,3 +1269,140 @@ button {
   }
 
 }
+
+/* ==========================================
+   TABS MI FIXTURE / FIXTURE COMPLETO
+========================================== */
+
+.fixture-tabs {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: fit-content;
+  max-width: calc(100% - 32px);
+
+  margin: 22px auto 18px;
+  padding: 5px;
+
+  background: #f3edf8;
+  border: 1px solid #e6d9ef;
+  border-radius: 999px;
+
+  gap: 4px;
+}
+
+
+/* BOTONES */
+
+.fixture-tab {
+  appearance: none;
+  border: none;
+  outline: none;
+
+  padding: 10px 20px;
+
+  border-radius: 999px;
+
+  background: transparent;
+
+  color: #5e4674;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+.fixture-tab:hover {
+  background: rgba(166, 108, 201, 0.12);
+}
+
+
+/* PESTAÑA ACTIVA */
+
+.fixture-tab.activo {
+  background: #5b267f;
+  color: #ffffff;
+
+  box-shadow:
+    0 6px 16px rgba(91, 38, 127, 0.18);
+}
+
+
+.fixture-tab.activo:hover {
+  background: #5b267f;
+}
+
+
+.fixture-tab:active {
+  transform: scale(0.98);
+}
+
+
+/* ==========================================
+   PANEL DE FIXTURE
+========================================== */
+
+.fixture-panel {
+  width: 100%;
+
+  animation: aparecerFixture 0.18s ease;
+}
+
+
+.fixture-panel.oculto {
+  display: none;
+}
+
+
+@keyframes aparecerFixture {
+
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+}
+
+
+/* ==========================================
+   CONTENEDOR RESULTADOS
+========================================== */
+
+.resultados-inscripcion {
+  border-top: 1px solid #eee4f3;
+  padding-top: 1px;
+}
+
+
+/* ==========================================
+   MOBILE
+========================================== */
+
+@media (max-width: 600px) {
+
+  .fixture-tabs {
+    width: calc(100% - 24px);
+  }
+
+  .fixture-tab {
+    flex: 1;
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+
+}
