@@ -4496,47 +4496,108 @@ function cambiarTabEvento(
 
 function cargarJugadorasEnPartido() {
 
-  const jugadorasDisponibles =
+  const inscripcionesDisponibles =
     inscripcionesActuales.filter(
       (inscripcion) =>
-        inscripcion.estado !==
-        "cancelada"
+        inscripcion.estado !== "cancelada"
     );
 
 
+  const jugadoras = [];
+
+
+  inscripcionesDisponibles.forEach(
+    (inscripcion) => {
+
+      const participante =
+        inscripcion.participantes || {};
+
+
+      const nombreTitular =
+        [
+          participante.nombre,
+          participante.apellido
+        ]
+          .filter(Boolean)
+          .join(" ")
+          .trim();
+
+
+      /*
+        TITULAR
+      */
+
+      if (nombreTitular) {
+
+        jugadoras.push({
+          id: inscripcion.id,
+          rol: "titular",
+          nombre: nombreTitular
+        });
+
+      }
+
+
+      /*
+        COMPAÑERA
+      */
+
+      if (
+        inscripcion.modalidad === "pareja" &&
+        inscripcion.nombre_companera
+      ) {
+
+        jugadoras.push({
+          id: inscripcion.id,
+          rol: "companera",
+          nombre:
+            inscripcion.nombre_companera.trim()
+        });
+
+      }
+
+    }
+  );
+
+
+  /*
+    Ordenarlas alfabéticamente
+  */
+
+  jugadoras.sort(
+    (a, b) =>
+      a.nombre.localeCompare(
+        b.nombre,
+        "es"
+      )
+  );
+
+
+  /*
+    Crear opciones
+  */
+
   const opciones =
-    jugadorasDisponibles
+    jugadoras
       .map(
-        (inscripcion) => {
-
-          const participante =
-            inscripcion.participantes ||
-            {};
-
-          const nombreCompleto =
-            [
-              participante.nombre,
-              participante.apellido
-            ]
-              .filter(Boolean)
-              .join(" ");
-
-
-          return `
-            <option value="${escaparHTML(
-              inscripcion.id
-            )}">
-              ${escaparHTML(
-                nombreCompleto ||
-                "Jugadora sin nombre"
-              )}
-            </option>
-          `;
-
-        }
+        (jugadora) => `
+          <option
+            value="${escaparHTML(
+              `${jugadora.id}|${jugadora.rol}`
+            )}"
+          >
+            ${escaparHTML(
+              jugadora.nombre
+            )}
+          </option>
+        `
       )
       .join("");
 
+
+  /*
+    Cargar los cuatro selectores
+  */
 
   selectoresJugadoras.forEach(
     (selector) => {
@@ -4544,6 +4605,7 @@ function cargarJugadorasEnPartido() {
       if (!selector) {
         return;
       }
+
 
       selector.innerHTML = `
         <option value="">
@@ -7400,11 +7462,34 @@ formularioPartido?.addEventListener(
 
     try {
 
-    const nombreFuncion =
+  const nombreFuncion =
   partidoEditandoId
     ? "actualizar_partido_evento"
-    : "guardar_partido_evento";
+    : "guardar_partido_evento_v2";
 
+    const [
+  equipo1Jugadora1Id,
+  equipo1Jugadora1Rol
+] =
+  equipo1Jugadora1.value.split("|");
+
+const [
+  equipo1Jugadora2Id,
+  equipo1Jugadora2Rol
+] =
+  equipo1Jugadora2.value.split("|");
+
+const [
+  equipo2Jugadora1Id,
+  equipo2Jugadora1Rol
+] =
+  equipo2Jugadora1.value.split("|");
+
+const [
+  equipo2Jugadora2Id,
+  equipo2Jugadora2Rol
+] =
+  equipo2Jugadora2.value.split("|");
 
 const parametros = {
 
@@ -7426,17 +7511,29 @@ const parametros = {
     partidoHora?.value ||
     null,
 
-  p_equipo_1_jugadora_1:
-    equipo1Jugadora1.value,
+p_equipo_1_jugadora_1:
+  equipo1Jugadora1Id,
 
-  p_equipo_1_jugadora_2:
-    equipo1Jugadora2.value,
+p_equipo_1_jugadora_1_rol:
+  equipo1Jugadora1Rol,
 
-  p_equipo_2_jugadora_1:
-    equipo2Jugadora1.value,
+p_equipo_1_jugadora_2:
+  equipo1Jugadora2Id,
 
-  p_equipo_2_jugadora_2:
-    equipo2Jugadora2.value,
+p_equipo_1_jugadora_2_rol:
+  equipo1Jugadora2Rol,
+
+p_equipo_2_jugadora_1:
+  equipo2Jugadora1Id,
+
+p_equipo_2_jugadora_1_rol:
+  equipo2Jugadora1Rol,
+
+p_equipo_2_jugadora_2:
+  equipo2Jugadora2Id,
+
+p_equipo_2_jugadora_2_rol:
+  equipo2Jugadora2Rol,
 
   p_equipo_1_games:
     equipo1Games?.value !== ""
