@@ -1985,8 +1985,21 @@ if (esCompanera) {
                 );
 
 
-           return crearTarjetaInscripcion(
-  inscripcion,
+  const inscripcionParaMostrar = {
+  ...inscripcion,
+  nombre_companera:
+    esCompanera
+      ? (
+          primeraInscripcion
+            ?.participante_nombre ||
+          "Tu compañera"
+        )
+      : inscripcion.nombre_companera
+};
+
+
+return crearTarjetaInscripcion(
+  inscripcionParaMostrar,
   resultadosInscripcion,
   fixtureCompleto
 );
