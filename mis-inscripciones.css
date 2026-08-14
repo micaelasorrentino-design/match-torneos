@@ -1406,3 +1406,65 @@ button {
   }
 
 }
+
+/* ==========================================
+   CONTENIDO INTERNO DEL FIXTURE
+========================================== */
+
+/* Estadísticas */
+
+.resumen-resultados {
+  width: calc(100% - 80px);
+  max-width: 1180px;
+
+  margin-left: auto;
+  margin-right: auto;
+
+  gap: 14px;
+}
+
+
+/* Lista de partidos */
+
+.lista-resultados-jugadora {
+  width: calc(100% - 80px);
+  max-width: 1180px;
+
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+/* Un poquito más de aire vertical */
+
+.resultado-jugadora-item {
+  margin-bottom: 12px;
+}
+
+
+/* ==========================================
+   TABLET
+========================================== */
+
+@media (max-width: 900px) {
+
+  .resumen-resultados,
+  .lista-resultados-jugadora {
+    width: calc(100% - 40px);
+  }
+
+}
+
+
+/* ==========================================
+   CELULAR
+========================================== */
+
+@media (max-width: 600px) {
+
+  .resumen-resultados,
+  .lista-resultados-jugadora {
+    width: calc(100% - 24px);
+  }
+
+}
