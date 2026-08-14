@@ -1634,7 +1634,36 @@ if (!inscripciones.length) {
       } else {
 
         resultados =
-          respuestaResultados.data || [];
+          respuestaResultados.data || [];const resultadosRecibidos =
+  respuestaResultados.data || [];
+
+const resultadosUnicos = new Map();
+
+resultadosRecibidos.forEach(
+  (partido) => {
+
+    const clave =
+      [
+        partido.inscripcion_id,
+        partido.numero_partido,
+        partido.hora_programada,
+        partido.cancha
+      ].join("|");
+
+    if (!resultadosUnicos.has(clave)) {
+      resultadosUnicos.set(
+        clave,
+        partido
+      );
+    }
+
+  }
+);
+
+resultados =
+  Array.from(
+    resultadosUnicos.values()
+  );
 
       }
 
