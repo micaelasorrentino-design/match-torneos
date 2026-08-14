@@ -451,12 +451,6 @@ function crearDetalleResultados(
 
 }
 
-    </section>
-  `;
-
-}
-
-
 /* ==========================================
    FIXTURE COMPLETO DEL EVENTO
 ========================================== */
@@ -575,10 +569,6 @@ function crearFixtureCompleto(
 /* ==========================================
    TEXTO RESULTADO PARTIDO
 ========================================== */
-
-function textoResultadoPartido(
-  resultado
-) {
 
 function textoResultadoPartido(
   resultado
