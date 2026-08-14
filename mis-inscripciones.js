@@ -451,6 +451,134 @@ function crearDetalleResultados(
 
 }
 
+    </section>
+  `;
+
+}
+
+
+/* ==========================================
+   FIXTURE COMPLETO DEL EVENTO
+========================================== */
+
+function crearFixtureCompleto(
+  partidos = []
+) {
+
+  if (!partidos.length) {
+
+    return `
+      <div class="resultados-vacios">
+        Todavía no hay fixture cargado.
+      </div>
+    `;
+
+  }
+
+  return `
+    <div class="lista-resultados-jugadora">
+
+      ${partidos
+        .map(
+          (partido) => {
+
+            const finalizado =
+              partido.estado ===
+              "finalizado";
+
+            const marcador =
+              finalizado &&
+              partido.pareja_1_games !== null &&
+              partido.pareja_2_games !== null
+                ? `${partido.pareja_1_games} - ${partido.pareja_2_games}`
+                : "VS";
+
+            return `
+              <article class="resultado-jugadora-item">
+
+                <div class="resultado-jugadora-meta">
+
+                  <strong>
+                    Partido ${escaparHTML(
+                      partido.numero_partido
+                    )}
+                  </strong>
+
+                  <span>
+                    ${escaparHTML(
+                      formatearHora(
+                        partido.hora_programada
+                      ) ||
+                      "Horario a confirmar"
+                    )}
+                    ·
+                    ${escaparHTML(
+                      partido.cancha ||
+                      "Cancha a confirmar"
+                    )}
+                  </span>
+
+                </div>
+
+                <div class="resultado-jugadora-partido">
+
+                  <span>
+                    <strong>
+                      ${escaparHTML(
+                        partido.pareja_1_nombre
+                      )}
+                    </strong>
+                  </span>
+
+                  <strong class="resultado-marcador">
+                    ${escaparHTML(
+                      marcador
+                    )}
+                  </strong>
+
+                  <span>
+                    <strong>
+                      ${escaparHTML(
+                        partido.pareja_2_nombre
+                      )}
+                    </strong>
+                  </span>
+
+                </div>
+
+                <span
+                  class="resultado-estado resultado-${escaparHTML(
+                    partido.estado === "finalizado"
+                      ? "ganado"
+                      : "pendiente"
+                  )}"
+                >
+                  ${escaparHTML(
+                    partido.instancia ||
+                    "Partido"
+                  )}
+                </span>
+
+              </article>
+            `;
+
+          }
+        )
+        .join("")}
+
+    </div>
+  `;
+
+}
+
+
+/* ==========================================
+   TEXTO RESULTADO PARTIDO
+========================================== */
+
+function textoResultadoPartido(
+  resultado
+) {
 
 function textoResultadoPartido(
   resultado
@@ -486,7 +614,8 @@ function textoResultadoPartido(
 
 function crearTarjetaInscripcion(
   inscripcion,
-  resultados = []
+  resultados = [],
+  fixtureCompleto = []
 ) {
 
   const horario =
@@ -889,13 +1018,69 @@ const cantidadPartidos =
 
       </div>
 
-      <div
+<div
   class="resultados-inscripcion oculto"
   data-resultados-inscripcion="${escaparHTML(
     inscripcionId
   )}"
 >
-  ${crearDetalleResultados(resultados)}
+
+  <div class="fixture-tabs">
+
+    <button
+      type="button"
+      class="fixture-tab activo"
+      data-tab-fixture="mio"
+      data-inscripcion="${escaparHTML(
+        inscripcionId
+      )}"
+    >
+      Mi fixture
+    </button>
+
+    <button
+      type="button"
+      class="fixture-tab"
+      data-tab-fixture="completo"
+      data-inscripcion="${escaparHTML(
+        inscripcionId
+      )}"
+    >
+      Fixture completo
+    </button>
+
+  </div>
+
+
+  <div
+    class="fixture-panel"
+    data-panel-fixture="mio"
+    data-inscripcion="${escaparHTML(
+      inscripcionId
+    )}"
+  >
+
+    ${crearDetalleResultados(
+      resultados
+    )}
+
+  </div>
+
+
+  <div
+    class="fixture-panel oculto"
+    data-panel-fixture="completo"
+    data-inscripcion="${escaparHTML(
+      inscripcionId
+    )}"
+  >
+
+    ${crearFixtureCompleto(
+      fixtureCompleto
+    )}
+
+  </div>
+
 </div>
 
     </article>
@@ -1609,6 +1794,8 @@ if (!inscripciones.length) {
 }
     let resultados = [];
 
+    let fixtureCompleto = [];
+
 
     try {
 
@@ -1676,6 +1863,46 @@ resultados =
 
     }
 
+    const eventoId =
+  inscripciones[0]?.evento_id;
+
+if (eventoId) {
+
+  try {
+
+    const respuestaFixture =
+      await window.db.rpc(
+        "consultar_fixture_evento",
+        {
+          p_evento_id:
+            eventoId
+        }
+      );
+
+    if (respuestaFixture.error) {
+
+      console.error(
+        "Error al consultar fixture completo:",
+        respuestaFixture.error
+      );
+
+    } else {
+
+      fixtureCompleto =
+        respuestaFixture.data || [];
+
+    }
+
+  } catch (errorFixture) {
+
+    console.error(
+      "No pudimos consultar el fixture completo:",
+      errorFixture
+    );
+
+  }
+
+}
 
     if (!inscripciones.length) {
 
@@ -1768,10 +1995,11 @@ if (esCompanera) {
                 );
 
 
-              return crearTarjetaInscripcion(
-                inscripcion,
-                resultadosInscripcion
-              );
+           return crearTarjetaInscripcion(
+  inscripcion,
+  resultadosInscripcion,
+  fixtureCompleto
+);
 
             }
           )
@@ -1914,6 +2142,79 @@ document.addEventListener(
       );
 
     }
+
+  }
+);
+
+/* ==========================================
+   CAMBIAR ENTRE MI FIXTURE Y FIXTURE COMPLETO
+========================================== */
+
+document.addEventListener(
+  "click",
+  (evento) => {
+
+    const botonTab =
+      evento.target.closest(
+        "[data-tab-fixture]"
+      );
+
+    if (!botonTab) {
+      return;
+    }
+
+
+    const tipoTab =
+      botonTab.dataset.tabFixture;
+
+    const inscripcionId =
+      botonTab.dataset.inscripcion;
+
+
+    if (!tipoTab || !inscripcionId) {
+      return;
+    }
+
+
+    /*
+      ACTIVAR BOTÓN CORRECTO
+    */
+
+    document
+      .querySelectorAll(
+        `[data-tab-fixture][data-inscripcion="${inscripcionId}"]`
+      )
+      .forEach(
+        (boton) => {
+
+          boton.classList.toggle(
+            "activo",
+            boton === botonTab
+          );
+
+        }
+      );
+
+
+    /*
+      MOSTRAR PANEL CORRECTO
+    */
+
+    document
+      .querySelectorAll(
+        `[data-panel-fixture][data-inscripcion="${inscripcionId}"]`
+      )
+      .forEach(
+        (panel) => {
+
+          panel.classList.toggle(
+            "oculto",
+            panel.dataset.panelFixture !==
+              tipoTab
+          );
+
+        }
+      );
 
   }
 );
