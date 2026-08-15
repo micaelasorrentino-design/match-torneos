@@ -4492,18 +4492,103 @@ function cambiarTabEvento(
 
 }
 
-/* CARGAR JUGADORAS DEL EVENTO */
+/* ==========================================
+   CARGAR JUGADORAS DEL EVENTO
+========================================== */
 
-function cargarJugadorasEnPartido() {
+function obtenerJugadorasDisponibles() {
+
+  const jugadoras = [];
+
+  inscripcionesActuales
+    .filter(
+      (inscripcion) =>
+        inscripcion.estado !== "cancelada"
+    )
+    .forEach(
+      (inscripcion) => {
+
+        const participante =
+          inscripcion.participantes || {};
+
+        const nombreTitular =
+          [
+            participante.nombre,
+            participante.apellido
+          ]
+            .filter(Boolean)
+            .join(" ")
+            .trim();
+
+
+        if (nombreTitular) {
+
+          jugadoras.push({
+            id: inscripcion.id,
+            rol: "titular",
+            nombre: nombreTitular,
+            modalidad:
+              inscripcion.modalidad,
+            pareja:
+              inscripcion.modalidad === "pareja" &&
+              inscripcion.nombre_companera
+                ? `${inscripcion.id}|companera`
+                : null
+          });
+
+        }
+
+
+        if (
+          inscripcion.modalidad === "pareja" &&
+          inscripcion.nombre_companera
+        ) {
+
+          jugadoras.push({
+            id: inscripcion.id,
+            rol: "companera",
+            nombre:
+              inscripcion.nombre_companera.trim(),
+            modalidad: "pareja",
+            pareja:
+              `${inscripcion.id}|titular`
+          });
+
+        }
+
+      }
+    );
+
+
+  jugadoras.sort(
+    (a, b) =>
+      a.nombre.localeCompare(
+        b.nombre,
+        "es"
+      )
+  );
+
+
+  return jugadoras;
+}
+
+
+/* ==========================================
+   CARGAR SELECTORES
+========================================== */
+/* ==========================================
+   JUGADORAS DISPONIBLES DEL EVENTO
+========================================== */
+
+function obtenerJugadorasDisponibles() {
+
+  const jugadoras = [];
 
   const inscripcionesDisponibles =
     inscripcionesActuales.filter(
       (inscripcion) =>
         inscripcion.estado !== "cancelada"
     );
-
-
-  const jugadoras = [];
 
 
   inscripcionesDisponibles.forEach(
@@ -4523,24 +4608,38 @@ function cargarJugadorasEnPartido() {
           .trim();
 
 
-      /*
-        TITULAR
-      */
+      /* TITULAR */
 
       if (nombreTitular) {
 
         jugadoras.push({
-          id: inscripcion.id,
-          rol: "titular",
-          nombre: nombreTitular
+
+          id:
+            inscripcion.id,
+
+          rol:
+            "titular",
+
+          nombre:
+            nombreTitular,
+
+          modalidad:
+            inscripcion.modalidad,
+
+          parejaAutomatica:
+            (
+              inscripcion.modalidad === "pareja" &&
+              inscripcion.nombre_companera
+            )
+              ? `${inscripcion.id}|companera`
+              : null
+
         });
 
       }
 
 
-      /*
-        COMPAÑERA
-      */
+      /* COMPAÑERA */
 
       if (
         inscripcion.modalidad === "pareja" &&
@@ -4548,10 +4647,22 @@ function cargarJugadorasEnPartido() {
       ) {
 
         jugadoras.push({
-          id: inscripcion.id,
-          rol: "companera",
+
+          id:
+            inscripcion.id,
+
+          rol:
+            "companera",
+
           nombre:
-            inscripcion.nombre_companera.trim()
+            inscripcion.nombre_companera.trim(),
+
+          modalidad:
+            "pareja",
+
+          parejaAutomatica:
+            `${inscripcion.id}|titular`
+
         });
 
       }
@@ -4559,10 +4670,6 @@ function cargarJugadorasEnPartido() {
     }
   );
 
-
-  /*
-    Ordenarlas alfabéticamente
-  */
 
   jugadoras.sort(
     (a, b) =>
@@ -4573,9 +4680,20 @@ function cargarJugadorasEnPartido() {
   );
 
 
-  /*
-    Crear opciones
-  */
+  return jugadoras;
+
+}
+
+
+/* ==========================================
+   CARGAR JUGADORAS EN LOS SELECTORES
+========================================== */
+
+function cargarJugadorasEnPartido() {
+
+  const jugadoras =
+    obtenerJugadorasDisponibles();
+
 
   const opciones =
     jugadoras
@@ -4595,16 +4713,16 @@ function cargarJugadorasEnPartido() {
       .join("");
 
 
-  /*
-    Cargar los cuatro selectores
-  */
-
   selectoresJugadoras.forEach(
     (selector) => {
 
       if (!selector) {
         return;
       }
+
+
+      selector.disabled =
+        false;
 
 
       selector.innerHTML = `
@@ -4622,6 +4740,155 @@ function cargarJugadorasEnPartido() {
   actualizarJugadorasDeshabilitadas();
 
 }
+
+
+/* ==========================================
+   OBTENER LA PAREJA CON LA QUE SE INSCRIBIÓ
+========================================== */
+
+function obtenerParejaAutomatica(
+  valorJugadora
+) {
+
+  if (!valorJugadora) {
+    return null;
+  }
+
+
+  const jugadoras =
+    obtenerJugadorasDisponibles();
+
+
+  const jugadora =
+    jugadoras.find(
+      (item) =>
+        `${item.id}|${item.rol}` ===
+        valorJugadora
+    );
+
+
+  return (
+    jugadora?.parejaAutomatica ||
+    null
+  );
+
+}
+
+
+/* ==========================================
+   COMPLETAR PAREJA
+========================================== */
+
+function completarParejaAutomatica(
+  selectorPrincipal,
+  selectorCompanera
+) {
+
+  if (
+    !selectorPrincipal ||
+    !selectorCompanera
+  ) {
+    return;
+  }
+
+
+  const valorPrincipal =
+    selectorPrincipal.value;
+
+
+  /*
+    Si borramos la jugadora principal,
+    liberamos también el segundo campo.
+  */
+
+  if (!valorPrincipal) {
+
+    selectorCompanera.value =
+      "";
+
+    selectorCompanera.disabled =
+      false;
+
+    actualizarJugadorasDeshabilitadas();
+
+    return;
+
+  }
+
+
+  const parejaAutomatica =
+    obtenerParejaAutomatica(
+      valorPrincipal
+    );
+
+
+  /*
+    ESTÁ INSCRIPTA CON PAREJA
+  */
+
+  if (parejaAutomatica) {
+
+    selectorCompanera.value =
+      parejaAutomatica;
+
+    selectorCompanera.disabled =
+      true;
+
+  } else {
+
+    /*
+      ESTÁ INSCRIPTA INDIVIDUAL
+
+      No le asignamos nadie.
+      Mica puede elegir la compañera.
+    */
+
+    selectorCompanera.value =
+      "";
+
+    selectorCompanera.disabled =
+      false;
+
+  }
+
+
+  actualizarJugadorasDeshabilitadas();
+
+}
+
+
+/* ==========================================
+   PAREJA 1
+========================================== */
+
+equipo1Jugadora1?.addEventListener(
+  "change",
+  () => {
+
+    completarParejaAutomatica(
+      equipo1Jugadora1,
+      equipo1Jugadora2
+    );
+
+  }
+);
+
+
+/* ==========================================
+   PAREJA 2
+========================================== */
+
+equipo2Jugadora1?.addEventListener(
+  "change",
+  () => {
+
+    completarParejaAutomatica(
+      equipo2Jugadora1,
+      equipo2Jugadora2
+    );
+
+  }
+);
 
 /* ==========================================
    CARGAR PARTIDOS DEL EVENTO
@@ -4663,7 +4930,7 @@ async function cargarPartidosEvento() {
       error
     } =
       await window.db.rpc(
-        "listar_partidos_evento",
+       "listar_partidos_evento_v2",
         {
           p_evento_id:
             eventoActual
@@ -5734,44 +6001,78 @@ const partidoZona =
     en el SQL del siguiente paso.
   */
 
-  if (equipo1Jugadora1) {
+ if (equipo1Jugadora1) {
 
-    equipo1Jugadora1.value =
-      partido.equipo_1_jugadora_1 ||
-      "";
+  equipo1Jugadora1.value =
+    partido.equipo_1_jugadora_1 &&
+    partido.equipo_1_jugadora_1_rol
+      ? `${partido.equipo_1_jugadora_1}|${partido.equipo_1_jugadora_1_rol}`
+      : "";
 
-  }
-
-
-  if (equipo1Jugadora2) {
-
-    equipo1Jugadora2.value =
-      partido.equipo_1_jugadora_2 ||
-      "";
-
-  }
+}
 
 
-  if (equipo2Jugadora1) {
+if (equipo1Jugadora2) {
 
-    equipo2Jugadora1.value =
-      partido.equipo_2_jugadora_1 ||
-      "";
+  equipo1Jugadora2.value =
+    partido.equipo_1_jugadora_2 &&
+    partido.equipo_1_jugadora_2_rol
+      ? `${partido.equipo_1_jugadora_2}|${partido.equipo_1_jugadora_2_rol}`
+      : "";
 
-  }
-
-
-  if (equipo2Jugadora2) {
-
-    equipo2Jugadora2.value =
-      partido.equipo_2_jugadora_2 ||
-      "";
-
-  }
+}
 
 
-  actualizarJugadorasDeshabilitadas();
+if (equipo2Jugadora1) {
 
+  equipo2Jugadora1.value =
+    partido.equipo_2_jugadora_1 &&
+    partido.equipo_2_jugadora_1_rol
+      ? `${partido.equipo_2_jugadora_1}|${partido.equipo_2_jugadora_1_rol}`
+      : "";
+
+}
+
+
+if (equipo2Jugadora2) {
+
+  equipo2Jugadora2.value =
+    partido.equipo_2_jugadora_2 &&
+    partido.equipo_2_jugadora_2_rol
+      ? `${partido.equipo_2_jugadora_2}|${partido.equipo_2_jugadora_2_rol}`
+      : "";
+
+}
+
+
+/*
+  Si la pareja provenía de una inscripción conjunta,
+  dejamos la segunda jugadora bloqueada.
+*/
+
+if (
+  obtenerParejaInscripta(
+    equipo1Jugadora1?.value
+  ) === equipo1Jugadora2?.value
+) {
+
+  equipo1Jugadora2.disabled = true;
+
+}
+
+
+if (
+  obtenerParejaInscripta(
+    equipo2Jugadora1?.value
+  ) === equipo2Jugadora2?.value
+) {
+
+  equipo2Jugadora2.disabled = true;
+
+}
+
+
+actualizarJugadorasDeshabilitadas();
 
   if (guardarPartido) {
 
