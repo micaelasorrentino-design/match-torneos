@@ -6081,7 +6081,7 @@ if (
 
 
 if (
-  obtenerParejaInscripta(
+  obtenerParejaAutomatica(
     equipo2Jugadora1?.value
   ) === equipo2Jugadora2?.value
 ) {
