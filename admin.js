@@ -6051,12 +6051,31 @@ if (equipo2Jugadora2) {
 */
 
 if (
-  obtenerParejaInscripta(
+  obtenerParejaAutomatica(
     equipo1Jugadora1?.value
   ) === equipo1Jugadora2?.value
 ) {
 
   equipo1Jugadora2.disabled = true;
+
+} else if (equipo1Jugadora2) {
+
+  equipo1Jugadora2.disabled = false;
+
+}
+
+
+if (
+  obtenerParejaAutomatica(
+    equipo2Jugadora1?.value
+  ) === equipo2Jugadora2?.value
+) {
+
+  equipo2Jugadora2.disabled = true;
+
+} else if (equipo2Jugadora2) {
+
+  equipo2Jugadora2.disabled = false;
 
 }
 
