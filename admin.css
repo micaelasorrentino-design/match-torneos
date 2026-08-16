@@ -2206,3 +2206,43 @@ tbody tr:hover {
   margin-top: 0 !important;
   margin-bottom: 8px !important;
 }
+
+/* ==========================================
+   ASESOR DE FIXTURE MATCH
+========================================== */
+
+.asesor-fixture-match {
+  margin-top: 20px;
+  padding: 18px 20px;
+  border-radius: 16px;
+  line-height: 1.5;
+}
+
+.asesor-fixture-match strong {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 16px;
+}
+
+.asesor-fixture-match p {
+  margin: 0 0 5px;
+  font-size: 14px;
+}
+
+.asesor-fixture-match small {
+  display: block;
+  margin-top: 8px;
+  font-size: 13px;
+}
+
+.asesor-ok {
+  background: #edf8f1;
+  border: 1px solid #b8dfc6;
+  color: #315f43;
+}
+
+.asesor-alerta {
+  background: #f8f3fb;
+  border: 1px solid #d9c2e8;
+  color: #3d255b;
+}

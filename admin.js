@@ -6248,6 +6248,11 @@ const campoCantidadCanchas =
     "fixture-cantidad-zonas"
   );
 
+  const campoPartidosAsegurados =
+  document.getElementById(
+    "fixture-partidos-asegurados"
+  );
+
 const campoDuracionPartido =
   document.getElementById(
     "fixture-duracion-partido"
@@ -6271,6 +6276,11 @@ const cantidadCanchas =
   const cantidadZonas =
   Number(
     campoCantidadZonas?.value
+  );
+
+  const partidosAsegurados =
+  Number(
+    campoPartidosAsegurados?.value
   );
 
 const duracionPartido =
@@ -6507,6 +6517,123 @@ parejasConfirmadas.forEach(
 
   }
 );
+
+/* ==========================================
+   VALIDAR PARTIDOS ASEGURADOS EN ZONAS
+========================================== */
+
+const partidosZonaPorPareja =
+  zonas.map(
+    (zona) => ({
+      zona: zona.letra,
+      cantidadParejas:
+        zona.parejas.length,
+      partidosPorPareja:
+        Math.max(
+          zona.parejas.length - 1,
+          0
+        )
+    })
+  );
+
+
+const minimoPartidosZona =
+  Math.min(
+    ...partidosZonaPorPareja.map(
+      (zona) =>
+        zona.partidosPorPareja
+    )
+  );
+
+
+const cumplePartidosAsegurados =
+  minimoPartidosZona >=
+  partidosAsegurados;
+
+
+console.log(
+  "Partidos asegurados solicitados:",
+  partidosAsegurados
+);
+
+console.log(
+  "Mínimo asegurado por zonas:",
+  minimoPartidosZona
+);
+
+console.table(
+  partidosZonaPorPareja
+);
+
+/* ==========================================
+   ASESOR MATCH - MOSTRAR VALIDACIÓN
+========================================== */
+
+const asesorFixture =
+  document.getElementById(
+    "asesor-fixture-match"
+  );
+
+
+if (asesorFixture) {
+
+  const partidosFaltantes =
+    Math.max(
+      partidosAsegurados -
+      minimoPartidosZona,
+      0
+    );
+
+
+  if (cumplePartidosAsegurados) {
+
+    asesorFixture.innerHTML = `
+      <strong>
+        ✓ Este formato cumple
+      </strong>
+
+      <p>
+        La fase de zonas garantiza
+        <b>${minimoPartidosZona}</b>
+        partidos por pareja.
+        Tu objetivo es asegurar
+        <b>${partidosAsegurados}</b>.
+      </p>
+    `;
+
+    asesorFixture.className =
+      "asesor-fixture-match asesor-ok";
+
+  } else {
+
+    asesorFixture.innerHTML = `
+      <strong>
+        ⚠ Este formato todavía no cumple
+      </strong>
+
+      <p>
+        La fase de zonas garantiza
+        <b>${minimoPartidosZona}</b>
+        partidos por pareja,
+        pero pediste un mínimo de
+        <b>${partidosAsegurados}</b>.
+      </p>
+
+      <small>
+        Necesitamos garantizar
+        ${partidosFaltantes}
+        partido${partidosFaltantes === 1 ? "" : "s"}
+        adicional${partidosFaltantes === 1 ? "" : "es"}
+        mediante cuadro final, repechaje
+        o partidos complementarios.
+      </small>
+    `;
+
+    asesorFixture.className =
+      "asesor-fixture-match asesor-alerta";
+  }
+
+}
 
 
 /* ==========================================
@@ -6832,17 +6959,17 @@ fixtureTemporal = {
 
   configuracion: {
 
-    horaInicio,
+  horaInicio,
+  duracionEvento,
+  cantidadCanchas,
+  cantidadZonas,
+  duracionPartido,
+  partidosAsegurados,
 
-    duracionEvento,
+  minimoPartidosZona,
+  cumplePartidosAsegurados
 
-    cantidadCanchas,
-
-    cantidadZonas,
-
-    duracionPartido
-
-  }
+}
 
 };
 
