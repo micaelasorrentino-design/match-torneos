@@ -6555,9 +6555,88 @@ const minimoPartidosZona =
   );
 
 
+/* ==========================================
+   ANALIZAR FORMATO DE COMPETENCIA
+========================================== */
+
+function analizarFormatoCompetencia() {
+
+  let partidosExtraGarantizados = 0;
+  let descripcionFormato = "";
+
+  switch (formatoCompetencia) {
+
+    case "tres_zonas_terceros_repechaje":
+
+      if (cantidadZonas === 3) {
+
+        /*
+          Todas las parejas tienen al menos
+          un partido después de la zona:
+
+          - clasificadas → cuartos
+          - no clasificadas → repechaje
+        */
+
+        partidosExtraGarantizados = 1;
+
+        descripcionFormato =
+          "1° y 2° de cada zona + las 2 mejores terceras pasan a cuartos. " +
+          "Las demás parejas juegan repechaje.";
+
+      }
+
+      break;
+
+
+    case "solo_zonas":
+
+      partidosExtraGarantizados = 0;
+
+      descripcionFormato =
+        "El torneo termina al finalizar la fase de zonas.";
+
+      break;
+
+
+    default:
+
+      partidosExtraGarantizados = 0;
+
+      descripcionFormato =
+        "El formato todavía no fue analizado automáticamente.";
+
+      break;
+
+  }
+
+
+  const minimoPartidosTorneo =
+    minimoPartidosZona +
+    partidosExtraGarantizados;
+
+
+  const cumple =
+    minimoPartidosTorneo >=
+    partidosAsegurados;
+
+
+  return {
+    partidosExtraGarantizados,
+    minimoPartidosTorneo,
+    cumple,
+    descripcionFormato
+  };
+
+}
+
+
+const analisisFormato =
+  analizarFormatoCompetencia();
+
+
 const cumplePartidosAsegurados =
-  minimoPartidosZona >=
-  partidosAsegurados;
+  analisisFormato.cumple;
 
 
 console.log(
@@ -6586,12 +6665,12 @@ const asesorFixture =
 
 if (asesorFixture) {
 
-  const partidosFaltantes =
-    Math.max(
-      partidosAsegurados -
-      minimoPartidosZona,
-      0
-    );
+const partidosFaltantes =
+  Math.max(
+    partidosAsegurados -
+    analisisFormato.minimoPartidosTorneo,
+    0
+  );
 
 
   if (cumplePartidosAsegurados) {
@@ -6601,13 +6680,18 @@ if (asesorFixture) {
         ✓ Este formato cumple
       </strong>
 
-      <p>
-        La fase de zonas garantiza
-        <b>${minimoPartidosZona}</b>
-        partidos por pareja.
-        Tu objetivo es asegurar
-        <b>${partidosAsegurados}</b>.
-      </p>
+     <p>
+  La fase de zonas garantiza
+  <b>${minimoPartidosZona}</b>
+  partidos por pareja y el formato
+  seleccionado garantiza al menos
+  <b>${analisisFormato.partidosExtraGarantizados}</b>
+  partido adicional.
+</p>
+
+<small>
+  ${analisisFormato.descripcionFormato}
+</small>
     `;
 
     asesorFixture.className =
