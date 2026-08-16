@@ -5255,50 +5255,133 @@ const crearPartidoHTML = (
     .join("");
 
 
-    /* ==========================================
-     ELIMINACIÓN
-  ========================================== */
+/* ==========================================
+   CUADRO SEGÚN FORMATO DE COMPETENCIA
+========================================== */
 
-  const cuartosHTML = [
+const formatoCompetencia =
+  fixtureTemporal.configuracion
+    ?.formatoCompetencia ||
+  "automatico";
+
+
+let cuartosHTML = "";
+let repechajeHTML = "";
+let semifinalesHTML = "";
+let finalHTML = "";
+let seccionesEliminacionHTML = "";
+
+
+/* ==========================================
+   FORMATO: 3 ZONAS + MEJORES TERCERAS
+   + REPECHAJE
+========================================== */
+
+if (
+  formatoCompetencia ===
+  "tres_zonas_terceros_repechaje"
+) {
+
+  /*
+    CLASIFICAN 8:
+
+    1° A
+    2° A
+    1° B
+    2° B
+    1° C
+    2° C
+    Mejor 3° #1
+    Mejor 3° #2
+
+    Las otras 4 parejas juegan repechaje.
+  */
+
+  const cuartos = [
 
     [
       "C1",
       "1° Zona A",
-      "4° Zona B"
+      "Mejor 3° #2"
     ],
 
     [
       "C2",
-      "2° Zona A",
-      "3° Zona B"
+      "1° Zona B",
+      "Mejor 3° #1"
     ],
 
     [
       "C3",
-      "1° Zona B",
-      "4° Zona A"
+      "1° Zona C",
+      "2° Zona A"
     ],
 
     [
       "C4",
       "2° Zona B",
-      "3° Zona A"
+      "2° Zona C"
     ]
 
-  ]
-    .map(
-      (partido) =>
-        crearPartidoHTML(
-          partido[0],
-          "Cuartos de final",
-          partido[1],
-          partido[2]
-        )
-    )
-    .join("");
+  ];
 
 
-  const semifinalesHTML = [
+  cuartosHTML =
+    cuartos
+      .map(
+        (partido) =>
+          crearPartidoHTML(
+            partido[0],
+            "Cuartos de final",
+            partido[1],
+            partido[2]
+          )
+      )
+      .join("");
+
+
+  /*
+    Quedan 4 parejas afuera del cuadro:
+
+    - la tercera que no clasificó
+    - las tres cuartas
+
+    Luego vamos a reemplazar #1/#2/#3/#4
+    por los nombres reales automáticamente.
+  */
+
+  const repechaje = [
+
+    [
+      "R1",
+      "No clasificada #1",
+      "No clasificada #4"
+    ],
+
+    [
+      "R2",
+      "No clasificada #2",
+      "No clasificada #3"
+    ]
+
+  ];
+
+
+  repechajeHTML =
+    repechaje
+      .map(
+        (partido) =>
+          crearPartidoHTML(
+            partido[0],
+            "Repechaje",
+            partido[1],
+            partido[2]
+          )
+      )
+      .join("");
+
+
+  const semifinales = [
 
     [
       "S1",
@@ -5310,6 +5393,144 @@ const crearPartidoHTML = (
       "S2",
       "Ganador C3",
       "Ganador C4"
+    ]
+
+  ];
+
+
+  semifinalesHTML =
+    semifinales
+      .map(
+        (partido) =>
+          crearPartidoHTML(
+            partido[0],
+            "Semifinal",
+            partido[1],
+            partido[2]
+          )
+      )
+      .join("");
+
+
+  finalHTML =
+    crearPartidoHTML(
+      "F",
+      "Final",
+      "Ganador S1",
+      "Ganador S2"
+    );
+
+
+  seccionesEliminacionHTML = `
+
+    <section class="fixture-etapa">
+
+      <div class="fixture-etapa-titulo">
+        <span>CUADRO PRINCIPAL</span>
+        <h3>Cuartos de final</h3>
+      </div>
+
+      <div class="fixture-etapa-partidos">
+        ${cuartosHTML}
+      </div>
+
+    </section>
+
+
+    <section class="fixture-etapa">
+
+      <div class="fixture-etapa-titulo">
+        <span>PARTIDO ASEGURADO</span>
+        <h3>Repechaje</h3>
+      </div>
+
+      <div class="fixture-etapa-partidos">
+        ${repechajeHTML}
+      </div>
+
+    </section>
+
+
+    <section class="fixture-etapa">
+
+      <div class="fixture-etapa-titulo">
+        <span>ELIMINACIÓN</span>
+        <h3>Semifinales</h3>
+      </div>
+
+      <div class="fixture-etapa-partidos">
+        ${semifinalesHTML}
+      </div>
+
+    </section>
+
+
+    <section class="fixture-etapa">
+
+      <div class="fixture-etapa-titulo">
+        <span>DEFINICIÓN</span>
+        <h3>Final</h3>
+      </div>
+
+      <div class="fixture-etapa-partidos">
+        ${finalHTML}
+      </div>
+
+    </section>
+
+  `;
+
+}
+
+
+/* ==========================================
+   FORMATO: 1 ZONA + PASE A SEMIS
+========================================== */
+
+else if (
+  formatoCompetencia ===
+  "una_zona_semis"
+) {
+
+  const clasificacionHTML = [
+
+    [
+      "P1",
+      "3° general",
+      "5° general"
+    ],
+
+    [
+      "P2",
+      "4° general",
+      "6° general"
+    ]
+
+  ]
+    .map(
+      (partido) =>
+        crearPartidoHTML(
+          partido[0],
+          "Clasificación",
+          partido[1],
+          partido[2]
+        )
+    )
+    .join("");
+
+
+  semifinalesHTML = [
+
+    [
+      "S1",
+      "1° general",
+      "Ganador P2"
+    ],
+
+    [
+      "S2",
+      "2° general",
+      "Ganador P1"
     ]
 
   ]
@@ -5325,7 +5546,7 @@ const crearPartidoHTML = (
     .join("");
 
 
-  const finalHTML =
+  finalHTML =
     crearPartidoHTML(
       "F",
       "Final",
@@ -5334,9 +5555,110 @@ const crearPartidoHTML = (
     );
 
 
+  seccionesEliminacionHTML = `
+
+    <section class="fixture-etapa">
+
+      <div class="fixture-etapa-titulo">
+        <span>CLASIFICACIÓN</span>
+        <h3>Ingreso a semifinales</h3>
+      </div>
+
+      <div class="fixture-etapa-partidos">
+        ${clasificacionHTML}
+      </div>
+
+    </section>
+
+
+    <section class="fixture-etapa">
+
+      <div class="fixture-etapa-titulo">
+        <span>ELIMINACIÓN</span>
+        <h3>Semifinales</h3>
+      </div>
+
+      <div class="fixture-etapa-partidos">
+        ${semifinalesHTML}
+      </div>
+
+    </section>
+
+
+    <section class="fixture-etapa">
+
+      <div class="fixture-etapa-titulo">
+        <span>DEFINICIÓN</span>
+        <h3>Final</h3>
+      </div>
+
+      <div class="fixture-etapa-partidos">
+        ${finalHTML}
+      </div>
+
+    </section>
+
+  `;
+
+}
+
+
+/* ==========================================
+   SOLO ZONAS
+========================================== */
+
+else if (
+  formatoCompetencia ===
+  "solo_zonas"
+) {
+
+  seccionesEliminacionHTML = "";
+
+}
+
+
+/* ==========================================
+   OTROS FORMATOS / FALLBACK
+========================================== */
+
+else {
+
+  seccionesEliminacionHTML = `
+
+    <section class="fixture-etapa">
+
+      <div class="fixture-etapa-titulo">
+        <span>FORMATO</span>
+        <h3>Cuadro a definir</h3>
+      </div>
+
+      <div class="estado-resultados-vacio">
+
+        <strong>
+          Elegí un formato de competencia
+        </strong>
+
+        <p>
+          MATCH mostrará acá el cuadro
+          correspondiente al formato elegido.
+        </p>
+
+      </div>
+
+    </section>
+
+  `;
+
+}
+
+
   listaFixtureAdmin.innerHTML = `
 
   ${zonasHTML}
+
+  ${seccionesEliminacionHTML}
+
+`;
 
   <section class="fixture-etapa">
 
