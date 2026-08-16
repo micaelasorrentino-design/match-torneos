@@ -1725,6 +1725,11 @@ if (respuestaInscripciones.error) {
 let inscripciones =
   respuestaInscripciones.data || [];
 
+  console.log(
+  "MI MATCH - INSCRIPCIONES:",
+  inscripciones
+);
+
 
 /* SI NO APARECE COMO TITULAR,
    BUSCAMOS SI ES COMPAÑERA */
@@ -1779,6 +1784,11 @@ if (!inscripciones.length) {
 
     inscripciones =
       respuestaInscripciones.data || [];
+
+      console.log(
+  "MI MATCH - INSCRIPCIONES:",
+  inscripciones
+);
   }
 
 }
@@ -1841,6 +1851,11 @@ resultados =
   Array.from(
     resultadosUnicos.values()
   );
+
+  console.log(
+  "MI MATCH - RESULTADOS:",
+  resultados
+);
 
       }
 
