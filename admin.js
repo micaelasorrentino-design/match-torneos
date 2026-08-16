@@ -5660,50 +5660,7 @@ else {
 
 `;
 
-  <section class="fixture-etapa">
-
-    <div class="fixture-etapa-titulo">
-      <span>ELIMINACIÓN</span>
-      <h3>Cuartos de final</h3>
-    </div>
-
-    <div class="fixture-etapa-partidos">
-      ${cuartosHTML}
-    </div>
-
-  </section>
-
-
-  <section class="fixture-etapa">
-
-    <div class="fixture-etapa-titulo">
-      <span>ELIMINACIÓN</span>
-      <h3>Semifinales</h3>
-    </div>
-
-    <div class="fixture-etapa-partidos">
-      ${semifinalesHTML}
-    </div>
-
-  </section>
-
-
-  <section class="fixture-etapa">
-
-    <div class="fixture-etapa-titulo">
-      <span>DEFINICIÓN</span>
-      <h3>Final</h3>
-    </div>
-
-    <div class="fixture-etapa-partidos">
-      ${finalHTML}
-    </div>
-
-  </section>
-
-`;
-
-  if (textoCantidadFixture) {
+   if (textoCantidadFixture) {
 
     textoCantidadFixture.textContent =
       `${fixtureTemporal.partidos.length} partidos de zona + fase eliminatoria.`;
