@@ -6253,6 +6253,11 @@ const campoCantidadCanchas =
     "fixture-partidos-asegurados"
   );
 
+  const campoFormatoCompetencia =
+  document.getElementById(
+    "fixture-formato-competencia"
+  );
+
 const campoDuracionPartido =
   document.getElementById(
     "fixture-duracion-partido"
@@ -6282,6 +6287,10 @@ const cantidadCanchas =
   Number(
     campoPartidosAsegurados?.value
   );
+
+  const formatoCompetencia =
+  campoFormatoCompetencia?.value ||
+  "automatico";
 
 const duracionPartido =
   Number(
@@ -6957,7 +6966,7 @@ fixtureTemporal = {
   partidos:
     partidosFixture,
 
-  configuracion: {
+configuracion: {
 
   horaInicio,
   duracionEvento,
@@ -6965,6 +6974,7 @@ fixtureTemporal = {
   cantidadZonas,
   duracionPartido,
   partidosAsegurados,
+  formatoCompetencia,
 
   minimoPartidosZona,
   cumplePartidosAsegurados
