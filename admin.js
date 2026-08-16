@@ -5103,6 +5103,260 @@ function actualizarEstadoBotonFixture() {
 
 }
 
+/* ==========================================
+   CLASIFICACIÓN AUTOMÁTICA POR ZONA
+========================================== */
+
+function normalizarNombrePareja(
+  nombre = ""
+) {
+
+  return String(nombre)
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(
+      /[\u0300-\u036f]/g,
+      ""
+    )
+    .replace(/\s+/g, " ")
+    .trim();
+
+}
+
+
+/* ==========================================
+   BUSCAR PARTIDOS REALES DE UNA PAREJA
+========================================== */
+
+function obtenerPartidosPareja(
+  pareja
+) {
+
+  const nombre =
+    normalizarNombrePareja(
+      `${pareja.jugadora1} / ${pareja.jugadora2}`
+    );
+
+
+  return partidosActuales.filter(
+    (partido) => {
+
+      if (
+        partido.instancia !== "zona"
+      ) {
+        return false;
+      }
+
+
+      const pareja1 =
+        normalizarNombrePareja(
+          partido.pareja_1_nombre || ""
+        );
+
+
+      const pareja2 =
+        normalizarNombrePareja(
+          partido.pareja_2_nombre || ""
+        );
+
+
+      return (
+        pareja1 === nombre ||
+        pareja2 === nombre
+      );
+
+    }
+  );
+
+}
+
+
+/* ==========================================
+   CALCULAR ESTADÍSTICAS DE UNA PAREJA
+========================================== */
+
+function calcularEstadisticasPareja(
+  pareja
+) {
+
+  const partidos =
+    obtenerPartidosPareja(
+      pareja
+    );
+
+
+  const nombre =
+    normalizarNombrePareja(
+      `${pareja.jugadora1} / ${pareja.jugadora2}`
+    );
+
+
+  let jugados = 0;
+  let ganados = 0;
+  let perdidos = 0;
+  let gamesFavor = 0;
+  let gamesContra = 0;
+
+
+  partidos.forEach(
+    (partido) => {
+
+      if (
+        partido.estado !== "finalizado"
+      ) {
+        return;
+      }
+
+
+      if (
+        partido.pareja_1_games === null ||
+        partido.pareja_2_games === null
+      ) {
+        return;
+      }
+
+
+      const pareja1 =
+        normalizarNombrePareja(
+          partido.pareja_1_nombre || ""
+        );
+
+
+      const esPareja1 =
+        pareja1 === nombre;
+
+
+      const favor =
+        Number(
+          esPareja1
+            ? partido.pareja_1_games
+            : partido.pareja_2_games
+        );
+
+
+      const contra =
+        Number(
+          esPareja1
+            ? partido.pareja_2_games
+            : partido.pareja_1_games
+        );
+
+
+      jugados++;
+
+      gamesFavor += favor;
+      gamesContra += contra;
+
+
+      if (favor > contra) {
+
+        ganados++;
+
+      } else if (contra > favor) {
+
+        perdidos++;
+
+      }
+
+    }
+  );
+
+
+  return {
+
+    ...pareja,
+
+    jugados,
+    ganados,
+    perdidos,
+    gamesFavor,
+    gamesContra,
+
+    diferencia:
+      gamesFavor -
+      gamesContra
+
+  };
+
+}
+
+/* ==========================================
+   ORDENAR TABLA DE POSICIONES
+========================================== */
+
+function calcularClasificacionZona(
+  zona
+) {
+
+  const tabla =
+    zona.parejas.map(
+      calcularEstadisticasPareja
+    );
+
+
+  tabla.sort(
+    (a, b) => {
+
+      /* 1. Partidos ganados */
+
+      if (
+        b.ganados !==
+        a.ganados
+      ) {
+
+        return (
+          b.ganados -
+          a.ganados
+        );
+
+      }
+
+
+      /* 2. Diferencia de games */
+
+      if (
+        b.diferencia !==
+        a.diferencia
+      ) {
+
+        return (
+          b.diferencia -
+          a.diferencia
+        );
+
+      }
+
+
+      /* 3. Games a favor */
+
+      if (
+        b.gamesFavor !==
+        a.gamesFavor
+      ) {
+
+        return (
+          b.gamesFavor -
+          a.gamesFavor
+        );
+
+      }
+
+
+      return 0;
+
+    }
+  );
+
+
+  return tabla.map(
+    (pareja, indice) => ({
+      ...pareja,
+      posicion:
+        indice + 1
+    })
+  );
+
+}
 
 /* ==========================================
    RENDERIZAR FIXTURE
@@ -5151,6 +5405,25 @@ function renderizarFixtureEvento() {
 
   const nombrePareja = (pareja) =>
     `${pareja.jugadora1} / ${pareja.jugadora2}`;
+
+  const clasificaciones =
+  fixtureTemporal.zonas.map(
+    (zona) => ({
+      zona:
+        zona.letra,
+
+      tabla:
+        calcularClasificacionZona(
+          zona
+        )
+    })
+  );
+
+
+console.log(
+  "CLASIFICACIONES MATCH:",
+  clasificaciones
+);
 
 
 const crearPartidoHTML = (
