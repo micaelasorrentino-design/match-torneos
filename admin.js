@@ -6565,6 +6565,31 @@ function analizarFormatoCompetencia() {
   let descripcionFormato = "";
 
   switch (formatoCompetencia) {
+    case "una_zona_semis":
+
+  if (cantidadZonas === 1) {
+
+    /*
+      Formato Suma 13:
+
+      1° y 2° → pasan directo a semifinales
+
+      3° vs 5°
+      4° vs 6°
+
+      Las ganadoras completan las semifinales.
+    */
+
+    partidosExtraGarantizados = 1;
+
+    descripcionFormato =
+      "1° y 2° pasan directo a semifinales. " +
+      "3° vs 5° y 4° vs 6° juegan clasificación. " +
+      "Las ganadoras completan las semifinales.";
+
+  }
+
+  break;
 
     case "tres_zonas_terceros_repechaje":
 
