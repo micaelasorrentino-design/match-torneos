@@ -6367,6 +6367,9 @@ function formatearInstanciaPartido(
     cuartos:
       "Cuartos de final",
 
+      repechaje:
+  "Repechaje",
+
     semifinal:
       "Semifinal",
 
