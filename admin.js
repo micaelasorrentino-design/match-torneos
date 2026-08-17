@@ -5929,15 +5929,15 @@ const nombreClasificado =
     )
     .join("");
 
-    const ganadorP1 =
+  const ganadorP1 =
   obtenerGanadorPorInstancia(
-    "repechaje",
+    "clasificacion",
     0
   );
 
 const ganadorP2 =
   obtenerGanadorPorInstancia(
-    "repechaje",
+    "clasificacion",
     1
   );
 
@@ -6446,7 +6446,10 @@ function formatearInstanciaPartido(
     cuartos:
       "Cuartos de final",
 
-      repechaje:
+  clasificacion:
+  "Clasificación",
+
+repechaje:
   "Repechaje",
 
     semifinal:
