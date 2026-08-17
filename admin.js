@@ -9146,6 +9146,93 @@ const {
       if (error) {
         throw error;
       }
+if (mensajePartido) {
+
+  mensajePartido.textContent =
+    partidoEditandoId
+      ? "✓ Partido actualizado correctamente."
+      : "✓ Partido guardado correctamente.";
+
+  mensajePartido.style.color =
+    "#4e8b68";
+
+}
+
+
+console.log(
+  "Partido guardado:",
+  data
+);
+
+
+await cargarPartidosEvento();
+
+partidoEditandoId = "";
+
+
+window.setTimeout(
+  () => {
+
+    cerrarPartido();
+
+  },
+  700
+);
+
+
+} catch (error) {
+
+  console.error(
+    "Error al guardar partido:",
+    error
+  );
+
+
+  if (mensajePartido) {
+
+    mensajePartido.style.color =
+      "#b42318";
+
+
+    if (
+      error.message?.includes(
+        "partidos_evento_evento_id_numero_partido_key"
+      ) ||
+      error.message?.includes(
+        "duplicate key"
+      )
+    ) {
+
+      mensajePartido.textContent =
+        "Ya existe un partido con ese número.";
+
+    } else {
+
+      mensajePartido.textContent =
+        error.message ||
+        "No pudimos guardar el partido.";
+
+    }
+
+  }
+
+
+} finally {
+
+  if (guardarPartido) {
+
+    guardarPartido.disabled =
+      false;
+
+    guardarPartido.textContent =
+      "Guardar partido";
+
+  }
+
+}
+
+}
+);
 
 /* ==========================================
    CLICS DINÁMICOS
