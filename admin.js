@@ -6426,10 +6426,19 @@ function crearFilaFixture(
     partido.pareja_2_games !== null;
 
 
-  const marcador =
-    tieneResultado
-      ? `${partido.pareja_1_games} - ${partido.pareja_2_games}`
-      : "VS";
+  const tieneTiebreak =
+  partido.pareja_1_tiebreak !== null &&
+  partido.pareja_2_tiebreak !== null;
+
+const marcador =
+  tieneResultado
+    ? `${partido.pareja_1_games} - ${partido.pareja_2_games}`
+    : "vs";
+
+const marcadorTiebreak =
+  tieneTiebreak
+    ? `TB ${partido.pareja_1_tiebreak} - ${partido.pareja_2_tiebreak}`
+    : "";
 
 
   return `
@@ -6581,9 +6590,23 @@ function crearTarjetaPartido(
           )}
         </div>
 
-        <div class="partido-admin-marcador">
-          ${escaparHTML(marcador)}
-        </div>
+       <div class="partido-admin-marcador">
+
+  <strong>
+    ${escaparHTML(marcador)}
+  </strong>
+
+  ${
+    marcadorTiebreak
+      ? `
+        <small class="partido-admin-tiebreak">
+          ${escaparHTML(marcadorTiebreak)}
+        </small>
+      `
+      : ""
+  }
+
+</div>
 
         <div class="partido-admin-pareja">
           ${escaparHTML(
