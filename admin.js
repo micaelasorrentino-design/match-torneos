@@ -5929,20 +5929,33 @@ const nombreClasificado =
     )
     .join("");
 
+    const ganadorP1 =
+  obtenerGanadorPorInstancia(
+    "repechaje",
+    0
+  );
+
+const ganadorP2 =
+  obtenerGanadorPorInstancia(
+    "repechaje",
+    1
+  );
 
   semifinalesHTML = [
 
   [
     "S1",
     nombreClasificado(1),
-    "Ganador P2"
+    ganadorP2 || "Ganador P2"
   ],
 
   [
     "S2",
     nombreClasificado(2),
-    "Ganador P1"
+    ganadorP1 || "Ganador P1"
   ]
+
+]
 
 ]
   .map(
