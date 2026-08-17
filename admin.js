@@ -5716,16 +5716,16 @@ if (
   const semifinales = [
 
     [
-      "S1",
-      "Ganador C1",
-      "Ganador C2"
-    ],
+  "S1",
+  nombreClasificado(1),
+  "Ganador P2"
+],
 
-    [
-      "S2",
-      "Ganador C3",
-      "Ganador C4"
-    ]
+[
+  "S2",
+  nombreClasificado(2),
+  "Ganador P1"
+]
 
   ];
 
@@ -5824,19 +5824,44 @@ else if (
   "una_zona_semis"
 ) {
 
+  const tablaZonaA =
+  clasificaciones.find(
+    (item) =>
+      item.zona === "A"
+  )?.tabla || [];
+
+
+const nombreClasificado =
+  (posicion) => {
+
+    const pareja =
+      tablaZonaA[
+        posicion - 1
+      ];
+
+    if (!pareja) {
+      return `${posicion}° general`;
+    }
+
+    return (
+      `${pareja.jugadora1} / ${pareja.jugadora2}`
+    );
+
+  };
+
   const clasificacionHTML = [
 
-    [
-      "P1",
-      "3° general",
-      "5° general"
-    ],
+   [
+  "P1",
+  nombreClasificado(3),
+  nombreClasificado(5)
+],
 
-    [
-      "P2",
-      "4° general",
-      "6° general"
-    ]
+[
+  "P2",
+  nombreClasificado(4),
+  nombreClasificado(6)
+]
 
   ]
     .map(
