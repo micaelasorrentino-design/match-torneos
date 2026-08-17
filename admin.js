@@ -6064,9 +6064,6 @@ const ganadorP2 =
     nombreClasificado(2),
     ganadorP1 || "Ganador P1"
   ]
-
-]
-
 ]
   .map(
     (partido) =>
