@@ -5878,29 +5878,29 @@ const nombreClasificado =
 
   semifinalesHTML = [
 
-    [
-      "S1",
-      "1° general",
-      "Ganador P2"
-    ],
+  [
+    "S1",
+    nombreClasificado(1),
+    "Ganador P2"
+  ],
 
-    [
-      "S2",
-      "2° general",
-      "Ganador P1"
-    ]
-
+  [
+    "S2",
+    nombreClasificado(2),
+    "Ganador P1"
   ]
-    .map(
-      (partido) =>
-        crearPartidoHTML(
-          partido[0],
-          "Semifinal",
-          partido[1],
-          partido[2]
-        )
-    )
-    .join("");
+
+]
+  .map(
+    (partido) =>
+      crearPartidoHTML(
+        partido[0],
+        "Semifinal",
+        partido[1],
+        partido[2]
+      )
+  )
+  .join("");
 
 
   finalHTML =
