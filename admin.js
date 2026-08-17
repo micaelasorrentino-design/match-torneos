@@ -5018,6 +5018,66 @@ async function cargarPartidosEvento() {
     partidosActuales =
       data || [];
 
+const {
+  data: datosTiebreak,
+  error: errorTiebreak
+} =
+  await window.db
+    .from("partidos_evento")
+    .select(`
+      id,
+      pareja_1_tiebreak,
+      pareja_2_tiebreak
+    `)
+    .eq(
+      "evento_id",
+      eventoActual
+    );
+
+
+if (errorTiebreak) {
+  throw errorTiebreak;
+}
+
+
+const tiebreakPorPartido =
+  new Map(
+    (datosTiebreak || []).map(
+      (partido) => [
+        partido.id,
+        partido
+      ]
+    )
+  );
+
+
+partidosActuales =
+  partidosActuales.map(
+    (partido) => {
+
+      const tiebreak =
+        tiebreakPorPartido.get(
+          partido.id
+        );
+
+      return {
+
+        ...partido,
+
+        pareja_1_tiebreak:
+          tiebreak
+            ?.pareja_1_tiebreak ??
+          null,
+
+        pareja_2_tiebreak:
+          tiebreak
+            ?.pareja_2_tiebreak ??
+          null
+
+      };
+
+    }
+  );
 
     renderizarPartidosEvento();
     renderizarFixtureEvento();
@@ -8924,6 +8984,66 @@ formularioPartido?.addEventListener(
 
     }
 
+const games1 =
+  equipo1Games?.value !== ""
+    ? Number(equipo1Games.value)
+    : null;
+
+const games2 =
+  equipo2Games?.value !== ""
+    ? Number(equipo2Games.value)
+    : null;
+
+const tiebreak1 =
+  equipo1Tiebreak?.value !== ""
+    ? Number(equipo1Tiebreak.value)
+    : null;
+
+const tiebreak2 =
+  equipo2Tiebreak?.value !== ""
+    ? Number(equipo2Tiebreak.value)
+    : null;
+
+
+if (
+  games1 !== null &&
+  games2 !== null &&
+  games1 === games2
+) {
+
+  if (
+    tiebreak1 === null ||
+    tiebreak2 === null
+  ) {
+
+    if (mensajePartido) {
+
+      mensajePartido.textContent =
+        "Si el partido termina empatado en games, cargá el resultado del tie-break.";
+
+    }
+
+    return;
+
+  }
+
+
+  if (
+    tiebreak1 === tiebreak2
+  ) {
+
+    if (mensajePartido) {
+
+      mensajePartido.textContent =
+        "El tie-break no puede terminar empatado.";
+
+    }
+
+    return;
+
+  }
+
+}
 
     if (mensajePartido) {
 
@@ -9073,6 +9193,67 @@ const {
       if (error) {
         throw error;
       }
+
+      /* ==========================================
+   GUARDAR TIE-BREAK
+========================================== */
+
+const datosTiebreak = {
+
+  pareja_1_tiebreak:
+    tiebreak1,
+
+  pareja_2_tiebreak:
+    tiebreak2
+
+};
+
+
+let consultaTiebreak =
+  window.db
+    .from("partidos_evento")
+    .update(
+      datosTiebreak
+    );
+
+
+if (partidoEditandoId) {
+
+  consultaTiebreak =
+    consultaTiebreak.eq(
+      "id",
+      partidoEditandoId
+    );
+
+} else {
+
+  consultaTiebreak =
+    consultaTiebreak
+      .eq(
+        "evento_id",
+        eventoActual
+      )
+      .eq(
+        "numero_partido",
+        Number(
+          partidoNumero.value
+        )
+      );
+
+}
+
+
+const {
+  error: errorTiebreak
+} =
+  await consultaTiebreak;
+
+
+if (errorTiebreak) {
+
+  throw errorTiebreak;
+
+}
 
 
       if (mensajePartido) {
