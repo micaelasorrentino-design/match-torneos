@@ -5425,6 +5425,21 @@ console.log(
   clasificaciones
 );
 
+console.log(
+  "PARTIDOS REALES PARA CLASIFICACIÓN:",
+  partidosActuales.map(
+    (partido) => ({
+      numero: partido.numero_partido,
+      instancia: partido.instancia,
+      estado: partido.estado,
+      pareja1: partido.pareja_1_nombre,
+      games1: partido.pareja_1_games,
+      pareja2: partido.pareja_2_nombre,
+      games2: partido.pareja_2_games
+    })
+  )
+);
+
 clasificaciones.forEach(
   (clasificacion) => {
 
