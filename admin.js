@@ -5376,6 +5376,60 @@ function calcularClasificacionZona(
 
 }
 
+function obtenerGanadorPorInstancia(
+  instancia,
+  indice = 0
+) {
+
+  const partidos =
+    partidosActuales
+      .filter(
+        (partido) =>
+          partido.instancia === instancia &&
+          partido.estado === "finalizado" &&
+          partido.pareja_1_games !== null &&
+          partido.pareja_2_games !== null
+      )
+      .sort(
+        (a, b) =>
+          Number(a.numero_partido) -
+          Number(b.numero_partido)
+      );
+
+
+  const partido =
+    partidos[indice];
+
+
+  if (!partido) {
+    return null;
+  }
+
+
+  const games1 =
+    Number(
+      partido.pareja_1_games
+    );
+
+  const games2 =
+    Number(
+      partido.pareja_2_games
+    );
+
+
+  if (games1 > games2) {
+    return partido.pareja_1_nombre;
+  }
+
+
+  if (games2 > games1) {
+    return partido.pareja_2_nombre;
+  }
+
+
+  return null;
+}
+
 /* ==========================================
    RENDERIZAR FIXTURE
 ========================================== */
@@ -5902,14 +5956,26 @@ const nombreClasificado =
   )
   .join("");
 
+  const ganadorS1 =
+  obtenerGanadorPorInstancia(
+    "semifinal",
+    0
+  );
 
-  finalHTML =
-    crearPartidoHTML(
-      "F",
-      "Final",
-      "Ganador S1",
-      "Ganador S2"
-    );
+
+const ganadorS2 =
+  obtenerGanadorPorInstancia(
+    "semifinal",
+    1
+  );
+
+finalHTML =
+  crearPartidoHTML(
+    "F",
+    "Final",
+    ganadorS1 || "Ganador S1",
+    ganadorS2 || "Ganador S2"
+  );
 
 
   seccionesEliminacionHTML = `
