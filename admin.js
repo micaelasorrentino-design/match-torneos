@@ -6426,18 +6426,14 @@ function crearFilaFixture(
     partido.pareja_2_games !== null;
 
 
-  const tieneTiebreak =
-  partido.pareja_1_tiebreak !== null &&
-  partido.pareja_2_tiebreak !== null;
-
 const tieneTiebreak =
   partido.pareja_1_tiebreak !== null &&
   partido.pareja_2_tiebreak !== null;
 
-const marcador =
-  tieneResultado
-    ? `${partido.pareja_1_games} - ${partido.pareja_2_games}`
-    : "vs";
+const marcadorTiebreak =
+  tieneTiebreak
+    ? `TB ${partido.pareja_1_tiebreak} - ${partido.pareja_2_tiebreak}`
+    : "";
 
 const marcadorTiebreak =
   tieneTiebreak
