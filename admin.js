@@ -5491,6 +5491,118 @@ function renderizarFixtureEvento() {
     })
   );
 
+  const crearTablaClasificacionHTML =
+  (clasificacion) => {
+
+    const filas =
+      clasificacion.tabla
+        .map(
+          (pareja) => `
+            <tr>
+
+              <td>
+                ${pareja.posicion}
+              </td>
+
+              <td>
+                ${escaparHTML(
+                  `${pareja.jugadora1} / ${pareja.jugadora2}`
+                )}
+              </td>
+
+              <td>
+                ${pareja.jugados}
+              </td>
+
+              <td>
+                ${pareja.ganados}
+              </td>
+
+              <td>
+                ${pareja.perdidos}
+              </td>
+
+              <td>
+                ${pareja.gamesFavor}
+              </td>
+
+              <td>
+                ${pareja.gamesContra}
+              </td>
+
+              <td>
+                ${pareja.diferencia > 0
+                  ? "+"
+                  : ""
+                }${pareja.diferencia}
+              </td>
+
+            </tr>
+          `
+        )
+        .join("");
+
+
+    return `
+
+      <section class="tabla-posiciones-zona">
+
+        <div class="fixture-etapa-titulo">
+
+          <span>
+            TABLA DE POSICIONES
+          </span>
+
+          <h3>
+            Zona ${escaparHTML(
+              clasificacion.zona
+            )}
+          </h3>
+
+        </div>
+
+
+        <div class="tabla-posiciones-scroll">
+
+          <table class="tabla-posiciones">
+
+            <thead>
+
+              <tr>
+                <th>Pos</th>
+                <th>Pareja</th>
+                <th>PJ</th>
+                <th>PG</th>
+                <th>PP</th>
+                <th>GF</th>
+                <th>GC</th>
+                <th>DIF</th>
+              </tr>
+
+            </thead>
+
+            <tbody>
+              ${filas}
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </section>
+
+    `;
+
+  };
+
+
+const tablasClasificacionHTML =
+  clasificaciones
+    .map(
+      crearTablaClasificacionHTML
+    )
+    .join("");
+
 
 console.log(
   "CLASIFICACIONES MATCH:",
@@ -6088,9 +6200,27 @@ else {
 }
 
 
-  listaFixtureAdmin.innerHTML = `
+ listaFixtureAdmin.innerHTML = `
 
   ${zonasHTML}
+
+  <section class="fixture-clasificaciones">
+
+    <div class="fixture-etapa-titulo">
+
+      <span>
+        RESULTADOS
+      </span>
+
+      <h3>
+        Tablas de posiciones
+      </h3>
+
+    </div>
+
+    ${tablasClasificacionHTML}
+
+  </section>
 
   ${seccionesEliminacionHTML}
 
