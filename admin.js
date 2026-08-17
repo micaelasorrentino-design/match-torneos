@@ -6435,17 +6435,6 @@ const marcadorTiebreak =
     ? `TB ${partido.pareja_1_tiebreak} - ${partido.pareja_2_tiebreak}`
     : "";
 
-const marcadorTiebreak =
-  tieneTiebreak
-    ? `TB ${partido.pareja_1_tiebreak} - ${partido.pareja_2_tiebreak}`
-    : "";
-
-const marcadorTiebreak =
-  tieneTiebreak
-    ? `TB ${partido.pareja_1_tiebreak} - ${partido.pareja_2_tiebreak}`
-    : "";
-
-
   return `
     <article class="fixture-partido-item">
 
