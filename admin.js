@@ -5488,6 +5488,94 @@ function obtenerGanadorPorInstancia(
     );
 
 
+  /* GANADOR POR GAMES */
+
+  if (games1 > games2) {
+    return partido.pareja_1_nombre;
+  }
+
+
+  if (games2 > games1) {
+    return partido.pareja_2_nombre;
+  }
+
+
+  /* ==========================================
+     EMPATE EN GAMES → DEFINIR POR TIE-BREAK
+  ========================================== */
+
+  const tiebreak1 =
+    partido.pareja_1_tiebreak !== null
+      ? Number(
+          partido.pareja_1_tiebreak
+        )
+      : null;
+
+  const tiebreak2 =
+    partido.pareja_2_tiebreak !== null
+      ? Number(
+          partido.pareja_2_tiebreak
+        )
+      : null;
+
+
+  if (
+    tiebreak1 === null ||
+    tiebreak2 === null
+  ) {
+    return null;
+  }
+
+
+  if (tiebreak1 > tiebreak2) {
+    return partido.pareja_1_nombre;
+  }
+
+
+  if (tiebreak2 > tiebreak1) {
+    return partido.pareja_2_nombre;
+  }
+
+
+  return null;
+}
+
+  const partidos =
+    partidosActuales
+      .filter(
+        (partido) =>
+          partido.instancia === instancia &&
+          partido.estado === "finalizado" &&
+          partido.pareja_1_games !== null &&
+          partido.pareja_2_games !== null
+      )
+      .sort(
+        (a, b) =>
+          Number(a.numero_partido) -
+          Number(b.numero_partido)
+      );
+
+
+  const partido =
+    partidos[indice];
+
+
+  if (!partido) {
+    return null;
+  }
+
+
+  const games1 =
+    Number(
+      partido.pareja_1_games
+    );
+
+  const games2 =
+    Number(
+      partido.pareja_2_games
+    );
+
+
   if (games1 > games2) {
     return partido.pareja_1_nombre;
   }
