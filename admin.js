@@ -5315,37 +5315,84 @@ const esPareja1 =
   pareja1 === nombreInvertido;
 
 
-      const favor =
-        Number(
-          esPareja1
-            ? partido.pareja_1_games
-            : partido.pareja_2_games
-        );
+      let favor =
+  Number(
+    esPareja1
+      ? partido.pareja_1_games
+      : partido.pareja_2_games
+  );
+
+let contra =
+  Number(
+    esPareja1
+      ? partido.pareja_2_games
+      : partido.pareja_1_games
+  );
 
 
-      const contra =
-        Number(
-          esPareja1
-            ? partido.pareja_2_games
-            : partido.pareja_1_games
-        );
+/* ==========================================
+   EMPATE EN GAMES → RESOLVER POR TIE-BREAK
+========================================== */
+
+if (favor === contra) {
+
+  const tiebreakFavor =
+    esPareja1
+      ? partido.pareja_1_tiebreak
+      : partido.pareja_2_tiebreak;
+
+  const tiebreakContra =
+    esPareja1
+      ? partido.pareja_2_tiebreak
+      : partido.pareja_1_tiebreak;
 
 
-      jugados++;
+  if (
+    tiebreakFavor !== null &&
+    tiebreakContra !== null
+  ) {
 
-      gamesFavor += favor;
-      gamesContra += contra;
+    if (
+      Number(tiebreakFavor) >
+      Number(tiebreakContra)
+    ) {
+
+      /*
+        El ganador del tie-break
+        recibe 1 game adicional
+        para la clasificación.
+      */
+      favor += 1;
+
+    } else if (
+      Number(tiebreakContra) >
+      Number(tiebreakFavor)
+    ) {
+
+      contra += 1;
+
+    }
+
+  }
+
+}
 
 
-      if (favor > contra) {
+jugados++;
 
-        ganados++;
+gamesFavor += favor;
+gamesContra += contra;
 
-      } else if (contra > favor) {
 
-        perdidos++;
+if (favor > contra) {
 
-      }
+  ganados++;
+
+} else if (contra > favor) {
+
+  perdidos++;
+
+}
 
     }
   );
