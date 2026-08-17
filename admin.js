@@ -5425,6 +5425,32 @@ console.log(
   clasificaciones
 );
 
+clasificaciones.forEach(
+  (clasificacion) => {
+
+    console.log(
+      `Zona ${clasificacion.zona}`
+    );
+
+    console.table(
+      clasificacion.tabla.map(
+        (pareja) => ({
+          Posicion: pareja.posicion,
+          Pareja:
+            `${pareja.jugadora1} / ${pareja.jugadora2}`,
+          PJ: pareja.jugados,
+          PG: pareja.ganados,
+          PP: pareja.perdidos,
+          GF: pareja.gamesFavor,
+          GC: pareja.gamesContra,
+          DIF: pareja.diferencia
+        })
+      )
+    );
+
+  }
+);
+
 
 const crearPartidoHTML = (
   numero,
