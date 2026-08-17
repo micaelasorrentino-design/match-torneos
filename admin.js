@@ -6028,8 +6028,6 @@ const nombreClasificado =
   nombreClasificado(4),
   nombreClasificado(6)
 ]
-
-  ]
     .map(
       (partido) =>
         crearPartidoHTML(
