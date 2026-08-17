@@ -5118,6 +5118,11 @@ function normalizarNombrePareja(
       /[\u0300-\u036f]/g,
       ""
     )
+
+    /* Unificamos separadores de parejas */
+    .replace(/\s*\/\s*/g, " - ")
+    .replace(/\s*-\s*/g, " - ")
+
     .replace(/\s+/g, " ")
     .trim();
 
@@ -5132,9 +5137,14 @@ function obtenerPartidosPareja(
   pareja
 ) {
 
-  const nombre =
+  const nombreNormal =
     normalizarNombrePareja(
-      `${pareja.jugadora1} / ${pareja.jugadora2}`
+      `${pareja.jugadora1} - ${pareja.jugadora2}`
+    );
+
+  const nombreInvertido =
+    normalizarNombrePareja(
+      `${pareja.jugadora2} - ${pareja.jugadora1}`
     );
 
 
@@ -5161,8 +5171,10 @@ function obtenerPartidosPareja(
 
 
       return (
-        pareja1 === nombre ||
-        pareja2 === nombre
+        pareja1 === nombreNormal ||
+        pareja1 === nombreInvertido ||
+        pareja2 === nombreNormal ||
+        pareja2 === nombreInvertido
       );
 
     }
@@ -5186,9 +5198,14 @@ function calcularEstadisticasPareja(
 
 
   const nombre =
-    normalizarNombrePareja(
-      `${pareja.jugadora1} / ${pareja.jugadora2}`
-    );
+  normalizarNombrePareja(
+    `${pareja.jugadora1} - ${pareja.jugadora2}`
+  );
+
+const nombreInvertido =
+  normalizarNombrePareja(
+    `${pareja.jugadora2} - ${pareja.jugadora1}`
+  );
 
 
   let jugados = 0;
@@ -5216,14 +5233,15 @@ function calcularEstadisticasPareja(
       }
 
 
-      const pareja1 =
-        normalizarNombrePareja(
-          partido.pareja_1_nombre || ""
-        );
+const pareja1 =
+  normalizarNombrePareja(
+    partido.pareja_1_nombre || ""
+  );
 
 
-      const esPareja1 =
-        pareja1 === nombre;
+const esPareja1 =
+  pareja1 === nombre ||
+  pareja1 === nombreInvertido;
 
 
       const favor =
