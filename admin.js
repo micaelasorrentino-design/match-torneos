@@ -5036,48 +5036,54 @@ const {
 
 
 if (errorTiebreak) {
-  throw errorTiebreak;
+
+  console.error(
+    "ERROR AL CARGAR TIE-BREAK:",
+    errorTiebreak
+  );
+
+} else {
+
+  const tiebreakPorPartido =
+    new Map(
+      (datosTiebreak || []).map(
+        (partido) => [
+          partido.id,
+          partido
+        ]
+      )
+    );
+
+
+  partidosActuales =
+    partidosActuales.map(
+      (partido) => {
+
+        const tiebreak =
+          tiebreakPorPartido.get(
+            partido.id
+          );
+
+        return {
+
+          ...partido,
+
+          pareja_1_tiebreak:
+            tiebreak
+              ?.pareja_1_tiebreak ??
+            null,
+
+          pareja_2_tiebreak:
+            tiebreak
+              ?.pareja_2_tiebreak ??
+            null
+
+        };
+
+      }
+    );
+
 }
-
-
-const tiebreakPorPartido =
-  new Map(
-    (datosTiebreak || []).map(
-      (partido) => [
-        partido.id,
-        partido
-      ]
-    )
-  );
-
-
-partidosActuales =
-  partidosActuales.map(
-    (partido) => {
-
-      const tiebreak =
-        tiebreakPorPartido.get(
-          partido.id
-        );
-
-      return {
-
-        ...partido,
-
-        pareja_1_tiebreak:
-          tiebreak
-            ?.pareja_1_tiebreak ??
-          null,
-
-        pareja_2_tiebreak:
-          tiebreak
-            ?.pareja_2_tiebreak ??
-          null
-
-      };
-
-    }
-  );
 
     renderizarPartidosEvento();
     renderizarFixtureEvento();
