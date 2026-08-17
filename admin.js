@@ -6052,19 +6052,20 @@ const ganadorP2 =
     1
   );
 
-  semifinalesHTML = [
+ semifinalesHTML = [
 
   [
     "S1",
     nombreClasificado(1),
-    ganadorP2 || "Ganador P2"
+    ganadorP1 || "Ganador P1"
   ],
 
   [
     "S2",
     nombreClasificado(2),
-    ganadorP1 || "Ganador P1"
+    ganadorP2 || "Ganador P2"
   ]
+
 ]
   .map(
     (partido) =>
