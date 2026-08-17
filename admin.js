@@ -4436,7 +4436,79 @@ const selectoresJugadoras = [
   equipo2Jugadora1,
   equipo2Jugadora2
 ];
+const equipo1Games =
+  document.getElementById(
+    "equipo-1-games"
+  );
 
+const equipo2Games =
+  document.getElementById(
+    "equipo-2-games"
+  );
+
+const equipo1Tiebreak =
+  document.getElementById(
+    "equipo-1-tiebreak"
+  );
+
+const equipo2Tiebreak =
+  document.getElementById(
+    "equipo-2-tiebreak"
+  );
+
+  function actualizarVisibilidadTiebreak() {
+
+  if (
+    !equipo1Games ||
+    !equipo2Games ||
+    !equipo1Tiebreak ||
+    !equipo2Tiebreak
+  ) {
+    return;
+  }
+
+  const hayResultado =
+    equipo1Games.value !== "" &&
+    equipo2Games.value !== "";
+
+  const hayEmpate =
+    hayResultado &&
+    Number(equipo1Games.value) ===
+      Number(equipo2Games.value);
+
+
+  equipo1Tiebreak
+    .closest("label")
+    ?.classList.toggle(
+      "oculto",
+      !hayEmpate
+    );
+
+  equipo2Tiebreak
+    .closest("label")
+    ?.classList.toggle(
+      "oculto",
+      !hayEmpate
+    );
+
+
+  if (!hayEmpate) {
+
+    equipo1Tiebreak.value = "";
+    equipo2Tiebreak.value = "";
+
+  }
+
+}
+equipo1Games?.addEventListener(
+  "input",
+  actualizarVisibilidadTiebreak
+);
+
+equipo2Games?.addEventListener(
+  "input",
+  actualizarVisibilidadTiebreak
+);
 
 /* CAMBIAR DE PESTAÑA */
 
@@ -6656,10 +6728,11 @@ function abrirModalPartido() {
 
   }
 
+formularioPartido?.reset();
 
-  formularioPartido?.reset();
+actualizarVisibilidadTiebreak();
 
-  const guardarPartido =
+const guardarPartido =
   document.getElementById(
     "guardar-partido"
   );
