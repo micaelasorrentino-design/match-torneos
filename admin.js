@@ -5937,45 +5937,186 @@ if (
   "tres_zonas_terceros_repechaje"
 ) {
 
-  /*
-    CLASIFICAN 8:
+  /* ==========================================
+     OBTENER TABLAS DE LAS 3 ZONAS
+  ========================================== */
 
-    1° A
-    2° A
-    1° B
-    2° B
-    1° C
-    2° C
-    Mejor 3° #1
-    Mejor 3° #2
+  const tablaA =
+    clasificaciones.find(
+      (item) => item.zona === "A"
+    )?.tabla || [];
 
-    Las otras 4 parejas juegan repechaje.
-  */
+  const tablaB =
+    clasificaciones.find(
+      (item) => item.zona === "B"
+    )?.tabla || [];
+
+  const tablaC =
+    clasificaciones.find(
+      (item) => item.zona === "C"
+    )?.tabla || [];
+
+
+  const nombreParejaTabla =
+    (pareja, fallback = "Por definir") => {
+
+      if (!pareja) {
+        return fallback;
+      }
+
+      return (
+        `${pareja.jugadora1} / ${pareja.jugadora2}`
+      );
+
+    };
+
+
+  /* ==========================================
+     ORDEN GENERAL PARA COMPARAR TERCERAS
+  ========================================== */
+
+  const ordenarClasificacion =
+    (a, b) => {
+
+      if (b.ganados !== a.ganados) {
+        return b.ganados - a.ganados;
+      }
+
+      if (
+        b.diferencia !==
+        a.diferencia
+      ) {
+        return (
+          b.diferencia -
+          a.diferencia
+        );
+      }
+
+      if (
+        b.gamesFavor !==
+        a.gamesFavor
+      ) {
+        return (
+          b.gamesFavor -
+          a.gamesFavor
+        );
+      }
+
+      return 0;
+
+    };
+
+
+  /* ==========================================
+     1° Y 2° DE CADA ZONA
+  ========================================== */
+
+  const primeroA = tablaA[0];
+  const segundoA = tablaA[1];
+
+  const primeroB = tablaB[0];
+  const segundoB = tablaB[1];
+
+  const primeroC = tablaC[0];
+  const segundoC = tablaC[1];
+
+
+  /* ==========================================
+     MEJORES TERCERAS
+  ========================================== */
+
+  const terceras =
+    [
+      tablaA[2]
+        ? {
+            ...tablaA[2],
+            zonaOrigen: "A"
+          }
+        : null,
+
+      tablaB[2]
+        ? {
+            ...tablaB[2],
+            zonaOrigen: "B"
+          }
+        : null,
+
+      tablaC[2]
+        ? {
+            ...tablaC[2],
+            zonaOrigen: "C"
+          }
+        : null
+
+    ]
+      .filter(Boolean)
+      .sort(
+        ordenarClasificacion
+      );
+
+
+  const mejorTercera1 =
+    terceras[0];
+
+  const mejorTercera2 =
+    terceras[1];
+
+  const terceraNoClasificada =
+    terceras[2];
+
+
+  /* ==========================================
+     CUARTOS DE FINAL
+  ========================================== */
 
   const cuartos = [
 
     [
       "C1",
-      "1° Zona A",
-      "Mejor 3° #2"
+      nombreParejaTabla(
+        primeroA,
+        "1° Zona A"
+      ),
+      nombreParejaTabla(
+        mejorTercera2,
+        "2ª mejor tercera"
+      )
     ],
 
     [
       "C2",
-      "1° Zona B",
-      "Mejor 3° #1"
+      nombreParejaTabla(
+        primeroB,
+        "1° Zona B"
+      ),
+      nombreParejaTabla(
+        mejorTercera1,
+        "Mejor tercera"
+      )
     ],
 
     [
       "C3",
-      "1° Zona C",
-      "2° Zona A"
+      nombreParejaTabla(
+        primeroC,
+        "1° Zona C"
+      ),
+      nombreParejaTabla(
+        segundoA,
+        "2° Zona A"
+      )
     ],
 
     [
       "C4",
-      "2° Zona B",
-      "2° Zona C"
+      nombreParejaTabla(
+        segundoB,
+        "2° Zona B"
+      ),
+      nombreParejaTabla(
+        segundoC,
+        "2° Zona C"
+      )
     ]
 
   ];
@@ -5995,28 +6136,71 @@ if (
       .join("");
 
 
-  /*
-    Quedan 4 parejas afuera del cuadro:
+  /* ==========================================
+     REPECHAJE 9° A 12°
+     
+     NO AVANZA AL CUADRO PRINCIPAL.
+     ES EL PARTIDO ASEGURADO PARA QUIENES
+     NO CLASIFICARON A CUARTOS.
+  ========================================== */
 
-    - la tercera que no clasificó
-    - las tres cuartas
+  const noClasificadas =
+    [
 
-    Luego vamos a reemplazar #1/#2/#3/#4
-    por los nombres reales automáticamente.
-  */
+      terceraNoClasificada,
+
+      tablaA[3]
+        ? {
+            ...tablaA[3],
+            zonaOrigen: "A"
+          }
+        : null,
+
+      tablaB[3]
+        ? {
+            ...tablaB[3],
+            zonaOrigen: "B"
+          }
+        : null,
+
+      tablaC[3]
+        ? {
+            ...tablaC[3],
+            zonaOrigen: "C"
+          }
+        : null
+
+    ]
+      .filter(Boolean)
+      .sort(
+        ordenarClasificacion
+      );
+
 
   const repechaje = [
 
     [
       "R1",
-      "No clasificada #1",
-      "No clasificada #4"
+      nombreParejaTabla(
+        noClasificadas[0],
+        "9° general"
+      ),
+      nombreParejaTabla(
+        noClasificadas[3],
+        "12° general"
+      )
     ],
 
     [
       "R2",
-      "No clasificada #2",
-      "No clasificada #3"
+      nombreParejaTabla(
+        noClasificadas[1],
+        "10° general"
+      ),
+      nombreParejaTabla(
+        noClasificadas[2],
+        "11° general"
+      )
     ]
 
   ];
@@ -6028,7 +6212,7 @@ if (
         (partido) =>
           crearPartidoHTML(
             partido[0],
-            "Repechaje",
+            "Repechaje 9°–12°",
             partido[1],
             partido[2]
           )
@@ -6036,25 +6220,62 @@ if (
       .join("");
 
 
-  const semifinales = [
+  /* ==========================================
+     GANADORES DE CUARTOS
+  ========================================== */
 
-    [
-  "S1",
-  nombreClasificado(1),
-  "Ganador P2"
-],
+  const ganadorC1 =
+    obtenerGanadorPorInstancia(
+      "cuartos",
+      0
+    );
 
-[
-  "S2",
-  nombreClasificado(2),
-  "Ganador P1"
-]
+  const ganadorC2 =
+    obtenerGanadorPorInstancia(
+      "cuartos",
+      1
+    );
 
-  ];
+  const ganadorC3 =
+    obtenerGanadorPorInstancia(
+      "cuartos",
+      2
+    );
 
+  const ganadorC4 =
+    obtenerGanadorPorInstancia(
+      "cuartos",
+      3
+    );
+
+
+  /* ==========================================
+     SEMIFINALES
+     
+     C1 vs C4
+     C2 vs C3
+  ========================================== */
 
   semifinalesHTML =
-    semifinales
+    [
+
+      [
+        "S1",
+        ganadorC1 ||
+          "Ganador C1",
+        ganadorC4 ||
+          "Ganador C4"
+      ],
+
+      [
+        "S2",
+        ganadorC2 ||
+          "Ganador C2",
+        ganadorC3 ||
+          "Ganador C3"
+      ]
+
+    ]
       .map(
         (partido) =>
           crearPartidoHTML(
@@ -6067,22 +6288,52 @@ if (
       .join("");
 
 
+  /* ==========================================
+     FINAL
+  ========================================== */
+
+  const ganadorS1 =
+    obtenerGanadorPorInstancia(
+      "semifinal",
+      0
+    );
+
+  const ganadorS2 =
+    obtenerGanadorPorInstancia(
+      "semifinal",
+      1
+    );
+
+
   finalHTML =
     crearPartidoHTML(
       "F",
       "Final",
-      "Ganador S1",
-      "Ganador S2"
+      ganadorS1 ||
+        "Ganador S1",
+      ganadorS2 ||
+        "Ganador S2"
     );
 
+
+  /* ==========================================
+     MOSTRAR CUADRO
+  ========================================== */
 
   seccionesEliminacionHTML = `
 
     <section class="fixture-etapa">
 
       <div class="fixture-etapa-titulo">
-        <span>CUADRO PRINCIPAL</span>
-        <h3>Cuartos de final</h3>
+
+        <span>
+          CUADRO PRINCIPAL
+        </span>
+
+        <h3>
+          Cuartos de final
+        </h3>
+
       </div>
 
       <div class="fixture-etapa-partidos">
@@ -6095,8 +6346,15 @@ if (
     <section class="fixture-etapa">
 
       <div class="fixture-etapa-titulo">
-        <span>PARTIDO ASEGURADO</span>
-        <h3>Repechaje</h3>
+
+        <span>
+          PARTIDO ASEGURADO
+        </span>
+
+        <h3>
+          Repechaje 9°–12°
+        </h3>
+
       </div>
 
       <div class="fixture-etapa-partidos">
@@ -6109,8 +6367,15 @@ if (
     <section class="fixture-etapa">
 
       <div class="fixture-etapa-titulo">
-        <span>ELIMINACIÓN</span>
-        <h3>Semifinales</h3>
+
+        <span>
+          ELIMINACIÓN
+        </span>
+
+        <h3>
+          Semifinales
+        </h3>
+
       </div>
 
       <div class="fixture-etapa-partidos">
@@ -6123,8 +6388,15 @@ if (
     <section class="fixture-etapa">
 
       <div class="fixture-etapa-titulo">
-        <span>DEFINICIÓN</span>
-        <h3>Final</h3>
+
+        <span>
+          DEFINICIÓN
+        </span>
+
+        <h3>
+          Final
+        </h3>
+
       </div>
 
       <div class="fixture-etapa-partidos">
@@ -6136,7 +6408,6 @@ if (
   `;
 
 }
-
 
 /* ==========================================
    FORMATO: 1 ZONA + PASE A SEMIS
