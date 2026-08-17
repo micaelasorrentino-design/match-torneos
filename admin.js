@@ -5018,73 +5018,6 @@ async function cargarPartidosEvento() {
     partidosActuales =
       data || [];
 
-const {
-  data: datosTiebreak,
-  error: errorTiebreak
-} =
-  await window.db
-    .from("partidos_evento")
-    .select(`
-      id,
-      pareja_1_tiebreak,
-      pareja_2_tiebreak
-    `)
-    .eq(
-      "evento_id",
-      eventoActual
-    );
-
-
-if (errorTiebreak) {
-
-  console.error(
-    "ERROR AL CARGAR TIE-BREAK:",
-    errorTiebreak
-  );
-
-} else {
-
-  const tiebreakPorPartido =
-    new Map(
-      (datosTiebreak || []).map(
-        (partido) => [
-          partido.id,
-          partido
-        ]
-      )
-    );
-
-
-  partidosActuales =
-    partidosActuales.map(
-      (partido) => {
-
-        const tiebreak =
-          tiebreakPorPartido.get(
-            partido.id
-          );
-
-        return {
-
-          ...partido,
-
-          pareja_1_tiebreak:
-            tiebreak
-              ?.pareja_1_tiebreak ??
-            null,
-
-          pareja_2_tiebreak:
-            tiebreak
-              ?.pareja_2_tiebreak ??
-            null
-
-        };
-
-      }
-    );
-
-}
-
     renderizarPartidosEvento();
     renderizarFixtureEvento();
 
@@ -9162,6 +9095,20 @@ p_equipo_2_jugadora_2_rol:
         )
       : null,
 
+      p_equipo_1_tiebreak:
+  equipo1Tiebreak?.value !== ""
+    ? Number(
+        equipo1Tiebreak.value
+      )
+    : null,
+
+p_equipo_2_tiebreak:
+  equipo2Tiebreak?.value !== ""
+    ? Number(
+        equipo2Tiebreak.value
+      )
+    : null,
+
   p_estado:
     partidoEstado?.value ||
     "pendiente",
@@ -9200,150 +9147,6 @@ const {
         throw error;
       }
 
-      /* ==========================================
-   GUARDAR TIE-BREAK
-========================================== */
-
-const datosTiebreak = {
-
-  pareja_1_tiebreak:
-    tiebreak1,
-
-  pareja_2_tiebreak:
-    tiebreak2
-
-};
-
-
-let consultaTiebreak =
-  window.db
-    .from("partidos_evento")
-    .update(
-      datosTiebreak
-    );
-
-
-if (partidoEditandoId) {
-
-  consultaTiebreak =
-    consultaTiebreak.eq(
-      "id",
-      partidoEditandoId
-    );
-
-} else {
-
-  consultaTiebreak =
-    consultaTiebreak
-      .eq(
-        "evento_id",
-        eventoActual
-      )
-      .eq(
-        "numero_partido",
-        Number(
-          partidoNumero.value
-        )
-      );
-
-}
-
-
-const {
-  error: errorTiebreak
-} =
-  await consultaTiebreak;
-
-
-if (errorTiebreak) {
-
-  throw errorTiebreak;
-
-}
-
-
-      if (mensajePartido) {
-
-        mensajePartido.textContent =
-  partidoEditandoId
-    ? "✓ Partido actualizado correctamente."
-    : "✓ Partido guardado correctamente.";
-
-        mensajePartido.style.color =
-          "#4e8b68";
-
-      }
-
-
-      console.log(
-        "Partido guardado:",
-        data
-      );
-
-      await cargarPartidosEvento();
-      partidoEditandoId = "";
-
-
-      window.setTimeout(
-        () => {
-
-          cerrarPartido();
-
-        },
-        700
-      );
-
-    } catch (error) {
-
-      console.error(
-        "Error al guardar partido:",
-        error
-      );
-
-
-      if (mensajePartido) {
-
-        mensajePartido.style.color =
-          "#b42318";
-
-        if (
-          error.message?.includes(
-            "partidos_evento_evento_id_numero_partido_key"
-          ) ||
-          error.message?.includes(
-            "duplicate key"
-          )
-        ) {
-
-          mensajePartido.textContent =
-            "Ya existe un partido con ese número.";
-
-        } else {
-
-          mensajePartido.textContent =
-            error.message ||
-            "No pudimos guardar el partido.";
-
-        }
-
-      }
-
-    } finally {
-
-      if (guardarPartido) {
-
-        guardarPartido.disabled =
-          false;
-
-        guardarPartido.textContent =
-          "Guardar partido";
-
-      }
-
-    }
-
-  }
-);
 /* ==========================================
    CLICS DINÁMICOS
 ========================================== */
