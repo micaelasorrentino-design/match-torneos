@@ -6532,6 +6532,15 @@ function crearTarjetaPartido(
       ? `${partido.pareja_1_games} - ${partido.pareja_2_games}`
       : "vs";
 
+      const tieneTiebreak =
+  partido.pareja_1_tiebreak !== null &&
+  partido.pareja_2_tiebreak !== null;
+
+const marcadorTiebreak =
+  tieneTiebreak
+    ? `TB ${partido.pareja_1_tiebreak} - ${partido.pareja_2_tiebreak}`
+    : "";
+
 
   const hora =
     partido.hora_programada
